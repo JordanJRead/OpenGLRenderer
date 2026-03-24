@@ -4,6 +4,8 @@
 #include "camera.h"
 #include "shaderi.h"
 #include "glm/glm.hpp"
+#include "sceneobject.h"
+#include "transform.h"
 
 class App {
 public:
@@ -12,7 +14,8 @@ public:
         , mScreenHeight{ screenHeight }
         , mWindow{ window }
     {
-
+        glfwSetInputMode(mWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        glEnable(GL_DEPTH_TEST);
 	}
 
 	void run() {
@@ -33,11 +36,25 @@ public:
         vertexArray.use();
         glClearColor(0.2, 0.2, 0.2, 1);
 
+        //SceneObject object{ "assets/objects/sponza/sponza.obj", Transform{ {0, 0, 0}, { 0.1, -0.1, 0.1 }, { 0, 0, 0 } } };
+        SceneObject object{ "assets/objects/testcube/testcube.obj", Transform{ {0, 0, 0}, { 1, 1, 1 }, { 0, 0, 0 } } };
+        float prevTime{ 0 };
+
         while (!glfwWindowShouldClose(mWindow)) {
             glfwPollEvents();
+            float currentTime{ (float)glfwGetTime() };
+            float deltaTime{ currentTime - prevTime };
+            prevTime = currentTime;
 
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
             glDrawElements(GL_TRIANGLES, vertexArray.getIndexCount(), GL_UNSIGNED_INT, 0);
+
+            mCamera.update(mWindow, deltaTime);
+            object.render(mScreenWidth, mScreenHeight, mDefaultShader, mCamera);
+            if (glfwGetKey(mWindow, GLFW_KEY_ESCAPE)) {
+                glfwSetWindowShouldClose(mWindow, true);
+            }
+
             glfwSwapBuffers(mWindow);
         }
 	}

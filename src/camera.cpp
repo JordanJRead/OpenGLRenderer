@@ -1,6 +1,7 @@
 #include "camera.h"
 #include "GLFW/glfw3.h"
 #include "glm/gtc/matrix_transform.hpp"
+#include "iostream"
 
 Camera::Camera(const glm::vec3& position, double horizontalFOVDeg, double lookSensitivity)
 	: mPosition{ position }
@@ -16,13 +17,23 @@ void Camera::update(GLFWwindow* window, float deltaTime) {
 		double dX = currentMouseX - mPrevMouseX;
 		double dY = currentMouseY - mPrevMouseY;
 		mYawDeg += dX * mLookSensitivity;
-		mPitchDeg += dY * mLookSensitivity;
+		mPitchDeg -= dY * mLookSensitivity;
+
+		if (mPitchDeg > 85) {
+			mPitchDeg = 85;
+		}
+		if (mPitchDeg < -85) {
+			mPitchDeg = -85;
+		}
+	}
+	else {
+		mIsFirstUpdate = false;
 	}
 	mPrevMouseX = currentMouseX;
 	mPrevMouseY = currentMouseY;
 
 	glm::vec3 flatForward{ getForward() };
-	flatForward.z = 0;
+	flatForward.y = 0;
 	flatForward = glm::normalize(flatForward);
 	glm::vec3 flatRight{ -flatForward.z, 0, flatForward.x };
 
@@ -65,5 +76,5 @@ glm::mat4 Camera::getViewMatrix() const {
 }
 
 glm::mat4 Camera::getProjectionMatrix(int screenWidth, int screenHeight) const {
-	return glm::perspective((float)mHorizontalFOVDeg, (float)screenWidth / screenHeight, 0.1f, 1000.0f);
+	return glm::perspective(glm::radians((float)mHorizontalFOVDeg), (float)screenWidth / screenHeight, 0.1f, 1000.0f);
 }

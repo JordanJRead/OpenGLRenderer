@@ -8,8 +8,8 @@
 #include "app.h"
 
 int main() {
-    int screenWidth{ 800 };
-    int screenHeight{ 600 };
+    int screenWidth{ 1920 };
+    int screenHeight{ 1080 };
 
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);

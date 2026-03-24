@@ -17,7 +17,7 @@ class Camera;
 
 class SceneObject {
 public:
-	SceneObject(const std::string& objectDirectory, const Transform& transform);
+	SceneObject(const std::string& objPath, const Transform& transform);
 	~SceneObject();
 	const std::vector<Mesh>& getMeshes() const { return mMeshes; }
 
@@ -27,6 +27,7 @@ private:
 	std::vector<Mesh> mMeshes;
 	std::vector<Texture> mTextures;
 	Transform mTransform;
+	std::string mDirectory;
 
 	void processNode(aiNode* mesh, const aiScene* scene);
 	void processMesh(aiMesh* mesh, const aiScene* scene);

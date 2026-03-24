@@ -8,7 +8,9 @@
 
 SceneObject::SceneObject(const std::string& objPath, const Transform& transform)
 	: mTransform{transform}
+	, mDirectory{ objPath }
 	{
+	mDirectory.resize(mDirectory.rfind("/"));
 	if (mDefaultDiffuseTexture == nullptr) {
 		mDefaultDiffuseTexture = new Texture{ "assets/images/white.png" };
 		mDefaultSpecularTexture = new Texture{ "assets/images/black.png" };
@@ -100,7 +102,7 @@ size_t SceneObject::addTexture(const std::string& filePath) {
 			return i;
 		}
 	}
-	mTextures.emplace_back(filePath);
+	mTextures.emplace_back(mDirectory + "/" + filePath);
 	return mTextures.size() - 1;
 }
 
