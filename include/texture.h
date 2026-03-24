@@ -9,6 +9,7 @@ class Texture {
 public:
 	Texture(std::string_view filePath);
 	void use(unsigned int unit) const;
+	const std::string& getFilePath() { return mFilePath; }
 
 private:
 	TEX mTEX;

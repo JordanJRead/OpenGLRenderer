@@ -5,6 +5,7 @@
 #include "shaderi.h"
 #include "vertexarray.h"
 #include "texture.h"
+#include "app.h"
 
 int main() {
     int screenWidth{ 800 };
@@ -30,30 +31,8 @@ int main() {
         return 1;
     }
 
-    VertexArray vertexArray;
-    std::vector<float> vertexData{
-        -0.5, -0.5, 0, 0,
-         0.5, -0.5, 1, 0,
-           0, 0.5, 0.5, 1
-    };
-    std::vector<unsigned int> indices{ 0, 1, 2 };
-    std::vector<int> layout{ 2, 2 };
-    vertexArray.create(vertexData, indices, layout);
-    ShaderI helloShader{ "assets/shaders/hello.vert", "assets/shaders/hello.frag" };
-    Texture texture{ "assets/images/test.png" };
-    helloShader.use();
-    helloShader.setInt("image", 0);
-    texture.use(0);
-    vertexArray.use();
-    glClearColor(0.2, 0.2, 0.2, 1);
-
-    while (!glfwWindowShouldClose(window)) {
-        glfwPollEvents();
-
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-        glDrawElements(GL_TRIANGLES, vertexArray.getIndexCount(), GL_UNSIGNED_INT, 0);
-        glfwSwapBuffers(window);
-    }
+    App app{ screenWidth, screenHeight, window };
+    app.run();
 
     return 0;
 }

@@ -3,8 +3,7 @@
 
 #include "glm/glm.hpp"
 
-class Material {
-public:
+struct Material {
 	glm::vec3 mDiffuseColour;
 	glm::vec3 mSpecularColour;
 	size_t mDiffuseTextureIndex;
