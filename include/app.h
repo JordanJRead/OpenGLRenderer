@@ -16,6 +16,7 @@ public:
     {
         glfwSetInputMode(mWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         glEnable(GL_DEPTH_TEST);
+        glEnable(GL_CULL_FACE);
 	}
 
 	void run() {
@@ -36,8 +37,9 @@ public:
         vertexArray.use();
         glClearColor(0.2, 0.2, 0.2, 1);
 
-        //SceneObject object{ "assets/objects/sponza/sponza.obj", Transform{ {0, 0, 0}, { 0.1, -0.1, 0.1 }, { 0, 0, 0 } } };
-        SceneObject object{ "assets/objects/testcube/testcube.obj", Transform{ {0, 0, 0}, { 1, 1, 1 }, { 0, 0, 0 } } };
+        SceneObject object{ "assets/objects/sponza/sponza.obj", Transform{ {0, 0, 0}, { 0.1, -0.1, 0.1 }, { 0, 0, 0 } } };
+        //SceneObject object{ "assets/objects/testcube/testcube.obj", Transform{ {0, 0, 0}, { 1, 1, 1 }, { 0, 0, 0 } } };
+        //SceneObject object{ "assets/objects/scene/scene.obj", Transform{ {0, 0, 0}, { 1, 1, 1 }, { 0, 0, 0 } } };
         float prevTime{ 0 };
 
         while (!glfwWindowShouldClose(mWindow)) {
@@ -50,7 +52,7 @@ public:
             glDrawElements(GL_TRIANGLES, vertexArray.getIndexCount(), GL_UNSIGNED_INT, 0);
 
             mCamera.update(mWindow, deltaTime);
-            object.render(mScreenWidth, mScreenHeight, mDefaultShader, mCamera);
+            object.render(mScreenWidth, mScreenHeight, mCamera);
             if (glfwGetKey(mWindow, GLFW_KEY_ESCAPE)) {
                 glfwSetWindowShouldClose(mWindow, true);
             }
@@ -63,6 +65,7 @@ private:
 	int mScreenWidth;
 	int mScreenHeight;
 	ShaderI mDefaultShader{ "assets/shaders/default.vert", "assets/shaders/default.frag" };
+    ShaderI mDefaultNoTexShader{ "assets/shaders/defaultnotex.vert", "assets/shaders/defaultnotex.frag" };
 	Camera mCamera{ glm::vec3{ 0, 0, 0 }, 100, 0.1 };
 	float mPrevTime{ 0 };
     GLFWwindow* mWindow;

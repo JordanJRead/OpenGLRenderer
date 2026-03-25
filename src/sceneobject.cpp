@@ -14,6 +14,8 @@ SceneObject::SceneObject(const std::string& objPath, const Transform& transform)
 	if (mDefaultDiffuseTexture == nullptr) {
 		mDefaultDiffuseTexture = new Texture{ "assets/images/white.png" };
 		mDefaultSpecularTexture = new Texture{ "assets/images/black.png" };
+		mDefaultShader = new ShaderI{ "assets/shaders/default.vert", "assets/shaders/default.frag" };
+		mDefaultNoTexShader = new ShaderI{ "assets/shaders/default.vert", "assets/shaders/default.frag" };
 	}
 
 	Assimp::Importer importer;
@@ -25,8 +27,12 @@ SceneObject::SceneObject(const std::string& objPath, const Transform& transform)
 SceneObject::~SceneObject() {
 	delete mDefaultDiffuseTexture;
 	delete mDefaultSpecularTexture;
+	delete mDefaultShader;
+	delete mDefaultNoTexShader;
 	mDefaultDiffuseTexture = nullptr;
 	mDefaultSpecularTexture = nullptr;
+	mDefaultShader = nullptr;
+	mDefaultNoTexShader = nullptr;
 }
 
 void SceneObject::processNode(aiNode* node, const aiScene* scene) {
@@ -43,7 +49,7 @@ void SceneObject::processMesh(aiMesh* mesh, const aiScene* scene) {
 	// Vertex data
 	std::vector<float> vertexData;
 	std::vector<unsigned int> indices;
-	std::vector<int> vertexLayout{ 3, 3, 2 };
+	bool hasTexCoords{ mesh->HasTextureCoords(0) };
 
 	for (unsigned int i{ 0 }; i < mesh->mNumVertices; ++i) {
 		vertexData.push_back(mesh->mVertices[i].x);
@@ -54,8 +60,14 @@ void SceneObject::processMesh(aiMesh* mesh, const aiScene* scene) {
 		vertexData.push_back(mesh->mNormals[i].y);
 		vertexData.push_back(mesh->mNormals[i].z);
 
-		vertexData.push_back(mesh->mTextureCoords[0][i].x);
-		vertexData.push_back(mesh->mTextureCoords[0][i].y);
+		if (hasTexCoords) {
+			vertexData.push_back(mesh->mTextureCoords[0][i].x);
+			vertexData.push_back(mesh->mTextureCoords[0][i].y);
+		}
+	}
+	std::vector<int> vertexLayout{ 3, 3, 2 };
+	if (!hasTexCoords) {
+		vertexLayout.pop_back();
 	}
 
 	for (unsigned int i{ 0 }; i < mesh->mNumFaces; ++i) {
@@ -89,7 +101,7 @@ void SceneObject::processMesh(aiMesh* mesh, const aiScene* scene) {
 	material.mDiffuseColour = glm::vec3{ diffuseColour.r, diffuseColour.g, diffuseColour.b };
 	material.mSpecularColour = glm::vec3{ specularColour.r, specularColour.g, specularColour.b };
 
-	mMeshes.emplace_back(vertexData, indices, vertexLayout, material);
+	mMeshes.emplace_back(vertexData, indices, vertexLayout, material, hasTexCoords);
 }
 
 /// <summary>
@@ -106,14 +118,21 @@ size_t SceneObject::addTexture(const std::string& filePath) {
 	return mTextures.size() - 1;
 }
 
-void SceneObject::render(int screenWidth, int screenHeight, const ShaderI& shader, const Camera& camera) {
-	shader.use();
-	shader.setMatrix4("model", mTransform.getModelMatrix());
-	shader.setMatrix4("view", camera.getViewMatrix());
-	shader.setMatrix4("projection", camera.getProjectionMatrix(screenWidth, screenHeight));
-	shader.setInt("diffuseTexture", 0);
+void SceneObject::render(int screenWidth, int screenHeight, const Camera& camera) {
+	mDefaultShader->use();
+	mDefaultShader->setMatrix4("model", mTransform.getModelMatrix());
+	mDefaultShader->setMatrix4("view", camera.getViewMatrix());
+	mDefaultShader->setMatrix4("projection", camera.getProjectionMatrix(screenWidth, screenHeight));
+	mDefaultShader->setInt("diffuseTexture", 0);
+
+	mDefaultNoTexShader->use();
+	mDefaultNoTexShader->setMatrix4("model", mTransform.getModelMatrix());
+	mDefaultNoTexShader->setMatrix4("view", camera.getViewMatrix());
+	mDefaultNoTexShader->setMatrix4("projection", camera.getProjectionMatrix(screenWidth, screenHeight));
 	
 	for (const Mesh& mesh : mMeshes) {
+		ShaderI& shader = mesh.hasTexCoords() ? *mDefaultShader : *mDefaultNoTexShader;
+		shader.use();
 		shader.setVector3("diffuseColour", mesh.getMaterial().mDiffuseColour);
 		getTexture(mesh.getMaterial().mDiffuseTextureIndex, true).use(0);
 		mesh.useVertexArray();
