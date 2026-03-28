@@ -8,6 +8,7 @@
 #include "texture.h"
 #include "transform.h"
 #include "shaderi.h"
+#include <array>
 
 struct aiMesh;
 struct aiNode;
@@ -26,16 +27,14 @@ public:
 
 private:
 	std::vector<Mesh> mMeshes;
-	std::vector<Texture> mTextures;
+	std::vector<Image> mTextures;
 	Transform mTransform;
 	std::string mDirectory;
 
 	void processNode(aiNode* mesh, const aiScene* scene);
 	void processMesh(aiMesh* mesh, const aiScene* scene);
 	size_t addTexture(const std::string& imagePath);
-	const Texture& getTexture(int index, bool isDiffuse);
-	static inline Texture* mDefaultDiffuseTexture;
-	static inline Texture* mDefaultSpecularTexture;
+	const Image& getTexture(int index, Texture::Type textureType);
 
 	static inline ShaderI* mDefaultShader;
 	static inline ShaderI* mDefaultNoTexShader;

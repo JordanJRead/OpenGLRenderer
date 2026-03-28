@@ -1,21 +1,32 @@
-#ifndef TEXTURE_H
-#define TEXTURE_H
+#ifndef TEXTURE_2_H
+#define TEXTURE_2_H
 
-#include "OpenGLObjects/TEX.h"
+#include <array>
 #include <string>
-#include <string_view>
+#include "image.h"
+#include "assimp/material.h"
 
-class Texture {
-public:
-	Texture(std::string_view filePath);
-	void use(unsigned int unit) const;
-	const std::string& getFilePath() { return mFilePath; }
+namespace Texture {
 
-private:
-	TEX mTEX;
-	int mWidth;
-	int mHeight;
-	std::string mFilePath;
-};
+	enum class Type {
+		diffuse,
+		specular,
+		normal,
+		max
+	};
+
+	extern std::array<std::string, (int)Type::max> names;
+	extern std::array<aiTextureType, (int)Type::max> assimpTypes;
+	extern std::array<Image*, (int)Type::max> defaultImages;
+
+	class MemoryGuard {
+	public:
+		void loadDefaultTextures();
+		~MemoryGuard();
+	private:
+		bool mHasLoaded{ false };
+	};
+	extern MemoryGuard memoryGuard;
+}
 
 #endif

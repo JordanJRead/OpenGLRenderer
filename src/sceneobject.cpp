@@ -5,34 +5,32 @@
 #include <vector>
 #include "shaderi.h"
 #include "camera.h"
+#include "image.h"
+#include "texture.h"
 
 SceneObject::SceneObject(const std::string& objPath, const Transform& transform)
 	: mTransform{transform}
 	, mDirectory{ objPath }
 	{
 	mDirectory.resize(mDirectory.rfind("/"));
-	if (mDefaultDiffuseTexture == nullptr) {
-		mDefaultDiffuseTexture = new Texture{ "assets/images/white.png" };
-		mDefaultSpecularTexture = new Texture{ "assets/images/black.png" };
+	if (mDefaultShader == nullptr) {
 		mDefaultShader = new ShaderI{ "assets/shaders/default.vert", "assets/shaders/default.frag" };
 		mDefaultNoTexShader = new ShaderI{ "assets/shaders/default.vert", "assets/shaders/default.frag" };
 	}
 
 	Assimp::Importer importer;
-	const aiScene* scene = importer.ReadFile(objPath, aiProcess_Triangulate | aiProcess_FlipUVs);
+	const aiScene* scene = importer.ReadFile(objPath, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 
 	processNode(scene->mRootNode, scene);
 }
 
 SceneObject::~SceneObject() {
-	delete mDefaultDiffuseTexture;
-	delete mDefaultSpecularTexture;
-	delete mDefaultShader;
-	delete mDefaultNoTexShader;
-	mDefaultDiffuseTexture = nullptr;
-	mDefaultSpecularTexture = nullptr;
-	mDefaultShader = nullptr;
-	mDefaultNoTexShader = nullptr;
+	if (mDefaultShader != nullptr) {
+		delete mDefaultShader;
+		delete mDefaultNoTexShader;
+		mDefaultShader = nullptr;
+		mDefaultNoTexShader = nullptr;
+	}
 }
 
 void SceneObject::processNode(aiNode* node, const aiScene* scene) {
@@ -60,12 +58,16 @@ void SceneObject::processMesh(aiMesh* mesh, const aiScene* scene) {
 		vertexData.push_back(mesh->mNormals[i].y);
 		vertexData.push_back(mesh->mNormals[i].z);
 
+		vertexData.push_back(mesh->mTangents[i].x);
+		vertexData.push_back(mesh->mTangents[i].y);
+		vertexData.push_back(mesh->mTangents[i].z);
+
 		if (hasTexCoords) {
 			vertexData.push_back(mesh->mTextureCoords[0][i].x);
 			vertexData.push_back(mesh->mTextureCoords[0][i].y);
 		}
 	}
-	std::vector<int> vertexLayout{ 3, 3, 2 };
+	std::vector<int> vertexLayout{ 3, 3, 3, 2 };
 	if (!hasTexCoords) {
 		vertexLayout.pop_back();
 	}
@@ -77,20 +79,16 @@ void SceneObject::processMesh(aiMesh* mesh, const aiScene* scene) {
 	}
 
 	// Material data
-	Material material;
-	material.mDiffuseTextureIndex = -1;
-	material.mSpecularTextureIndex = -1;
+	Material material{};
+	material.mTextureIndices.fill(-1);
 
 	const aiMaterial* aiMaterial{ scene->mMaterials[mesh->mMaterialIndex] };
-	if (aiMaterial->GetTextureCount(aiTextureType_DIFFUSE) > 0) {
-		aiString diffusePath;
-		aiMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &diffusePath);
-		material.mDiffuseTextureIndex = addTexture(diffusePath.C_Str());
-	}
-	if (aiMaterial->GetTextureCount(aiTextureType_SPECULAR) > 0) {
-		aiString specularPath;
-		aiMaterial->GetTexture(aiTextureType_SPECULAR, 0, &specularPath);
-		material.mDiffuseTextureIndex = addTexture(specularPath.C_Str());
+	for (int i{ 0 }; i < (int)Texture::Type::max; ++i) {
+		if (aiMaterial->GetTextureCount(Texture::assimpTypes[i])) {
+			aiString path;
+			aiMaterial->GetTexture(Texture::assimpTypes[i], 0, &path);
+			material.mTextureIndices[i] = addTexture(path.C_Str());
+		}
 	}
 
 	aiColor3D diffuseColour;
@@ -123,7 +121,9 @@ void SceneObject::render(int screenWidth, int screenHeight, const Camera& camera
 	mDefaultShader->setMatrix4("model", mTransform.getModelMatrix());
 	mDefaultShader->setMatrix4("view", camera.getViewMatrix());
 	mDefaultShader->setMatrix4("projection", camera.getProjectionMatrix(screenWidth, screenHeight));
-	mDefaultShader->setInt("diffuseTexture", 0);
+	for (int i{ 0 }; i < (int)Texture::Type::max; ++i) {
+		mDefaultShader->setInt(Texture::names[i] + "Texture", i);
+	}
 
 	mDefaultNoTexShader->use();
 	mDefaultNoTexShader->setMatrix4("model", mTransform.getModelMatrix());
@@ -134,20 +134,18 @@ void SceneObject::render(int screenWidth, int screenHeight, const Camera& camera
 		ShaderI& shader = mesh.hasTexCoords() ? *mDefaultShader : *mDefaultNoTexShader;
 		shader.use();
 		shader.setVector3("diffuseColour", mesh.getMaterial().mDiffuseColour);
-		getTexture(mesh.getMaterial().mDiffuseTextureIndex, true).use(0);
+
+		for (int i{ 0 }; i < (int)Texture::Type::max; ++i) {
+			getTexture(mesh.getMaterial().mTextureIndices[i], (Texture::Type)i).use(i);
+		}
 		mesh.useVertexArray();
 		glDrawElements(GL_TRIANGLES, mesh.getIndexCount(), GL_UNSIGNED_INT, nullptr);
 	}
 }
 
-const Texture& SceneObject::getTexture(int index, bool isDiffuse) {
+const Image& SceneObject::getTexture(int index, Texture::Type textureType) {
 	if (index >= mTextures.size() || index < 0) {
-		if (isDiffuse) {
-			return *mDefaultDiffuseTexture;
-		}
-		else {
-			return *mDefaultSpecularTexture;
-		}
+		return *Texture::defaultImages[(int)textureType];
 	}
 	return mTextures[index];
 }

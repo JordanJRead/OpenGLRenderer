@@ -17,27 +17,15 @@ public:
         glfwSetInputMode(mWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+        glClearColor(0.2, 0.2, 0.2, 1);
+        Texture::memoryGuard.loadDefaultTextures();
 	}
 
 	void run() {
-        VertexArray vertexArray;
-        std::vector<float> vertexData{
-            -0.5, -0.5, 0, 0,
-             0.5, -0.5, 1, 0,
-               0, 0.5, 0.5, 1
-        };
-        std::vector<unsigned int> indices{ 0, 1, 2 };
-        std::vector<int> layout{ 2, 2 };
-        vertexArray.create(vertexData, indices, layout);
-        ShaderI helloShader{ "assets/shaders/hello.vert", "assets/shaders/hello.frag" };
-        Texture texture{ "assets/images/test.png" };
-        helloShader.use();
-        helloShader.setInt("image", 0);
-        texture.use(0);
-        vertexArray.use();
-        glClearColor(0.2, 0.2, 0.2, 1);
 
-        SceneObject object{ "assets/objects/sponza/sponza.obj", Transform{ {0, 0, 0}, { 0.1, -0.1, 0.1 }, { 0, 0, 0 } } };
+        //SceneObject object{ "assets/objects/sponza/sponza.obj", Transform{ {0, 0, 0}, { 0.1, -0.1, 0.1 }, { 0, 0, 0 } } };
+        SceneObject object{ "assets/objects/plane/plane.obj", Transform{ {0, 0, 0}, { 1, 1, 1 }, { 0, 0, 0 } } };
         //SceneObject object{ "assets/objects/testcube/testcube.obj", Transform{ {0, 0, 0}, { 1, 1, 1 }, { 0, 0, 0 } } };
         //SceneObject object{ "assets/objects/scene/scene.obj", Transform{ {0, 0, 0}, { 1, 1, 1 }, { 0, 0, 0 } } };
         float prevTime{ 0 };
@@ -49,7 +37,6 @@ public:
             prevTime = currentTime;
 
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-            glDrawElements(GL_TRIANGLES, vertexArray.getIndexCount(), GL_UNSIGNED_INT, 0);
 
             mCamera.update(mWindow, deltaTime);
             object.render(mScreenWidth, mScreenHeight, mCamera);

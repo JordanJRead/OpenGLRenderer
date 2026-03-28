@@ -1,32 +1,36 @@
 #include "texture.h"
-#define STB_IMAGE_IMPLEMENTATION
-#include "stbimage/stb_image.h"
-#include "glad/glad.h"
-#include <iostream>
+#include "assert.h"
 
-Texture::Texture(std::string_view filePath) : mFilePath{ filePath } {
-	stbi_set_flip_vertically_on_load(false);
-	int channels;
-	unsigned char* data = stbi_load(filePath.data(), &mWidth, &mHeight, &channels, 3);
+namespace Texture {
+	std::array<std::string, (int)Type::max> names{ {
+		"diffuse",
+		"specular",
+		"normal"
+	} };
 
-	if (!data) {
-		std::cerr << "Error loading file " << filePath << ". Reason: " << stbi_failure_reason() << "\n";
+	std::array<aiTextureType, (int)Type::max> assimpTypes{ {
+		aiTextureType_DIFFUSE,
+		aiTextureType_SPECULAR,
+		aiTextureType_HEIGHT
+	} };
+
+	std::array<Image*, (int)Type::max> defaultImages;
+	MemoryGuard memoryGuard;
+
+	void MemoryGuard::loadDefaultTextures() {
+		if (!mHasLoaded) {
+			mHasLoaded = true;
+			int count = 0;
+			defaultImages[0] = new Image{ "assets/images/white.png" }; count++;
+			defaultImages[1] = new Image{ "assets/images/black.png" }; count++;
+			defaultImages[2] = new Image{ "assets/images/blue.png" }; count++;
+			assert(count == (int)Type::max);
+		}
 	}
 
-	glBindTexture(GL_TEXTURE_2D, mTEX);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, mWidth, mHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-
-	glBindTexture(GL_TEXTURE_2D, 0);
-
-	stbi_image_free(data);
-}
-
-void Texture::use(unsigned int unit) const {
-	glActiveTexture(GL_TEXTURE0 + unit);
-	glBindTexture(GL_TEXTURE_2D, mTEX);
+	MemoryGuard::~MemoryGuard() {
+		for (int i{ 0 }; i < (int)Type::max; ++i) {
+			delete defaultImages[i];
+		}
+	}
 }

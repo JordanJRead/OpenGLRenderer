@@ -27,7 +27,7 @@
     <ClCompile Include="src\vertexarray.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\texture.cpp">
+    <ClCompile Include="src\image.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\sceneobject.cpp">
@@ -40,6 +40,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\texture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -71,7 +74,7 @@
     <ClInclude Include="include\material.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\texture.h">
+    <ClInclude Include="include\image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\vertexarray.h">
@@ -87,6 +90,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\app.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
