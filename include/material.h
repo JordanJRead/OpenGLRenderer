@@ -2,12 +2,12 @@
 #define MATERIAL_H
 
 #include "glm/glm.hpp"
-#include "texture.h"
+#include "texturetypes.h"
 
 struct Material {
 	glm::vec3 mDiffuseColour;
 	glm::vec3 mSpecularColour;
-	std::array<size_t, (int)Texture::Type::max> mTextureIndices{};
+	std::array<size_t, (int)TextureTypes::Type::max> mTextureIndices{};
 };
 
 #endif

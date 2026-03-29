@@ -27,7 +27,7 @@
     <ClCompile Include="src\vertexarray.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\image.cpp">
+    <ClCompile Include="src\texture2d.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\sceneobject.cpp">
@@ -42,7 +42,7 @@
     <ClCompile Include="src\camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\texture.cpp">
+    <ClCompile Include="src\texturetypes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -74,7 +74,7 @@
     <ClInclude Include="include\material.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\image.h">
+    <ClInclude Include="include\texture2d.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\vertexarray.h">
@@ -92,7 +92,7 @@
     <ClInclude Include="include\app.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\texture.h">
+    <ClInclude Include="include\texturetypes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

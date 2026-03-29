@@ -8,8 +8,22 @@
 
 class VertexArray {
 public:
+	/// <summary>
+	/// Creates a vertex array object
+	/// </summary>
+	/// <param name="vertexData">The raw vertex data</param>
+	/// <param name="vertexIndices">The vertex indices</param>
+	/// <param name="vertexLayout">A vector that specifies how many float components are in each attribute</param>
 	void create(const std::vector<float>& vertexData, const std::vector<unsigned int>& vertexIndices, const std::vector<int>& vertexLayout);
-	void use() const { mVAO.use(); }
+
+	/// <summary>
+	/// Binds this vertex array object
+	/// </summary>
+	void bind() const { glBindVertexArray(mVAO); }
+
+	/// <summary>
+	/// Gets the number of indices
+	/// </summary>
 	size_t getIndexCount() const { return mIndexCount; }
 
 private:

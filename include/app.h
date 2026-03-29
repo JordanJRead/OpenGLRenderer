@@ -6,6 +6,7 @@
 #include "glm/glm.hpp"
 #include "sceneobject.h"
 #include "transform.h"
+#include "framebuffer.h"
 
 class App {
 public:
@@ -19,30 +20,50 @@ public:
         glEnable(GL_CULL_FACE);
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
         glClearColor(0.2, 0.2, 0.2, 1);
-        Texture::memoryGuard.loadDefaultTextures();
+        TextureTypes::memoryGuard.loadDefaultTextures();
+
+        mScreenVertexArray.create({
+            -1, -1, 0, 0,
+            1, -1, 1, 0,
+            -1, 1, 0, 1,
+            1, 1, 1 ,1
+            }, {0, 1, 2, 1, 3, 2}, {2, 2});
 	}
 
 	void run() {
 
-        //SceneObject object{ "assets/objects/sponza/sponza.obj", Transform{ {0, 0, 0}, { 0.1, -0.1, 0.1 }, { 0, 0, 0 } } };
-        SceneObject object{ "assets/objects/plane/plane.obj", Transform{ {0, 0, 0}, { 1, 1, 1 }, { 0, 0, 0 } } };
+        SceneObject object{ "assets/objects/sponza/sponza.obj", Transform{ {0, 0, 0}, { 0.1, -0.1, 0.1 }, { 0, 0, 0 } } };
+        //SceneObject object{ "assets/objects/plane/plane.obj", Transform{ {0, 0, 0}, { 1, 1, 1 }, { 0, 0, 0 } } };
         //SceneObject object{ "assets/objects/testcube/testcube.obj", Transform{ {0, 0, 0}, { 1, 1, 1 }, { 0, 0, 0 } } };
         //SceneObject object{ "assets/objects/scene/scene.obj", Transform{ {0, 0, 0}, { 1, 1, 1 }, { 0, 0, 0 } } };
         float prevTime{ 0 };
-
+        glDisable(GL_CULL_FACE);
         while (!glfwWindowShouldClose(mWindow)) {
             glfwPollEvents();
             float currentTime{ (float)glfwGetTime() };
             float deltaTime{ currentTime - prevTime };
             prevTime = currentTime;
 
+            // Update
+            mCamera.update(mWindow, deltaTime);
+
+            // Render
+            mFramebuffer.bind();
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-            mCamera.update(mWindow, deltaTime);
-            object.render(mScreenWidth, mScreenHeight, mCamera);
+            object.render(mScreenWidth, mScreenHeight, mCamera, &mFramebuffer);
             if (glfwGetKey(mWindow, GLFW_KEY_ESCAPE)) {
                 glfwSetWindowShouldClose(mWindow, true);
             }
+
+            mPostProcessShader.bind();
+            mPostProcessShader.setInt("source", 0);
+            mFramebuffer.bindColourTexture(0);
+            mScreenVertexArray.bind();
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            glDrawElements(GL_TRIANGLES, mScreenVertexArray.getIndexCount(), GL_UNSIGNED_INT, 0);
 
             glfwSwapBuffers(mWindow);
         }
@@ -51,11 +72,12 @@ public:
 private:
 	int mScreenWidth;
 	int mScreenHeight;
-	ShaderI mDefaultShader{ "assets/shaders/default.vert", "assets/shaders/default.frag" };
-    ShaderI mDefaultNoTexShader{ "assets/shaders/defaultnotex.vert", "assets/shaders/defaultnotex.frag" };
+    ShaderI mPostProcessShader{ "assets/shaders/postprocess.vert", "assets/shaders/postprocess.frag" };
 	Camera mCamera{ glm::vec3{ 0, 0, 0 }, 100, 0.1 };
 	float mPrevTime{ 0 };
     GLFWwindow* mWindow;
+    Framebuffer mFramebuffer{ mScreenWidth, mScreenHeight, GL_RGB };
+    VertexArray mScreenVertexArray;
 };
 
 #endif

@@ -4,7 +4,7 @@
 
 #include "shaderi.h"
 #include "vertexarray.h"
-#include "texture.h"
+#include "texturetypes.h"
 #include "app.h"
 
 int main() {

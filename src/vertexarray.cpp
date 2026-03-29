@@ -2,12 +2,12 @@
 
 void VertexArray::create(const std::vector<float>& vertexData, const std::vector<unsigned int>& vertexIndices, const std::vector<int>& vertexAttribCounts) {
 	mIndexCount = vertexIndices.size();
-	mVAO.use();
+	bind();
 
-	mVBO.use(GL_ARRAY_BUFFER);
+	mVBO.bind(GL_ARRAY_BUFFER);
 	glBufferData(GL_ARRAY_BUFFER, vertexData.size() * sizeof(float), &(vertexData[0]), GL_STATIC_DRAW);
 
-	mEBO.use(GL_ELEMENT_ARRAY_BUFFER);
+	mEBO.bind(GL_ELEMENT_ARRAY_BUFFER);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, vertexIndices.size() * sizeof(unsigned int), &(vertexIndices[0]), GL_STATIC_DRAW);
 
 	int floatsPerVertex{ 0 };

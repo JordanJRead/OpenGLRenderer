@@ -1,14 +1,14 @@
-#ifndef TEXTURE_2_H
-#define TEXTURE_2_H
+#ifndef TEXTURE_TYPES_H
+#define TEXTURE_TYPES_H
 
 #include <array>
 #include <string>
-#include "image.h"
+#include "texture2d.h"
 #include "assimp/material.h"
 
-namespace Texture {
+namespace TextureTypes {
 
-	enum class Type {
+	enum Type {
 		diffuse,
 		specular,
 		normal,
@@ -17,7 +17,7 @@ namespace Texture {
 
 	extern std::array<std::string, (int)Type::max> names;
 	extern std::array<aiTextureType, (int)Type::max> assimpTypes;
-	extern std::array<Image*, (int)Type::max> defaultImages;
+	extern std::array<Texture2D*, (int)Type::max> defaultImages;
 
 	class MemoryGuard {
 	public:

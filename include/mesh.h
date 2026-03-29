@@ -10,7 +10,7 @@ class Mesh {
 public:
 	Mesh(const std::vector<float>& vertexData, const std::vector<unsigned int>& indices, const std::vector<int>& vertexLayout, const Material& material, bool hasTexCoords);
 	const Material& getMaterial() const { return mMaterial; }
-	void useVertexArray() const { mVertexArray.use(); }
+	void bindVertexArray() const { mVertexArray.bind(); }
 	int getIndexCount() const { return mVertexArray.getIndexCount(); }
 	bool hasTexCoords() const { return mHasTexCoords; }
 

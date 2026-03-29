@@ -1,7 +1,8 @@
-#include "texture.h"
+#include "texturetypes.h"
 #include "assert.h"
+#include "texture2d.h"
 
-namespace Texture {
+namespace TextureTypes {
 	std::array<std::string, (int)Type::max> names{ {
 		"diffuse",
 		"specular",
@@ -14,16 +15,16 @@ namespace Texture {
 		aiTextureType_HEIGHT
 	} };
 
-	std::array<Image*, (int)Type::max> defaultImages;
+	std::array<Texture2D*, (int)Type::max> defaultImages;
 	MemoryGuard memoryGuard;
 
 	void MemoryGuard::loadDefaultTextures() {
 		if (!mHasLoaded) {
 			mHasLoaded = true;
 			int count = 0;
-			defaultImages[0] = new Image{ "assets/images/white.png" }; count++;
-			defaultImages[1] = new Image{ "assets/images/black.png" }; count++;
-			defaultImages[2] = new Image{ "assets/images/blue.png" }; count++;
+			defaultImages[0] = new Texture2D{ "assets/images/white.png", false }; count++;
+			defaultImages[1] = new Texture2D{ "assets/images/black.png", false }; count++;
+			defaultImages[2] = new Texture2D{ "assets/images/blue.png",  false }; count++;
 			assert(count == (int)Type::max);
 		}
 	}

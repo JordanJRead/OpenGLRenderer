@@ -9,17 +9,20 @@
 class RBO {
 public:
 	RBO() { glGenRenderbuffers(1, &mID); }
-	~RBO() { glDeleteRenderbuffers(1, &mID); }
+	~RBO() { if (mIsOwner) glDeleteRenderbuffers(1, &mID); }
 	operator unsigned int() const { return mID; }
-	void use(int target) const { glBindRenderbuffer(target, mID); }
 
 	RBO(const RBO&) = delete;
-	RBO(RBO&&) = delete;
+	RBO(RBO&& other) noexcept {
+		mID = other.mID;
+		other.mIsOwner = false;
+	}
 	RBO& operator=(const RBO&) = delete;
 	RBO& operator=(RBO&&) = delete;
 
 private:
 	unsigned int mID;
+	bool mIsOwner{ true };
 };
 
 #endif

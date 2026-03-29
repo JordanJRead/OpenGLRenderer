@@ -17,7 +17,7 @@ public:
 
 	ShaderI(const std::string& vertPath, const std::string& fragPath);
 	~ShaderI() { glDeleteProgram(mID); }
-	void use() const { glUseProgram(mID); }
+	void bind() const { glUseProgram(mID); }
 
 	void setMatrix4(std::string_view name, const glm::mat4& mat4) const {
 		glUniformMatrix4fv(glGetUniformLocation(mID, name.data()), 1, false, glm::value_ptr(mat4));

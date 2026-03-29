@@ -11,7 +11,7 @@ public:
 	BUF() { glGenBuffers(1, &mID); }
 	~BUF() { if (mIsOwner) glDeleteBuffers(1, &mID); }
 	operator unsigned int() const { return mID; }
-	void use(int target) const { glBindBuffer(target, mID); }
+	void bind(int target) const { glBindBuffer(target, mID); }
 
 	BUF(const BUF&) = delete;
 	BUF(BUF&& other) noexcept {

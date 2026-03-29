@@ -5,8 +5,7 @@
 #include <vector>
 #include "shaderi.h"
 #include "camera.h"
-#include "image.h"
-#include "texture.h"
+#include "texturetypes.h"
 
 SceneObject::SceneObject(const std::string& objPath, const Transform& transform)
 	: mTransform{transform}
@@ -83,10 +82,10 @@ void SceneObject::processMesh(aiMesh* mesh, const aiScene* scene) {
 	material.mTextureIndices.fill(-1);
 
 	const aiMaterial* aiMaterial{ scene->mMaterials[mesh->mMaterialIndex] };
-	for (int i{ 0 }; i < (int)Texture::Type::max; ++i) {
-		if (aiMaterial->GetTextureCount(Texture::assimpTypes[i])) {
+	for (int i{ 0 }; i < (int)TextureTypes::Type::max; ++i) {
+		if (aiMaterial->GetTextureCount(TextureTypes::assimpTypes[i])) {
 			aiString path;
-			aiMaterial->GetTexture(Texture::assimpTypes[i], 0, &path);
+			aiMaterial->GetTexture(TextureTypes::assimpTypes[i], 0, &path);
 			material.mTextureIndices[i] = addTexture(path.C_Str());
 		}
 	}
@@ -116,36 +115,42 @@ size_t SceneObject::addTexture(const std::string& filePath) {
 	return mTextures.size() - 1;
 }
 
-void SceneObject::render(int screenWidth, int screenHeight, const Camera& camera) {
-	mDefaultShader->use();
+void SceneObject::render(int screenWidth, int screenHeight, const Camera& camera, const Framebuffer* const targetFramebuffer) {
+	if (targetFramebuffer) {
+		targetFramebuffer->bind();
+	}
+	else {
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	}
+	mDefaultShader->bind();
 	mDefaultShader->setMatrix4("model", mTransform.getModelMatrix());
 	mDefaultShader->setMatrix4("view", camera.getViewMatrix());
 	mDefaultShader->setMatrix4("projection", camera.getProjectionMatrix(screenWidth, screenHeight));
-	for (int i{ 0 }; i < (int)Texture::Type::max; ++i) {
-		mDefaultShader->setInt(Texture::names[i] + "Texture", i);
+	for (int i{ 0 }; i < (int)TextureTypes::Type::max; ++i) {
+		mDefaultShader->setInt(TextureTypes::names[i] + "Texture", i);
 	}
 
-	mDefaultNoTexShader->use();
+	mDefaultNoTexShader->bind();
 	mDefaultNoTexShader->setMatrix4("model", mTransform.getModelMatrix());
 	mDefaultNoTexShader->setMatrix4("view", camera.getViewMatrix());
 	mDefaultNoTexShader->setMatrix4("projection", camera.getProjectionMatrix(screenWidth, screenHeight));
 	
 	for (const Mesh& mesh : mMeshes) {
 		ShaderI& shader = mesh.hasTexCoords() ? *mDefaultShader : *mDefaultNoTexShader;
-		shader.use();
+		shader.bind();
 		shader.setVector3("diffuseColour", mesh.getMaterial().mDiffuseColour);
 
-		for (int i{ 0 }; i < (int)Texture::Type::max; ++i) {
-			getTexture(mesh.getMaterial().mTextureIndices[i], (Texture::Type)i).use(i);
+		for (int i{ 0 }; i < (int)TextureTypes::Type::max; ++i) {
+			getTexture(mesh.getMaterial().mTextureIndices[i], (TextureTypes::Type)i).bind(i);
 		}
-		mesh.useVertexArray();
+		mesh.bindVertexArray();
 		glDrawElements(GL_TRIANGLES, mesh.getIndexCount(), GL_UNSIGNED_INT, nullptr);
 	}
 }
 
-const Image& SceneObject::getTexture(int index, Texture::Type textureType) {
+const Texture2D& SceneObject::getTexture(int index, TextureTypes::Type textureType) {
 	if (index >= mTextures.size() || index < 0) {
-		return *Texture::defaultImages[(int)textureType];
+		return *TextureTypes::defaultImages[(int)textureType];
 	}
 	return mTextures[index];
 }

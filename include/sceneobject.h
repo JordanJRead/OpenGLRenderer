@@ -5,10 +5,12 @@
 #include <string_view>
 #include <vector>
 #include "mesh.h"
-#include "texture.h"
+#include "texturetypes.h"
 #include "transform.h"
 #include "shaderi.h"
 #include <array>
+#include "framebuffer.h"
+#include "glad/glad.h"
 
 struct aiMesh;
 struct aiNode;
@@ -23,18 +25,18 @@ public:
 	~SceneObject();
 	const std::vector<Mesh>& getMeshes() const { return mMeshes; }
 
-	void render(int screenWidth, int screenHeight, const Camera& camera);
+	void render(int screenWidth, int screenHeight, const Camera& camera, const Framebuffer* const targetFramebuffer);
 
 private:
 	std::vector<Mesh> mMeshes;
-	std::vector<Image> mTextures;
+	std::vector<Texture2D> mTextures;
 	Transform mTransform;
 	std::string mDirectory;
 
 	void processNode(aiNode* mesh, const aiScene* scene);
 	void processMesh(aiMesh* mesh, const aiScene* scene);
 	size_t addTexture(const std::string& imagePath);
-	const Image& getTexture(int index, Texture::Type textureType);
+	const Texture2D& getTexture(int index, TextureTypes::Type textureType);
 
 	static inline ShaderI* mDefaultShader;
 	static inline ShaderI* mDefaultNoTexShader;
