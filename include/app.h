@@ -2,7 +2,8 @@
 #define APP_H
 
 #include "camera.h"
-#include "shaderi.h"
+#include "shaders/shaderobject.h"
+#include "shaders/shaderpostprocess.h"
 #include "glm/glm.hpp"
 #include "sceneobject.h"
 #include "transform.h"
@@ -37,7 +38,6 @@ public:
         //SceneObject object{ "assets/objects/testcube/testcube.obj", Transform{ {0, 0, 0}, { 1, 1, 1 }, { 0, 0, 0 } } };
         //SceneObject object{ "assets/objects/scene/scene.obj", Transform{ {0, 0, 0}, { 1, 1, 1 }, { 0, 0, 0 } } };
         float prevTime{ 0 };
-        glDisable(GL_CULL_FACE);
         while (!glfwWindowShouldClose(mWindow)) {
             glfwPollEvents();
             float currentTime{ (float)glfwGetTime() };
@@ -53,14 +53,12 @@ public:
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-            object.render(mScreenWidth, mScreenHeight, mCamera, &mFramebuffer);
+            object.render(mScreenWidth, mScreenHeight, mCamera, mDefaultShader, &mFramebuffer);
             if (glfwGetKey(mWindow, GLFW_KEY_ESCAPE)) {
                 glfwSetWindowShouldClose(mWindow, true);
             }
 
-            mPostProcessShader.bind();
-            mPostProcessShader.setInt("source", 0);
-            mFramebuffer.bindColourTexture(0);
+            mPostProcessShader.setSourceTexture(mFramebuffer.getColourTexture(0));
             mScreenVertexArray.bind();
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
             glDrawElements(GL_TRIANGLES, mScreenVertexArray.getIndexCount(), GL_UNSIGNED_INT, 0);
@@ -72,11 +70,13 @@ public:
 private:
 	int mScreenWidth;
 	int mScreenHeight;
-    ShaderI mPostProcessShader{ "assets/shaders/postprocess.vert", "assets/shaders/postprocess.frag" };
+    ShaderPostProcess mPostProcessShader{ "assets/shaders/postprocess.vert", "assets/shaders/postprocess.frag" };
+    ShaderObject mDefaultShader{ "assets/shaders/default.vert", "assets/shaders/default.frag" };
+    ShaderObject mDefaultNoTexShader{ "assets/shaders/defaultnotex.vert", "assets/shaders/defaultnotex.frag" };
 	Camera mCamera{ glm::vec3{ 0, 0, 0 }, 100, 0.1 };
 	float mPrevTime{ 0 };
     GLFWwindow* mWindow;
-    Framebuffer mFramebuffer{ mScreenWidth, mScreenHeight, GL_RGB };
+    Framebuffer mFramebuffer{ mScreenWidth, mScreenHeight, GL_RGB16, 1 };
     VertexArray mScreenVertexArray;
 };
 

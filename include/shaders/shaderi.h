@@ -11,7 +11,9 @@ class FramebufferI;
 class VertexArray;
 
 class ShaderI {
-public:
+
+protected:
+	unsigned int mID;
 	ShaderI(const ShaderI&) = delete;
 	ShaderI(ShaderI&&) = delete;
 
@@ -40,9 +42,6 @@ public:
 	void setBool(std::string_view name, bool b) const {
 		glUniform1ui(glGetUniformLocation(mID, name.data()), b);
 	}
-
-protected:
-	unsigned int mID;
 };
 
 #endif

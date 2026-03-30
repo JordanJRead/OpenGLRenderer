@@ -2,7 +2,6 @@
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 
-#include "shaderi.h"
 #include "vertexarray.h"
 #include "texturetypes.h"
 #include "app.h"

@@ -1,6 +1,6 @@
 #include <string>
 #include <glad/glad.h>
-#include "shaderi.h"
+#include "shaders/shaderi.h"
 #include <sstream>
 #include <iostream>
 #include <fstream>

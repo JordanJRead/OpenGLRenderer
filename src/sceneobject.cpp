@@ -3,7 +3,6 @@
 #include "assimp/postprocess.h"
 #include "assimp/scene.h"
 #include <vector>
-#include "shaderi.h"
 #include "camera.h"
 #include "texturetypes.h"
 
@@ -12,24 +11,11 @@ SceneObject::SceneObject(const std::string& objPath, const Transform& transform)
 	, mDirectory{ objPath }
 	{
 	mDirectory.resize(mDirectory.rfind("/"));
-	if (mDefaultShader == nullptr) {
-		mDefaultShader = new ShaderI{ "assets/shaders/default.vert", "assets/shaders/default.frag" };
-		mDefaultNoTexShader = new ShaderI{ "assets/shaders/default.vert", "assets/shaders/default.frag" };
-	}
 
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile(objPath, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 
 	processNode(scene->mRootNode, scene);
-}
-
-SceneObject::~SceneObject() {
-	if (mDefaultShader != nullptr) {
-		delete mDefaultShader;
-		delete mDefaultNoTexShader;
-		mDefaultShader = nullptr;
-		mDefaultNoTexShader = nullptr;
-	}
 }
 
 void SceneObject::processNode(aiNode* node, const aiScene* scene) {
@@ -115,31 +101,17 @@ size_t SceneObject::addTexture(const std::string& filePath) {
 	return mTextures.size() - 1;
 }
 
-void SceneObject::render(int screenWidth, int screenHeight, const Camera& camera, const Framebuffer* const targetFramebuffer) {
+void SceneObject::render(int screenWidth, int screenHeight, const Camera& camera, const ShaderObject& shader, const Framebuffer* const targetFramebuffer) {
 	if (targetFramebuffer) {
 		targetFramebuffer->bind();
 	}
 	else {
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
-	mDefaultShader->bind();
-	mDefaultShader->setMatrix4("model", mTransform.getModelMatrix());
-	mDefaultShader->setMatrix4("view", camera.getViewMatrix());
-	mDefaultShader->setMatrix4("projection", camera.getProjectionMatrix(screenWidth, screenHeight));
-	for (int i{ 0 }; i < (int)TextureTypes::Type::max; ++i) {
-		mDefaultShader->setInt(TextureTypes::names[i] + "Texture", i);
-	}
-
-	mDefaultNoTexShader->bind();
-	mDefaultNoTexShader->setMatrix4("model", mTransform.getModelMatrix());
-	mDefaultNoTexShader->setMatrix4("view", camera.getViewMatrix());
-	mDefaultNoTexShader->setMatrix4("projection", camera.getProjectionMatrix(screenWidth, screenHeight));
+	shader.setMatrices(camera, mTransform, screenWidth, screenHeight);
 	
 	for (const Mesh& mesh : mMeshes) {
-		ShaderI& shader = mesh.hasTexCoords() ? *mDefaultShader : *mDefaultNoTexShader;
-		shader.bind();
-		shader.setVector3("diffuseColour", mesh.getMaterial().mDiffuseColour);
-
+		shader.setObjectColour(mesh.getMaterial().mDiffuseColour);
 		for (int i{ 0 }; i < (int)TextureTypes::Type::max; ++i) {
 			getTexture(mesh.getMaterial().mTextureIndices[i], (TextureTypes::Type)i).bind(i);
 		}

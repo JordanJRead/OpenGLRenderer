@@ -8,7 +8,7 @@ struct Transform {
 	glm::vec3 mScale;
 	glm::vec3 mRotationDeg;
 
-	glm::mat4 getModelMatrix();
+	glm::mat4 getModelMatrix() const;
 };
 
 #endif

@@ -16,7 +16,7 @@ void main() {
 	if (colour.a < 0.5) {
 		discard;
 	}
-	vec3 colour3 = colour.rgb;
+	vec3 colour3 = colour.rgb;// * diffuseColour;
 	colour3 *= (dot(fragIn.normal, vec3(0, 1, 0)) + 1) / 2; // fake lighting for now
 	FragColour = vec4(colour3, 1);
 }

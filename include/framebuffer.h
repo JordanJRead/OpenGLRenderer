@@ -7,6 +7,7 @@
 #include "OpenGLObjects/RBO.h"
 #include <iostream>
 #include "texture2d.h"
+#include <vector>
 
 class Framebuffer {
 public:
@@ -15,15 +16,28 @@ public:
 	/// </summary>
 	/// <param name="width">The width of the framebuffer</param>
 	/// <param name="height">The height of the framebuffer</param>
+	/// <param name="colourTextureCount>The number of output colour textures</param>"
 	/// <param name="format">The internal pixel format of the frambuffer (GL_RGB, GL_RGBA, etc.)</param>
-	Framebuffer(int width, int height, GLenum format)
+	Framebuffer(int width, int height, GLenum format, int colourTextureCount)
 		: mWidth{ width }
 		, mHeight{ height }
-		, mColourTexture{ width, height, format }
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, mFBO);
 
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, mColourTexture, 0);
+		std::vector<GLenum> attachments;
+		for (int i{ 0 }; i < colourTextureCount; ++i) {
+			attachments.push_back(GL_COLOR_ATTACHMENT0 + i);
+			mColourTextures.emplace_back(width, height, format);
+			mColourTextures[i].bind(0);
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, mColourTextures[i], 0);
+		}
+		if (attachments.size() == 0) {
+			glDrawBuffer(GL_NONE);
+			glReadBuffer(GL_NONE);
+		}
+		else if (attachments.size() > 1) {
+			glDrawBuffers(attachments.size(), attachments.data());
+		}
 
 		glBindRenderbuffer(GL_RENDERBUFFER, mDepthStencilRenderbuffer);
 		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
@@ -46,16 +60,19 @@ public:
 	/// Binds the colour texture to a specific texture unit
 	/// </summary>
 	/// <param name="unit"></param>
-	void bindColourTexture(int unit) const {
-		mColourTexture.bind(unit);
+	void bindColourTexture(int colourTextureIndex, int unit) const {
+		mColourTextures[colourTextureIndex].bind(unit);
 	}
 
+	const Texture2D& getColourTexture(int colourTextureIndex) const {
+		return mColourTextures[colourTextureIndex];
+	}
 	int getWidth() const { return mWidth; }
 	int getHeight() const { return mHeight; }
 
 private:
 	FBO mFBO;
-	Texture2D mColourTexture;
+	std::vector<Texture2D> mColourTextures;
 	RBO mDepthStencilRenderbuffer;
 	int mWidth;
 	int mHeight;

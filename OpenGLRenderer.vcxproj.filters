@@ -47,7 +47,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\shaderi.h">
+    <ClInclude Include="include\shaders\shaderi.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\OpenGLObjects\BUF.h">
@@ -93,6 +93,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\texturetypes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\shaders\shaderobject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\shaders\shaderpostprocess.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
