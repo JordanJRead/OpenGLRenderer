@@ -16,18 +16,17 @@ public:
 	/// </summary>
 	/// <param name="width">The width of the framebuffer</param>
 	/// <param name="height">The height of the framebuffer</param>
-	/// <param name="colourTextureCount>The number of output colour textures</param>"
-	/// <param name="format">The internal pixel format of the frambuffer (GL_RGB, GL_RGBA, etc.)</param>
-	Framebuffer(int width, int height, GLenum format, int colourTextureCount)
+	/// <param name="formats">The internal pixel formats of each colour texture (GL_RGB, GL_RGBA, etc.)</param>
+	Framebuffer(int width, int height, std::vector<GLenum> formats)
 		: mWidth{ width }
 		, mHeight{ height }
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, mFBO);
-
+		const int colourTextureCount = formats.size();
 		std::vector<GLenum> attachments;
 		for (int i{ 0 }; i < colourTextureCount; ++i) {
 			attachments.push_back(GL_COLOR_ATTACHMENT0 + i);
-			mColourTextures.emplace_back(width, height, format);
+			mColourTextures.emplace_back(width, height, formats[i]);
 			mColourTextures[i].bind(0);
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, mColourTextures[i], 0);
 		}

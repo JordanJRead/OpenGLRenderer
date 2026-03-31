@@ -4,6 +4,7 @@
 #include "camera.h"
 #include "shaders/shaderobject.h"
 #include "shaders/shaderpostprocess.h"
+#include "shaders/shaderdeferred.h"
 #include "glm/glm.hpp"
 #include "sceneobject.h"
 #include "transform.h"
@@ -53,12 +54,12 @@ public:
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-            object.render(mScreenWidth, mScreenHeight, mCamera, mDefaultShader, &mFramebuffer);
+            object.render(mScreenWidth, mScreenHeight, mCamera, mGeometryPassShader, &mFramebuffer);
             if (glfwGetKey(mWindow, GLFW_KEY_ESCAPE)) {
                 glfwSetWindowShouldClose(mWindow, true);
             }
 
-            mPostProcessShader.setSourceTexture(mFramebuffer.getColourTexture(0));
+            mShaderDeferred.setPerFrameInfo(mFramebuffer);
             mScreenVertexArray.bind();
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
             glDrawElements(GL_TRIANGLES, mScreenVertexArray.getIndexCount(), GL_UNSIGNED_INT, 0);
@@ -71,12 +72,14 @@ private:
 	int mScreenWidth;
 	int mScreenHeight;
     ShaderPostProcess mPostProcessShader{ "assets/shaders/postprocess.vert", "assets/shaders/postprocess.frag" };
+    ShaderDeferred mShaderDeferred{ "assets/shaders/deferred.vert", "assets/shaders/deferred.frag" };
     ShaderObject mDefaultShader{ "assets/shaders/default.vert", "assets/shaders/default.frag" };
     ShaderObject mDefaultNoTexShader{ "assets/shaders/defaultnotex.vert", "assets/shaders/defaultnotex.frag" };
+    ShaderObject mGeometryPassShader{ "assets/shaders/geometrypass.vert", "assets/shaders/geometrypass.frag" };
 	Camera mCamera{ glm::vec3{ 0, 0, 0 }, 100, 0.1 };
 	float mPrevTime{ 0 };
     GLFWwindow* mWindow;
-    Framebuffer mFramebuffer{ mScreenWidth, mScreenHeight, GL_RGB16, 1 };
+    Framebuffer mFramebuffer{ mScreenWidth, mScreenHeight, {GL_RGB32F, GL_RGB16F, GL_RGB16 } }; // worldPos, normal, albedo
     VertexArray mScreenVertexArray;
 };
 
