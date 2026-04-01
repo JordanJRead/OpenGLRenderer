@@ -9,6 +9,9 @@
 #include "sceneobject.h"
 #include "transform.h"
 #include "framebuffer.h"
+#include "scene.h"
+#include "pointlight.h"
+#include "vertexarrayscreen.h"
 
 class App {
 public:
@@ -23,18 +26,11 @@ public:
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
         glClearColor(0.2, 0.2, 0.2, 1);
         TextureTypes::memoryGuard.loadDefaultTextures();
-
-        mScreenVertexArray.create({
-            -1, -1, 0, 0,
-            1, -1, 1, 0,
-            -1, 1, 0, 1,
-            1, 1, 1 ,1
-            }, {0, 1, 2, 1, 3, 2}, {2, 2});
 	}
 
 	void run() {
-
-        SceneObject object{ "assets/objects/sponza/sponza.obj", Transform{ {0, 0, 0}, { 0.1, -0.1, 0.1 }, { 0, 0, 0 } } };
+        mScene.addObject("assets/objects/sponza/sponza.obj", Transform{ {0, 0, 0}, { 0.1, -0.1, 0.1 }, { 0, 0, 0 } });
+        mScene.addPointLight({ {0, 5, 0}, {1, 1, 1}, 1 });
         //SceneObject object{ "assets/objects/plane/plane.obj", Transform{ {0, 0, 0}, { 1, 1, 1 }, { 0, 0, 0 } } };
         //SceneObject object{ "assets/objects/testcube/testcube.obj", Transform{ {0, 0, 0}, { 1, 1, 1 }, { 0, 0, 0 } } };
         //SceneObject object{ "assets/objects/scene/scene.obj", Transform{ {0, 0, 0}, { 1, 1, 1 }, { 0, 0, 0 } } };
@@ -54,15 +50,14 @@ public:
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-            object.render(mScreenWidth, mScreenHeight, mCamera, mGeometryPassShader, &mFramebuffer);
+            mScene.render(mScreenWidth, mScreenHeight, mCamera, mGeometryPassShader, &mFramebuffer);
             if (glfwGetKey(mWindow, GLFW_KEY_ESCAPE)) {
                 glfwSetWindowShouldClose(mWindow, true);
             }
 
-            mShaderDeferred.setPerFrameInfo(mFramebuffer);
-            mScreenVertexArray.bind();
-            glBindFramebuffer(GL_FRAMEBUFFER, 0);
-            glDrawElements(GL_TRIANGLES, mScreenVertexArray.getIndexCount(), GL_UNSIGNED_INT, 0);
+            mScene.renderPointLights(mScreenWidth, mScreenHeight, mCamera, mPointLightGeometryShader, &mFramebuffer);
+
+            mShaderDeferred.render(mScreenVertexArray, mFramebuffer);
 
             glfwSwapBuffers(mWindow);
         }
@@ -71,16 +66,18 @@ public:
 private:
 	int mScreenWidth;
 	int mScreenHeight;
+    Scene mScene;
     ShaderPostProcess mPostProcessShader{ "assets/shaders/postprocess.vert", "assets/shaders/postprocess.frag" };
     ShaderDeferred mShaderDeferred{ "assets/shaders/deferred.vert", "assets/shaders/deferred.frag" };
     ShaderObject mDefaultShader{ "assets/shaders/default.vert", "assets/shaders/default.frag" };
     ShaderObject mDefaultNoTexShader{ "assets/shaders/defaultnotex.vert", "assets/shaders/defaultnotex.frag" };
     ShaderObject mGeometryPassShader{ "assets/shaders/geometrypass.vert", "assets/shaders/geometrypass.frag" };
+    ShaderPointLight mPointLightGeometryShader{ "assets/shaders/pointlightgeometry.vert", "assets/shaders/pointlightgeometry.frag" };
 	Camera mCamera{ glm::vec3{ 0, 0, 0 }, 100, 0.1 };
 	float mPrevTime{ 0 };
     GLFWwindow* mWindow;
     Framebuffer mFramebuffer{ mScreenWidth, mScreenHeight, {GL_RGB32F, GL_RGB16F, GL_RGB16 } }; // worldPos, normal, albedo
-    VertexArray mScreenVertexArray;
+    VertexArrayScreen mScreenVertexArray;
 };
 
 #endif

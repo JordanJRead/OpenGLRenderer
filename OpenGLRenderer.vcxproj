@@ -145,6 +145,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\scene.cpp" />
     <ClCompile Include="src\shaders\shaderdeferred.cpp" />
     <ClCompile Include="src\shaders\shaderobject.cpp" />
     <ClCompile Include="src\shaders\shaderpostprocess.cpp" />
@@ -170,15 +171,19 @@
     <ClInclude Include="include\OpenGLObjects\RBO.h" />
     <ClInclude Include="include\OpenGLObjects\TEX.h" />
     <ClInclude Include="include\OpenGLObjects\VAO.h" />
+    <ClInclude Include="include\pointlight.h" />
+    <ClInclude Include="include\scene.h" />
     <ClInclude Include="include\sceneobject.h" />
     <ClInclude Include="include\shaders\shaderdeferred.h" />
     <ClInclude Include="include\shaders\shaderobject.h" />
     <ClInclude Include="include\shaders\shaderi.h" />
+    <ClInclude Include="include\shaders\shaderpointlight.h" />
     <ClInclude Include="include\shaders\shaderpostprocess.h" />
     <ClInclude Include="include\texture2d.h" />
     <ClInclude Include="include\texturetypes.h" />
     <ClInclude Include="include\transform.h" />
     <ClInclude Include="include\vertexarray.h" />
+    <ClInclude Include="include\vertexarrayscreen.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="libraries\assimp-vc143-mtd.lib" />

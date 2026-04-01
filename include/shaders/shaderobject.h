@@ -11,7 +11,7 @@ class ShaderObject : public ShaderI {
 public:
 	ShaderObject(const std::string& vertPath, const std::string& fragPath);
 	void setMatrices(const Camera& camera, const Transform& transform, int screenWidth, int screenHeight) const;
-	void setObjectColour(const glm::vec3& colour) const; // TODO make drawObject()?
+	void render(const VertexArray& vertexArray, const std::array<const Texture2D*, TextureTypes::max>, const glm::vec3& diffuseColour) const;
 
 protected:
 };

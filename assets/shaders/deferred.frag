@@ -25,6 +25,11 @@ void main() {
 	vec3 normal = texture(normalBuffer, texCoord).rgb;
 	vec3 worldPos = texture(worldPosBuffer, texCoord).rgb;
 
+	if (normal == vec3(0, 0, 0)) {
+		FragColour = vec4(albedo, 1);
+		return;
+	}
+
 	vec3 resultColour = getLightFromDirectionalLight(worldPos, albedo, normal, directionalLight.dirTo, directionalLight.colour);
 
 	for (int i = 0; i < pointLights.data.length() / 7 ; ++i) {

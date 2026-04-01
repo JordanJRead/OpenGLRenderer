@@ -101,7 +101,7 @@ size_t SceneObject::addTexture(const std::string& filePath) {
 	return mTextures.size() - 1;
 }
 
-void SceneObject::render(int screenWidth, int screenHeight, const Camera& camera, const ShaderObject& shader, const Framebuffer* const targetFramebuffer) {
+void SceneObject::render(int screenWidth, int screenHeight, const Camera& camera, const ShaderObject& shader, const Framebuffer* const targetFramebuffer) const {
 	if (targetFramebuffer) {
 		targetFramebuffer->bind();
 	}
@@ -111,16 +111,15 @@ void SceneObject::render(int screenWidth, int screenHeight, const Camera& camera
 	shader.setMatrices(camera, mTransform, screenWidth, screenHeight);
 	
 	for (const Mesh& mesh : mMeshes) {
-		shader.setObjectColour(mesh.getMaterial().mDiffuseColour);
-		for (int i{ 0 }; i < (int)TextureTypes::Type::max; ++i) {
-			getTexture(mesh.getMaterial().mTextureIndices[i], (TextureTypes::Type)i).bind(i);
+		std::array<const Texture2D*, TextureTypes::max> textures;
+		for (int i = 0; i < TextureTypes::max; ++i) {
+			textures[i] = &(getTexture(mesh.getMaterial().mTextureIndices[i], (TextureTypes::Type)i));
 		}
-		mesh.bindVertexArray();
-		glDrawElements(GL_TRIANGLES, mesh.getIndexCount(), GL_UNSIGNED_INT, nullptr);
+		shader.render(mesh.getVertexArray(), textures, mesh.getMaterial().mDiffuseColour);
 	}
 }
 
-const Texture2D& SceneObject::getTexture(int index, TextureTypes::Type textureType) {
+const Texture2D& SceneObject::getTexture(int index, TextureTypes::Type textureType) const {
 	if (index >= mTextures.size() || index < 0) {
 		return *TextureTypes::defaultImages[(int)textureType];
 	}
