@@ -39,7 +39,7 @@ void Scene::renderPointLights(int screenWidth, int screenHeight, const Camera& c
 	shader.setMatrices(camera, {}, screenWidth, screenHeight);
 
 	for (const PointLight& pointLight : mPointLights) {
-		shader.render(mSphereVertexArray, pointLight, glm::vec3{ 1,1,1 });
+		shader.render(mSphereVertexArray, pointLight, glm::vec3{ 0.3,0.3,0.3 });
 	}
 }
 
@@ -52,7 +52,6 @@ void Scene::updatePointLights() {
 		data.push_back(light.colour.x);
 		data.push_back(light.colour.y);
 		data.push_back(light.colour.z);
-		data.push_back(light.attenuation);
 	}
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, mPointLightBuffer);
 	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(float) * data.size(), data.data(), GL_STATIC_DRAW);

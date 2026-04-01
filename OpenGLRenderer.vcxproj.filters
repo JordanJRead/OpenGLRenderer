@@ -137,5 +137,19 @@
     <None Include="glfw3.dll" />
     <None Include=".gitignore" />
     <None Include="assimp-vc143-mt.dll" />
+    <None Include="assets\shaders\default.frag" />
+    <None Include="assets\shaders\default.vert" />
+    <None Include="assets\shaders\defaultnotex.frag" />
+    <None Include="assets\shaders\defaultnotex.vert" />
+    <None Include="assets\shaders\deferred.frag" />
+    <None Include="assets\shaders\deferred.vert" />
+    <None Include="assets\shaders\geometrypass.frag" />
+    <None Include="assets\shaders\geometrypass.vert" />
+    <None Include="assets\shaders\hello.frag" />
+    <None Include="assets\shaders\hello.vert" />
+    <None Include="assets\shaders\pointlightgeometry.frag" />
+    <None Include="assets\shaders\pointlightgeometry.vert" />
+    <None Include="assets\shaders\postprocess.frag" />
+    <None Include="assets\shaders\postprocess.vert" />
   </ItemGroup>
 </Project>

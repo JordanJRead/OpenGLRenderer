@@ -30,7 +30,7 @@ public:
 
 	void run() {
         mScene.addObject("assets/objects/sponza/sponza.obj", Transform{ {0, 0, 0}, { 0.1, -0.1, 0.1 }, { 0, 0, 0 } });
-        mScene.addPointLight({ {0, 5, 0}, {1, 1, 1}, 1 });
+        mScene.addPointLight({ {0, 1, 3}, {0, 1, 0} });
         //SceneObject object{ "assets/objects/plane/plane.obj", Transform{ {0, 0, 0}, { 1, 1, 1 }, { 0, 0, 0 } } };
         //SceneObject object{ "assets/objects/testcube/testcube.obj", Transform{ {0, 0, 0}, { 1, 1, 1 }, { 0, 0, 0 } } };
         //SceneObject object{ "assets/objects/scene/scene.obj", Transform{ {0, 0, 0}, { 1, 1, 1 }, { 0, 0, 0 } } };

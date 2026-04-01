@@ -14,10 +14,10 @@ struct DirectionalLight {
 uniform DirectionalLight directionalLight;
 
 layout(binding = 0, std430) buffer PointLights {
-	float data[]; // x, y, z, r, g, b, att
+	float data[]; // x, y, z, r, g, b
 } pointLights;
 
-vec3 getLightFromPointLight(vec3 objectPos, vec3 objectColor, vec3 objectNormal, vec3 lightPos, vec3 lightColour, float lightAttenuation);
+vec3 getLightFromPointLight(vec3 objectPos, vec3 objectColor, vec3 objectNormal, vec3 lightPos, vec3 lightColour);
 vec3 getLightFromDirectionalLight(vec3 objectPos, vec3 objectColor, vec3 objectNormal, vec3 dirToLight, vec3 lightColour);
 
 void main() {
@@ -33,20 +33,19 @@ void main() {
 	vec3 resultColour = getLightFromDirectionalLight(worldPos, albedo, normal, directionalLight.dirTo, directionalLight.colour);
 
 	for (int i = 0; i < pointLights.data.length() / 7 ; ++i) {
-		vec3 lightPos    = vec3(pointLights.data[i * 7 + 0], pointLights.data[i * 7 + 1], pointLights.data[i * 7 + 2]);
-		vec3 lightColour = vec3(pointLights.data[i * 7 + 3], pointLights.data[i * 7 + 4], pointLights.data[i * 7 + 5]);
-		float lightAttenuation = pointLights.data[i * 7 + 6];
-		resultColour += getLightFromPointLight(worldPos, albedo, normal, lightPos, lightColour, lightAttenuation);
+		vec3 lightPos    = vec3(pointLights.data[i * 6 + 0], pointLights.data[i * 6 + 1], pointLights.data[i * 6 + 2]);
+		vec3 lightColour = vec3(pointLights.data[i * 6 + 3], pointLights.data[i * 6 + 4], pointLights.data[i * 6 + 5]);
+		resultColour += getLightFromPointLight(worldPos, albedo, normal, lightPos, lightColour);
 	}
 
 	vec3 gammaCorrectedColour = pow(resultColour, vec3(1/2.2));
 	FragColour = vec4(gammaCorrectedColour, 1);
 }
 
-// TODO attenuation, specular
-vec3 getLightFromPointLight(vec3 objectPos, vec3 objectColor, vec3 objectNormal, vec3 lightPos, vec3 lightColour, float attenuation ) {
-	return objectColor * max(0, dot(objectNormal, normalize(lightPos - objectPos)));
+// TODO specular
+vec3 getLightFromPointLight(vec3 objectPos, vec3 objectColor, vec3 objectNormal, vec3 lightPos, vec3 lightColour) {
+	return objectColor * max(0, dot(objectNormal, normalize(lightPos - objectPos))) * lightColour / pow(length(objectPos - lightPos), 2);
 }
 vec3 getLightFromDirectionalLight(vec3 objectPos, vec3 objectColor, vec3 objectNormal, vec3 dirToLight, vec3 lightColour) {
-	return objectColor * max(0, dot(objectNormal, dirToLight));
+	return objectColor * max(0, dot(objectNormal, dirToLight)) * lightColour;
 }
