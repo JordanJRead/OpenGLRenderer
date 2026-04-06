@@ -32,7 +32,7 @@ void main() {
 
 	vec3 resultColour = getLightFromDirectionalLight(worldPos, albedo, normal, directionalLight.dirTo, directionalLight.colour);
 
-	for (int i = 0; i < pointLights.data.length() / 7 ; ++i) {
+	for (int i = 0; i < pointLights.data.length() / 6 ; ++i) {
 		vec3 lightPos    = vec3(pointLights.data[i * 6 + 0], pointLights.data[i * 6 + 1], pointLights.data[i * 6 + 2]);
 		vec3 lightColour = vec3(pointLights.data[i * 6 + 3], pointLights.data[i * 6 + 4], pointLights.data[i * 6 + 5]);
 		resultColour += getLightFromPointLight(worldPos, albedo, normal, lightPos, lightColour);
