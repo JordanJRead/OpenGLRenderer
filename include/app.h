@@ -14,6 +14,12 @@
 #include "vertexarrayscreen.h"
 
 class App {
+    static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+        if (key == GLFW_KEY_E && action == GLFW_PRESS) {
+            ((App*)glfwGetWindowUserPointer(window))->mDoNormalMapping = !((App*)glfwGetWindowUserPointer(window))->mDoNormalMapping;
+            ((App*)glfwGetWindowUserPointer(window))->mGeometryPassShader.setNormalMapping(((App*)glfwGetWindowUserPointer(window))->mDoNormalMapping);
+        }
+    }
 public:
 	App(int screenWidth, int screenHeight, GLFWwindow* window)
         : mScreenWidth{ screenWidth }
@@ -26,11 +32,13 @@ public:
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
         glClearColor(0.2, 0.2, 0.2, 1);
         TextureTypes::memoryGuard.loadDefaultTextures();
+        glfwSetWindowUserPointer(mWindow, this);
+        glfwSetKeyCallback(mWindow, keyCallback);
 	}
 
 	void run() {
         mScene.addObject("assets/objects/sponza/sponza.obj", Transform{ {0, 0, 0}, { 0.1, -0.1, 0.1 }, { 0, 0, 0 } });
-        mScene.addPointLight({ {0, 1, 3}, {0, 1, 0} });
+        const int lightIndex = mScene.addPointLight({ {0, 1, 0}, {1, 1, 1} });
         //SceneObject object{ "assets/objects/plane/plane.obj", Transform{ {0, 0, 0}, { 1, 1, 1 }, { 0, 0, 0 } } };
         //SceneObject object{ "assets/objects/testcube/testcube.obj", Transform{ {0, 0, 0}, { 1, 1, 1 }, { 0, 0, 0 } } };
         //SceneObject object{ "assets/objects/scene/scene.obj", Transform{ {0, 0, 0}, { 1, 1, 1 }, { 0, 0, 0 } } };
@@ -40,6 +48,10 @@ public:
             float currentTime{ (float)glfwGetTime() };
             float deltaTime{ currentTime - prevTime };
             prevTime = currentTime;
+
+            PointLight* pointLight = mScene.getPointLight(lightIndex);
+            pointLight->position = { 10 + glm::cos(glfwGetTime()), 2 + glm::sin(glfwGetTime()), glm::sin(glfwGetTime()) };
+            mScene.updatePointLights();
 
             // Update
             mCamera.update(mWindow, deltaTime);
@@ -75,6 +87,7 @@ private:
     ShaderPointLight mPointLightGeometryShader{ "assets/shaders/pointlightgeometry.vert", "assets/shaders/pointlightgeometry.frag" };
 	Camera mCamera{ glm::vec3{ 0, 0, 0 }, 100, 0.1 };
 	float mPrevTime{ 0 };
+    bool mDoNormalMapping = true;
     GLFWwindow* mWindow;
     Framebuffer mFramebuffer{ mScreenWidth, mScreenHeight, {GL_RGB32F, GL_RGB16F, GL_RGB16 } }; // worldPos, normal, albedo
     VertexArrayScreen mScreenVertexArray;

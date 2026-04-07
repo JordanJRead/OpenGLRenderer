@@ -3,10 +3,11 @@
 layout(location = 0) in vec3 vPos;
 layout(location = 1) in vec3 vNormal;
 layout(location = 2) in vec3 vTangent;
-layout(location = 3) in vec2 vTexCoord;
+layout(location = 3) in vec3 vBitangent;
+layout(location = 4) in vec2 vTexCoord;
 
 out VertOut {
-	vec3 normal;
+	mat3 normalMapMatrix;
 	vec2 texCoords;
 	vec3 worldPos;
 } vertOut;
@@ -19,5 +20,15 @@ void main() {
 	vertOut.worldPos = (model * vec4(vPos + vNormal * 0.0001, 1)).xyz;
 	gl_Position = projection * view * vec4(vertOut.worldPos, 1);
 	vertOut.texCoords = vTexCoord;
-	vertOut.normal = normalize(mat3(transpose(inverse(model))) * vNormal);
+
+	mat3 normalMatrix = mat3(transpose(inverse(model)));
+
+	vertOut.normalMapMatrix = mat3(
+		normalize(normalMatrix * vTangent),
+		normalize(normalMatrix * vBitangent),
+		normalize(normalMatrix * vNormal)
+//		vTangent,
+//		vBitangent,
+//		vNormal
+	);
 }

@@ -43,16 +43,31 @@ void SceneObject::processMesh(aiMesh* mesh, const aiScene* scene) {
 		vertexData.push_back(mesh->mNormals[i].y);
 		vertexData.push_back(mesh->mNormals[i].z);
 
-		vertexData.push_back(mesh->mTangents[i].x);
-		vertexData.push_back(mesh->mTangents[i].y);
-		vertexData.push_back(mesh->mTangents[i].z);
+		if (mesh->HasTangentsAndBitangents()) {
+			vertexData.push_back(mesh->mTangents[i].x);
+			vertexData.push_back(mesh->mTangents[i].y);
+			vertexData.push_back(mesh->mTangents[i].z);
+
+			vertexData.push_back(mesh->mBitangents[i].x);
+			vertexData.push_back(mesh->mBitangents[i].y);
+			vertexData.push_back(mesh->mBitangents[i].z);
+		}
+		else {
+			vertexData.push_back(1);
+			vertexData.push_back(0);
+			vertexData.push_back(0);
+
+			vertexData.push_back(0);
+			vertexData.push_back(1);
+			vertexData.push_back(0);
+		}
 
 		if (hasTexCoords) {
 			vertexData.push_back(mesh->mTextureCoords[0][i].x);
 			vertexData.push_back(mesh->mTextureCoords[0][i].y);
 		}
 	}
-	std::vector<int> vertexLayout{ 3, 3, 3, 2 };
+	std::vector<int> vertexLayout{ 3, 3, 3, 3, 2 };
 	if (!hasTexCoords) {
 		vertexLayout.pop_back();
 	}

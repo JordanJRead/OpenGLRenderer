@@ -14,7 +14,7 @@ void ShaderDeferred::render(const VertexArrayScreen& screenVertexArray, const Fr
 	source.bindColourTexture(1, 1);
 	source.bindColourTexture(2, 2);
 	setVector3("directionalLight.dirTo", glm::vec3{ 0, 1, 0 });
-	setVector3("directionalLight.colour", glm::vec3{ 1, 1, 1 });
+	setVector3("directionalLight.colour", glm::vec3{ 0, 0, 0 });
 	screenVertexArray.bind();
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glDrawElements(GL_TRIANGLES, screenVertexArray.getIndexCount(), GL_UNSIGNED_INT, 0);

@@ -21,6 +21,13 @@ public:
 	int addPointLight(const PointLight&);
 	void render(int screenWidth, int screenHeight, const Camera& camera, const ShaderObject& shader, const Framebuffer* const framebuffer);
 	void renderPointLights(int screenWidth, int screenHeight, const Camera& camera, const ShaderPointLight& shader, const Framebuffer* const framebuffer);
+	PointLight* getPointLight(int index) {
+		if (index >= 0 && index < mPointLights.size()) {
+			return &(mPointLights[index]);
+		}
+		return nullptr;
+	}
+	void updatePointLights();
 
 private:
 	std::vector<SceneObject> mObjects;
@@ -28,7 +35,6 @@ private:
 	BUF mPointLightBuffer;
 	VertexArray mSphereVertexArray;
 
-	void updatePointLights();
 };
 
 #endif
