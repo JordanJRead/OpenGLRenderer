@@ -88,8 +88,6 @@ private:
     Scene mScene;
     ShaderPostProcess mPostProcessShader{ "assets/shaders/postprocess.vert", "assets/shaders/postprocess.frag" };
     ShaderDeferred mShaderDeferred{ "assets/shaders/deferred.vert", "assets/shaders/deferred.frag" };
-    ShaderObject mDefaultShader{ "assets/shaders/default.vert", "assets/shaders/default.frag" };
-    ShaderObject mDefaultNoTexShader{ "assets/shaders/defaultnotex.vert", "assets/shaders/defaultnotex.frag" };
     ShaderObject mGeometryPassShader{ "assets/shaders/geometrypass.vert", "assets/shaders/geometrypass.frag" };
     ShaderPointLight mPointLightGeometryShader{ "assets/shaders/pointlightgeometry.vert", "assets/shaders/pointlightgeometry.frag" };
 	Camera mCamera{ glm::vec3{ 0, 0, 0 }, 100, 0.1 };
