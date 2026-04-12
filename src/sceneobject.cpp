@@ -128,7 +128,7 @@ void SceneObject::render(int screenWidth, int screenHeight, const Camera& camera
 	else {
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
-	shader.setMatrices(camera, mTransform, screenWidth, screenHeight);
+	shader.setModelMatrix(mTransform);
 	
 	for (const Mesh& mesh : mMeshes) {
 		std::array<const Texture2D*, TextureTypes::max> textures;

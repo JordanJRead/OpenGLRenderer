@@ -7,10 +7,10 @@ struct GLFWwindow;
 
 class Camera {
 public:
-	Camera(const glm::vec3& position, double horizontalFOVDeg, double lookSensitivity);
+	Camera(const glm::vec3& position, double horizontalFOVDeg, double lookSensitivity, int screenWidth, int screenHeight);
 	void update(GLFWwindow* window, float deltaTime);
 	glm::mat4 getViewMatrix() const;
-	glm::mat4 getProjectionMatrix(int screenWidth, int screenHeight) const;
+	glm::mat4 getProjectionMatrix() const;
 	glm::vec3 getForward() const;
 	glm::vec3 getPosition() const { return mPosition; }
 	void disableLooking() { mIsLookingEnabled = false; }
@@ -26,6 +26,8 @@ private:
 	double mPrevMouseY;
 	bool mIsLookingEnabled = true;
 	bool mIsFirstMouseMovement{ true };
+	int mScreenWidth;
+	int mScreenHeight;
 };
 
 #endif

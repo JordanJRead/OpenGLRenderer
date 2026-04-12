@@ -1,5 +1,7 @@
 #version 430 core
 
+#include "buffers.glsl"
+
 in vec2 texCoord;
 out vec4 FragColour;
 
@@ -15,11 +17,6 @@ struct DirectionalLight {
 uniform DirectionalLight directionalLight;
 
 uniform vec3 ambientLightColour;
-uniform vec3 cameraPos;
-
-layout(binding = 0, std430) buffer PointLights {
-	float data[]; // x, y, z, r, g, b
-} pointLights;
 
 vec3 getLightFromPointLight(vec3 objectPos, vec3 diffuseColour, vec3 specularColour, float specularExponent, vec3 objectNormal, vec3 lightPos, vec3 lightColour);
 vec3 getLightFromDirectionalLight(vec3 objectPos, vec3 diffuseColour, vec3 specularColour, float specularExponent, vec3 objectNormal, vec3 dirToLight, vec3 lightColour);
@@ -53,7 +50,7 @@ void main() {
 vec3 getLightFromPointLight(vec3 objectPos, vec3 diffuseColour, vec3 specularColour, float specularExponent, vec3 objectNormal, vec3 lightPos, vec3 lightColour) {
 	vec3 attenuatedLightColour = lightColour / pow(length(objectPos - lightPos), 2);
 	vec3 dirToLight = normalize(lightPos - objectPos);
-	vec3 dirToView = normalize(cameraPos - objectPos);
+	vec3 dirToView = normalize(cameraData.position - objectPos);
 	
 	vec3 diffuseLight = diffuseColour * max(0, dot(objectNormal, dirToLight)) * attenuatedLightColour;
 
@@ -63,7 +60,7 @@ vec3 getLightFromPointLight(vec3 objectPos, vec3 diffuseColour, vec3 specularCol
 	return diffuseLight + specularLight;
 }
 vec3 getLightFromDirectionalLight(vec3 objectPos, vec3 diffuseColour, vec3 specularColour, float specularExponent, vec3 objectNormal, vec3 dirToLight, vec3 lightColour) {
-	vec3 dirToView = normalize(cameraPos - objectPos);
+	vec3 dirToView = normalize(cameraData.position - objectPos);
 	
 	vec3 diffuseLight = diffuseColour * max(0, dot(objectNormal, dirToLight)) * lightColour;
 

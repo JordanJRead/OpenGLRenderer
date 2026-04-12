@@ -78,6 +78,15 @@
     <ClCompile Include="src\imgui\imgui_widgets.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\app.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\shaders\shaderpointlight.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\editor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\shaders\shaderi.h">
@@ -149,6 +158,15 @@
     <ClInclude Include="include\shaders\shaderpointlight.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\cameradatabuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\directionallight.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\editor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Library Include="libraries\glfw3dll.lib" />
@@ -166,5 +184,6 @@
     <None Include="assets\shaders\pointlightgeometry.vert" />
     <None Include="assets\shaders\postprocess.frag" />
     <None Include="assets\shaders\postprocess.vert" />
+    <None Include="assets\shaders\buffers.glsl" />
   </ItemGroup>
 </Project>

@@ -8,11 +8,9 @@ ShaderObject::ShaderObject(const std::string& vertPath, const std::string& fragP
 	}
 }
 
-void ShaderObject::setMatrices(const Camera& camera, const Transform& transform, int screenWidth, int screenHeight) const {
+void ShaderObject::setModelMatrix(const Transform& transform) const {
 	bind();
 	setMatrix4("model", transform.getModelMatrix());
-	setMatrix4("view", camera.getViewMatrix());
-	setMatrix4("projection", camera.getProjectionMatrix(screenWidth, screenHeight));
 }
 
 void ShaderObject::render(const VertexArray& vertexArray, const std::array<const Texture2D*, TextureTypes::max> textures, const Material& material) const {

@@ -11,21 +11,23 @@
 ShaderI::ShaderI(const std::string& vertPath, const std::string& fragPath) {
     
     // Read soruce code in
-    std::ifstream vertFS{ vertPath };
-    std::stringstream vertSS;
-    vertSS << vertFS.rdbuf();
-    std::string vertexTemp{ vertSS.str() };
-    const char* vertexSource{ vertexTemp.c_str() };
+    char vertError[256];
+    char* vertSource{ stb_include_file((char*)vertPath.data(), nullptr, std::string("assets/shaders").data(), vertError) };
 
-    std::ifstream fragFS{ fragPath };
-    std::stringstream fragSS;
-    fragSS << fragFS.rdbuf();
-    std::string fragTemp{ fragSS.str() };
-    const char* fragSource{ fragTemp.c_str() };
+    if (!vertSource) {
+        std::cerr << "ERROR::SHADER::VERTEX::STB_INCLUDE_READ_FAILED\n" << vertPath << "\n" << vertError << "\n";
+    }
+
+    char fragError[256];
+    char* fragSource{ stb_include_file((char*)fragPath.data(), nullptr, std::string("assets/shaders").data(), fragError) };
+
+    if (!fragSource) {
+        std::cerr << "ERROR::SHADER::VERTEX::STB_INCLUDE_READ_FAILED\n" << fragPath << "\n" << fragError << "\n";
+    }
 
     // Compile vertex
     unsigned int vertShader{ glCreateShader(GL_VERTEX_SHADER) };
-    glShaderSource(vertShader, 1, &vertexSource, NULL);
+    glShaderSource(vertShader, 1, &vertSource, NULL);
     glCompileShader(vertShader);
 
     int success;
@@ -65,4 +67,6 @@ ShaderI::ShaderI(const std::string& vertPath, const std::string& fragPath) {
 
     glDeleteShader(vertShader);
     glDeleteShader(fragShader);
+    free(vertSource);
+    free(fragSource);
 }

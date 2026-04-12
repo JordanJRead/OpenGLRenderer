@@ -3,10 +3,12 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "iostream"
 
-Camera::Camera(const glm::vec3& position, double horizontalFOVDeg, double lookSensitivity)
+Camera::Camera(const glm::vec3& position, double horizontalFOVDeg, double lookSensitivity, int screenWidth, int screenHeight)
 	: mPosition{ position }
 	, mHorizontalFOVDeg{ horizontalFOVDeg }
 	, mLookSensitivity{ lookSensitivity }
+	, mScreenWidth{ screenWidth }
+	, mScreenHeight{ screenHeight }
 {}
 
 void Camera::update(GLFWwindow* window, float deltaTime) {
@@ -77,6 +79,6 @@ glm::mat4 Camera::getViewMatrix() const {
 	return glm::lookAt(mPosition, mPosition + forward, glm::vec3{ 0, 1, 0 });
 }
 
-glm::mat4 Camera::getProjectionMatrix(int screenWidth, int screenHeight) const {
-	return glm::perspective(glm::radians((float)mHorizontalFOVDeg), (float)screenWidth / screenHeight, 0.1f, 1000.0f);
+glm::mat4 Camera::getProjectionMatrix() const {
+	return glm::perspective(glm::radians((float)mHorizontalFOVDeg), (float)mScreenWidth / mScreenHeight, 0.1f, 1000.0f);
 }

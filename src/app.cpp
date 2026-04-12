@@ -1,0 +1,101 @@
+#include "app.h"
+#include "camera.h"
+#include "shaders/shaderobject.h"
+#include "shaders/shaderpostprocess.h"
+#include "shaders/shaderdeferred.h"
+#include "glm/glm.hpp"
+#include "sceneobject.h"
+#include "transform.h"
+#include "framebuffer.h"
+#include "scene.h"
+#include "pointlight.h"
+#include "vertexarrayscreen.h"
+#include "cameradatabuffer.h"
+#include "GLFW/glfw3.h"
+
+void App::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+    App* app = ((App*)glfwGetWindowUserPointer(window));
+
+    if (key == GLFW_KEY_R && action == GLFW_PRESS) {
+        if (glfwGetInputMode(window, GLFW_CURSOR) == GLFW_CURSOR_NORMAL) {
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+            app->mScene.getCamera().enableLooking();
+        }
+        else {
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+            app->mScene.getCamera().disableLooking();
+        }
+    }
+}
+
+App::App(int screenWidth, int screenHeight, GLFWwindow* window)
+    : mScreenWidth{ screenWidth }
+    , mScreenHeight{ screenHeight }
+    , mWindow{ window }
+    , mScene{ screenWidth, screenHeight }
+{
+    glfwSetInputMode(mWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    glClearColor(0.2, 0.2, 0.2, 1);
+    TextureTypes::memoryGuard.loadDefaultTextures();
+    glfwSetWindowUserPointer(mWindow, this);
+    glfwSetKeyCallback(mWindow, keyCallback);
+}
+
+void App::run() {
+    mScene.getDirectionalLight().mDirTo = glm::vec3{ 0, 1, 0 };
+    mScene.getDirectionalLight().mColour = glm::vec3{ 1, 1, 1 };
+    const int lightIndex = mScene.addPointLight({ {0, 1, 0}, {1, 1, 1} });
+    mScene.addObject("assets/objects/sponza/sponza.obj", Transform{ {0, 0, 0}, { 0.1, -0.1, 0.1 }, { 0, 0, 0 } });
+
+    //mScene.addObject("assets/objects/breakfast_room/breakfast_room.obj", Transform{ {0, 0, 0}, { 1, 1, 1 }, { 0, 0, 0 } });
+    //mScene.addObject("assets/objects/bedroom/iscv2.obj", Transform{ {0, 0, 0}, { 0.3, 0.3, 0.3 }, { 270, 0, 0 } });
+    //mScene.addObject("assets/objects/conference/conference.obj", Transform{ {0, 0, 0}, { 0.1, 0.1, 0.1 }, { 0, 0, 0 } });
+    //mScene.addObject("assets/objects/sponza2/sponza.obj", Transform{ {0, 0, 0}, { 0.1, 0.1, 0.1 }, { 0, 0, 0 } });
+    //mScene.addObject("assets/objects/fireplace_room/fireplace_room.obj", Transform{ {0, 0, 0}, { 1, 1, 1 }, { 0, 0, 0 } });
+    //mScene.addObject("assets/objects/gallery/gallery.obj", Transform{ {0, 0, 0}, { 1, 1, 1 }, { 0, 0, 0 } });
+    //SceneObject object{ "assets/objects/plane/plane.obj", Transform{ {0, 0, 0}, { 1, 1, 1 }, { 0, 0, 0 } } };
+    //SceneObject object{ "assets/objects/testcube/testcube.obj", Transform{ {0, 0, 0}, { 1, 1, 1 }, { 0, 0, 0 } } };
+    //SceneObject object{ "assets/objects/scene/scene.obj", Transform{ {0, 0, 0}, { 1, 1, 1 }, { 0, 0, 0 } } };
+
+    float prevTime{ 0 };
+    while (!glfwWindowShouldClose(mWindow)) {
+        glfwPollEvents();
+        float currentTime{ (float)glfwGetTime() };
+        float deltaTime{ currentTime - prevTime };
+        prevTime = currentTime;
+
+        //PointLight* pointLight = mScene.getPointLight(lightIndex);
+        //pointLight->position = { 2 + glm::cos(glfwGetTime()), 2 + glm::sin(glfwGetTime()), -2 + glm::sin(glfwGetTime()) };
+        mScene.updatePointLights();
+
+        // Update
+        mScene.updateCameraData(mWindow, deltaTime);
+
+        // Render
+        mGeometryBuffers.bind();
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+        glDisable(GL_BLEND);
+        mScene.render(mScreenWidth, mScreenHeight, mGeometryPassShader, &mGeometryBuffers);
+        if (glfwGetKey(mWindow, GLFW_KEY_ESCAPE)) {
+            glfwSetWindowShouldClose(mWindow, true);
+        }
+
+        mScene.renderPointLights(mScreenWidth, mScreenHeight, mPointLightGeometryShader, &mGeometryBuffers);
+
+        mShaderDeferred.render(mScreenVertexArray, mGeometryBuffers, mScene.getDirectionalLight(), mScene.getAmbientLightColour());
+
+        mEditor.updateRender(mScene);
+
+        glfwSwapBuffers(mWindow);
+    }
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
+    glfwTerminate();
+}
