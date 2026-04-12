@@ -13,7 +13,7 @@ SceneObject::SceneObject(const std::string& objPath, const Transform& transform)
 	mDirectory.resize(mDirectory.rfind("/"));
 
 	Assimp::Importer importer;
-	const aiScene* scene = importer.ReadFile(objPath, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+	const aiScene* scene = importer.ReadFile(objPath, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace | aiProcess_GenSmoothNormals);
 
 	processNode(scene->mRootNode, scene);
 }
@@ -95,9 +95,14 @@ void SceneObject::processMesh(aiMesh* mesh, const aiScene* scene) {
 	aiMaterial->Get(AI_MATKEY_COLOR_DIFFUSE, diffuseColour);
 	aiColor3D specularColour;
 	aiMaterial->Get(AI_MATKEY_COLOR_SPECULAR, specularColour);
+	float mSpecularExponent;
+	if (aiMaterial->Get(AI_MATKEY_SHININESS, specularColour) != AI_SUCCESS || true) {
+		mSpecularExponent = 100000.0f;
+	}
 
 	material.mDiffuseColour = glm::vec3{ diffuseColour.r, diffuseColour.g, diffuseColour.b };
 	material.mSpecularColour = glm::vec3{ specularColour.r, specularColour.g, specularColour.b };
+	material.mSpecularExponent = mSpecularExponent;
 
 	mMeshes.emplace_back(vertexData, indices, vertexLayout, material, hasTexCoords);
 }
@@ -130,7 +135,7 @@ void SceneObject::render(int screenWidth, int screenHeight, const Camera& camera
 		for (int i = 0; i < TextureTypes::max; ++i) {
 			textures[i] = &(getTexture(mesh.getMaterial().mTextureIndices[i], (TextureTypes::Type)i));
 		}
-		shader.render(mesh.getVertexArray(), textures, mesh.getMaterial().mDiffuseColour);
+		shader.render(mesh.getVertexArray(), textures, mesh.getMaterial());
 	}
 }
 

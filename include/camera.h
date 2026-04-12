@@ -12,6 +12,7 @@ public:
 	glm::mat4 getViewMatrix() const;
 	glm::mat4 getProjectionMatrix(int screenWidth, int screenHeight) const;
 	glm::vec3 getForward() const;
+	glm::vec3 getPosition() const { return mPosition; }
 
 private:
 	glm::vec3 mPosition;

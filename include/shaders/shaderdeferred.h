@@ -10,7 +10,7 @@
 class ShaderDeferred : public ShaderI {
 public:
 	ShaderDeferred(const std::string& vertPath, const std::string& fragPath);
-	void render(const VertexArrayScreen& screenVertexArray, const Framebuffer& source);
+	void render(const VertexArrayScreen& screenVertexArray, const Framebuffer& source, const glm::vec3& cameraPos);
 };
 
 #endif

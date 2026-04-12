@@ -38,6 +38,12 @@ public:
 
 	void run() {
         mScene.addObject("assets/objects/sponza/sponza.obj", Transform{ {0, 0, 0}, { 0.1, -0.1, 0.1 }, { 0, 0, 0 } });
+        //mScene.addObject("assets/objects/breakfast_room/breakfast_room.obj", Transform{ {0, 0, 0}, { 1, 1, 1 }, { 0, 0, 0 } });
+        //mScene.addObject("assets/objects/bedroom/iscv2.obj", Transform{ {0, 0, 0}, { 0.3, 0.3, 0.3 }, { 270, 0, 0 } });
+        //mScene.addObject("assets/objects/conference/conference.obj", Transform{ {0, 0, 0}, { 0.1, 0.1, 0.1 }, { 0, 0, 0 } });
+        //mScene.addObject("assets/objects/sponza2/sponza.obj", Transform{ {0, 0, 0}, { 0.1, 0.1, 0.1 }, { 0, 0, 0 } });
+        //mScene.addObject("assets/objects/fireplace_room/fireplace_room.obj", Transform{ {0, 0, 0}, { 1, 1, 1 }, { 0, 0, 0 } });
+        //mScene.addObject("assets/objects/gallery/gallery.obj", Transform{ {0, 0, 0}, { 1, 1, 1 }, { 0, 0, 0 } });
         const int lightIndex = mScene.addPointLight({ {0, 1, 0}, {1, 1, 1} });
         //SceneObject object{ "assets/objects/plane/plane.obj", Transform{ {0, 0, 0}, { 1, 1, 1 }, { 0, 0, 0 } } };
         //SceneObject object{ "assets/objects/testcube/testcube.obj", Transform{ {0, 0, 0}, { 1, 1, 1 }, { 0, 0, 0 } } };
@@ -50,7 +56,7 @@ public:
             prevTime = currentTime;
 
             PointLight* pointLight = mScene.getPointLight(lightIndex);
-            pointLight->position = { 10 + glm::cos(glfwGetTime()), 2 + glm::sin(glfwGetTime()), glm::sin(glfwGetTime()) };
+            //pointLight->position = { 2 + glm::cos(glfwGetTime()), 2 + glm::sin(glfwGetTime()), -2 + glm::sin(glfwGetTime()) };
             mScene.updatePointLights();
 
             // Update
@@ -62,6 +68,7 @@ public:
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
+            glDisable(GL_BLEND);
             mScene.render(mScreenWidth, mScreenHeight, mCamera, mGeometryPassShader, &mFramebuffer);
             if (glfwGetKey(mWindow, GLFW_KEY_ESCAPE)) {
                 glfwSetWindowShouldClose(mWindow, true);
@@ -69,7 +76,7 @@ public:
 
             mScene.renderPointLights(mScreenWidth, mScreenHeight, mCamera, mPointLightGeometryShader, &mFramebuffer);
 
-            mShaderDeferred.render(mScreenVertexArray, mFramebuffer);
+            mShaderDeferred.render(mScreenVertexArray, mFramebuffer, mCamera.getPosition());
 
             glfwSwapBuffers(mWindow);
         }
@@ -89,7 +96,7 @@ private:
 	float mPrevTime{ 0 };
     bool mDoNormalMapping = true;
     GLFWwindow* mWindow;
-    Framebuffer mFramebuffer{ mScreenWidth, mScreenHeight, {GL_RGB32F, GL_RGB16F, GL_RGB16 } }; // worldPos, normal, albedo
+    Framebuffer mFramebuffer{ mScreenWidth, mScreenHeight, {GL_RGB32F, GL_RGB16F, GL_RGB16F, GL_RGBA16F } }; // worldPos, normal, diffuse, specular/exponent
     VertexArrayScreen mScreenVertexArray;
 };
 

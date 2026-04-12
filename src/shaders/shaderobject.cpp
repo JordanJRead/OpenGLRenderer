@@ -15,9 +15,11 @@ void ShaderObject::setMatrices(const Camera& camera, const Transform& transform,
 	setMatrix4("projection", camera.getProjectionMatrix(screenWidth, screenHeight));
 }
 
-void ShaderObject::render(const VertexArray& vertexArray, const std::array<const Texture2D*, TextureTypes::max> textures, const glm::vec3& diffuseColour) const {
+void ShaderObject::render(const VertexArray& vertexArray, const std::array<const Texture2D*, TextureTypes::max> textures, const Material& material) const {
 	bind();
-	setVector3("diffuseColour", diffuseColour);
+	setVector3("diffuseColour", material.mDiffuseColour);
+	setVector3("specularColour", material.mSpecularColour);
+	setFloat("specularExponent", material.mSpecularExponent);
 	vertexArray.bind();
 	for (int i = 0; i < textures.size(); ++i) {
 		textures[i]->bind(i);

@@ -7,6 +7,7 @@
 struct Material {
 	glm::vec3 mDiffuseColour;
 	glm::vec3 mSpecularColour;
+	float mSpecularExponent{ 32.0 };
 	std::array<size_t, (int)TextureTypes::Type::max> mTextureIndices{};
 };
 

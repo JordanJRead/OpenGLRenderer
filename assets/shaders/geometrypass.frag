@@ -8,22 +8,30 @@ in VertOut {
 
 out vec4 OutWorldPos;
 out vec4 OutNormal;
-out vec4 OutAlbedo;
+out vec4 OutDiffuseColour;
+out vec4 OutSpecularData;
 
 uniform sampler2D diffuseTexture;
+uniform sampler2D specularTexture;
 uniform sampler2D normalTexture;
+
 uniform vec3 diffuseColour;
+uniform vec3 specularColour;
+uniform float specularExponent;
+
 uniform bool doNormalMapping;
 
 void main() {
-	vec4 colour = texture(diffuseTexture, fragIn.texCoords).rgba;
-	if (colour.a < 0.5) {
+	vec4 diffuseSample = texture(diffuseTexture, fragIn.texCoords).rgba;
+	vec4 specularSample = texture(specularTexture, fragIn.texCoords).rgba;
+	if (diffuseSample.a < 0.5) {
 		discard;
 	}
-	vec3 colour3 = colour.rgb;// * diffuseColour;
+
+	OutDiffuseColour = vec4(diffuseSample.rgb * diffuseColour, 1);
+	OutSpecularData = vec4(specularSample.rgb * specularColour, specularExponent);
+
 	vec3 normal = doNormalMapping ? normalize(fragIn.normalMapMatrix * texture(normalTexture, fragIn.texCoords).xyz) : normalize(fragIn.normalMapMatrix[2]);
-	//colour3 *= (dot(normal, vec3(0, 1, 0)) + 1) / 2; // fake lighting for now
-	OutAlbedo = vec4(colour3, 1);
 	OutWorldPos = vec4(fragIn.worldPos, 1);
 	OutNormal = vec4(normal, 1);
 }
