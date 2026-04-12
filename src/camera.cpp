@@ -13,24 +13,26 @@ void Camera::update(GLFWwindow* window, float deltaTime) {
 	double currentMouseX, currentMouseY;
 	glfwGetCursorPos(window, &currentMouseX, &currentMouseY);
 	
-	if (!mIsFirstUpdate) {
-		double dX = currentMouseX - mPrevMouseX;
-		double dY = currentMouseY - mPrevMouseY;
-		mYawDeg += dX * mLookSensitivity;
-		mPitchDeg -= dY * mLookSensitivity;
+	if (mIsLookingEnabled) {
+		if (!mIsFirstMouseMovement) {
+			double dX = currentMouseX - mPrevMouseX;
+			double dY = currentMouseY - mPrevMouseY;
+			mYawDeg += dX * mLookSensitivity;
+			mPitchDeg -= dY * mLookSensitivity;
 
-		if (mPitchDeg > 85) {
-			mPitchDeg = 85;
+			if (mPitchDeg > 85) {
+				mPitchDeg = 85;
+			}
+			if (mPitchDeg < -85) {
+				mPitchDeg = -85;
+			}
 		}
-		if (mPitchDeg < -85) {
-			mPitchDeg = -85;
+		else {
+			mIsFirstMouseMovement = false;
 		}
+		mPrevMouseX = currentMouseX;
+		mPrevMouseY = currentMouseY;
 	}
-	else {
-		mIsFirstUpdate = false;
-	}
-	mPrevMouseX = currentMouseX;
-	mPrevMouseY = currentMouseY;
 
 	glm::vec3 flatForward{ getForward() };
 	flatForward.y = 0;

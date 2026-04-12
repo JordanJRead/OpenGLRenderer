@@ -13,6 +13,8 @@ public:
 	glm::mat4 getProjectionMatrix(int screenWidth, int screenHeight) const;
 	glm::vec3 getForward() const;
 	glm::vec3 getPosition() const { return mPosition; }
+	void disableLooking() { mIsLookingEnabled = false; }
+	void enableLooking() { mIsLookingEnabled = true; mIsFirstMouseMovement = true; }
 
 private:
 	glm::vec3 mPosition;
@@ -22,7 +24,8 @@ private:
 	double mLookSensitivity;
 	double mPrevMouseX;
 	double mPrevMouseY;
-	bool mIsFirstUpdate{ true };
+	bool mIsLookingEnabled = true;
+	bool mIsFirstMouseMovement{ true };
 };
 
 #endif

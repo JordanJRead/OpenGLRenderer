@@ -12,12 +12,27 @@
 #include "scene.h"
 #include "pointlight.h"
 #include "vertexarrayscreen.h"
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_glfw.h"
+#include "imgui/imgui_impl_opengl3.h"
 
 class App {
     static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+        App* app = ((App*)glfwGetWindowUserPointer(window));
         if (key == GLFW_KEY_E && action == GLFW_PRESS) {
-            ((App*)glfwGetWindowUserPointer(window))->mDoNormalMapping = !((App*)glfwGetWindowUserPointer(window))->mDoNormalMapping;
-            ((App*)glfwGetWindowUserPointer(window))->mGeometryPassShader.setNormalMapping(((App*)glfwGetWindowUserPointer(window))->mDoNormalMapping);
+            app->mDoNormalMapping = !app->mDoNormalMapping;
+            app->mGeometryPassShader.setNormalMapping(app->mDoNormalMapping);
+        }
+
+        if (key == GLFW_KEY_R && action == GLFW_PRESS) {
+            if (glfwGetInputMode(window, GLFW_CURSOR) == GLFW_CURSOR_NORMAL) {
+                glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+                app->mCamera.enableLooking();
+            }
+            else {
+                glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+                app->mCamera.disableLooking();
+            }
         }
     }
 public:
@@ -78,8 +93,24 @@ public:
 
             mShaderDeferred.render(mScreenVertexArray, mFramebuffer, mCamera.getPosition());
 
+            // UI
+            ImGui_ImplOpenGL3_NewFrame();
+            ImGui_ImplGlfw_NewFrame();
+            ImGui::NewFrame();
+
+            ImGui::Begin("FPS");
+            ImGui::LabelText(std::to_string(144).c_str(), "");
+            ImGui::End();
+
+            ImGui::Render();
+            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
             glfwSwapBuffers(mWindow);
         }
+        ImGui_ImplOpenGL3_Shutdown();
+        ImGui_ImplGlfw_Shutdown();
+        ImGui::DestroyContext();
+        glfwTerminate();
 	}
 
 private:

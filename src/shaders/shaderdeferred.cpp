@@ -9,12 +9,12 @@ ShaderDeferred::ShaderDeferred(const std::string& vertPath, const std::string& f
 	setInt("specularDataBuffer", 3);
 }
 
-void ShaderDeferred::render(const VertexArrayScreen& screenVertexArray, const Framebuffer& source, const glm::vec3& cameraPos) {
+void ShaderDeferred::render(const VertexArrayScreen& screenVertexArray, const Framebuffer& geometryBuffers, const glm::vec3& cameraPos) {
 	bind();
-	source.bindColourTexture(0, 0);
-	source.bindColourTexture(1, 1);
-	source.bindColourTexture(2, 2);
-	source.bindColourTexture(3, 3);
+	geometryBuffers.bindColourTexture(0, 0);
+	geometryBuffers.bindColourTexture(1, 1);
+	geometryBuffers.bindColourTexture(2, 2);
+	geometryBuffers.bindColourTexture(3, 3);
 	setVector3("directionalLight.dirTo", glm::normalize(glm::vec3{ 1, 0.5, 0 }));
 	setVector3("directionalLight.colour", glm::vec3{ 0, 0, 0 });
 	setVector3("ambientLightColour", glm::vec3{ 0.2, 0.2, 0.2 });

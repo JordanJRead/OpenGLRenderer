@@ -5,6 +5,9 @@
 #include "vertexarray.h"
 #include "texturetypes.h"
 #include "app.h"
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_glfw.h"
+#include "imgui/imgui_impl_opengl3.h"
 
 int main() {
     int screenWidth{ 1920 };
@@ -24,6 +27,13 @@ int main() {
         std::cerr << "Failed to initialize GLAD\n";
         return 1;
     }
+
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io{ ImGui::GetIO() }; (void)io;
+    ImGui::StyleColorsDark();
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init("#version 430");
 
     if (window == nullptr) {
         std::cerr << "Failed to create GLFW window\n";
