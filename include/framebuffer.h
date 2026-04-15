@@ -22,7 +22,7 @@ public:
 		, mHeight{ height }
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, mFBO);
-		const int colourTextureCount = formats.size();
+		const size_t colourTextureCount = formats.size();
 		std::vector<GLenum> attachments;
 		for (int i{ 0 }; i < colourTextureCount; ++i) {
 			attachments.push_back(GL_COLOR_ATTACHMENT0 + i);
@@ -35,7 +35,7 @@ public:
 			glReadBuffer(GL_NONE);
 		}
 		else if (attachments.size() > 1) {
-			glDrawBuffers(attachments.size(), attachments.data());
+			glDrawBuffers((GLsizei)attachments.size(), attachments.data());
 		}
 
 		glBindRenderbuffer(GL_RENDERBUFFER, mDepthStencilRenderbuffer);

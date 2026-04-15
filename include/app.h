@@ -6,7 +6,7 @@
 #include "shaders/shaderpostprocess.h"
 #include "shaders/shaderdeferred.h"
 #include "glm/glm.hpp"
-#include "sceneobject.h"
+#include "model.h"
 #include "transform.h"
 #include "framebuffer.h"
 #include "scene.h"

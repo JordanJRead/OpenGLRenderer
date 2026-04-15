@@ -9,12 +9,12 @@ ShaderPointLight::ShaderPointLight(const std::string& vertPath, const std::strin
 
 }
 
-void ShaderPointLight::render(const VertexArray& vertexArray, const PointLight& pointLight, const glm::vec3& scale) const {
+void ShaderPointLight::render(const VertexArray& vertexArray, const glm::vec3& position, const glm::vec3& lightColour, const glm::vec3& scale) const {
 	vertexArray.bind();
-	setVector3("position", pointLight.position);;
+	setVector3("position", position);;
 	setVector3("scale", scale);
-	setVector3("colour", pointLight.colour);
-	glDrawElements(GL_TRIANGLES, vertexArray.getIndexCount(), GL_UNSIGNED_INT, 0);
+	setVector3("colour", lightColour);
+	glDrawElements(GL_TRIANGLES, (GLsizei)vertexArray.getIndexCount(), GL_UNSIGNED_INT, 0);
 }
 
 void ShaderPointLight::setModelMatrix(const Camera& camera, const Transform& transform) const {

@@ -3,7 +3,7 @@
 
 #include "material.h"
 #include "vertexarray.h"
-#include "sceneobject.h"
+#include "model.h"
 #include <vector>
 
 class Mesh {

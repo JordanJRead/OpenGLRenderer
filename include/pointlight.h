@@ -2,10 +2,14 @@
 #define POINT_LIGHT_H
 
 #include "glm/glm.hpp"
+#include "component.h"
 
-struct PointLight {
-	glm::vec3 position;
-	glm::vec3 colour;
+class PointLight : public Component {
+public:
+	PointLight(const glm::vec3& colour);
+	static ComponentTypes::Type getComponentType() { return ComponentTypes::pointLight; }
+	void renderUIProperties() override {}
+	glm::vec3 mColour;
 };
 
 #endif
