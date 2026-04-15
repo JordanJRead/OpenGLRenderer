@@ -1,5 +1,7 @@
 #include "shaders/shaderobject.h"
 #include "vertexarray.h"
+#include "transform.h"
+#include "material.h"
 
 ShaderObject::ShaderObject(const std::string& vertPath, const std::string& fragPath) : ShaderI{ vertPath, fragPath } {
 	bind();
@@ -8,19 +10,25 @@ ShaderObject::ShaderObject(const std::string& vertPath, const std::string& fragP
 	}
 }
 
-void ShaderObject::setModelMatrix(const Transform& transform) const {
+void ShaderObject::render(const Mesh& mesh, const Model& parentModel, const Framebuffer* framebuffer, const Transform& transform) const {
 	bind();
-	setMatrix4("model", transform.getModelMatrix());
-}
+	if (framebuffer) {
+		framebuffer->bind();
+	}
+	else {
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	}
 
-void ShaderObject::render(const VertexArray& vertexArray, const std::array<const Texture2D*, TextureTypes::max> textures, const Material& material) const {
-	bind();
-	setVector3("diffuseColour", material.mDiffuseColour);
-	setVector3("specularColour", material.mSpecularColour);
-	setFloat("specularExponent", material.mSpecularExponent);
-	vertexArray.bind();
+	setMatrix4("model", transform.getModelMatrix());
+	setVector3("diffuseColour", mesh.getMaterial().mDiffuseColour);
+	setVector3("specularColour", mesh.getMaterial().mSpecularColour);
+	setFloat("specularExponent", mesh.getMaterial().mSpecularExponent);
+
+	std::array<const Texture2D*, TextureTypes::max> textures{ mesh.getTextures(parentModel) };
 	for (int i = 0; i < textures.size(); ++i) {
 		textures[i]->bind(i);
 	}
-	glDrawElements(GL_TRIANGLES, (GLsizei)vertexArray.getIndexCount(), GL_UNSIGNED_INT, nullptr);
+
+	mesh.getVertexArray().bind();
+	glDrawElements(GL_TRIANGLES, (GLsizei)mesh.getVertexArray().getIndexCount(), GL_UNSIGNED_INT, nullptr);
 }

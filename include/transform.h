@@ -3,7 +3,8 @@
 
 #include "glm/glm.hpp"
 
-struct Transform {
+class Transform {
+public:
 	glm::vec3 mPosition;
 	glm::vec3 mScale;
 	glm::vec3 mRotationDeg;

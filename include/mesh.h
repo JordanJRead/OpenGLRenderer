@@ -3,8 +3,13 @@
 
 #include "material.h"
 #include "vertexarray.h"
-#include "model.h"
 #include <vector>
+#include <array>
+#include "texture2d.h"
+#include "texturetypes.h"
+#include "transform.h"
+
+class Model;
 
 class Mesh {
 public:
@@ -12,6 +17,7 @@ public:
 	const Material& getMaterial() const { return mMaterial; }
 	bool hasTexCoords() const { return mHasTexCoords; }
 	const VertexArray& getVertexArray() const { return mVertexArray; }
+	std::array<const Texture2D*, TextureTypes::max> getTextures(const Model& parentModel) const;
 
 private:
 	Material mMaterial;

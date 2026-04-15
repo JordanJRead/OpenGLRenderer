@@ -27,13 +27,14 @@ SceneObject& Scene::getObject(size_t index) {
 	return mObjects.at(index);
 }
 
-// TODO shader.render(), not model.render()
 void Scene::render(int screenWidth, int screenHeight, const ShaderObject& shader, const Framebuffer* const framebuffer) const {
 	for (const SceneObject& object : mObjects) {
 		const Model* model{ object.getComponent<Model>() };
 		if (model) {
-			shader.setModelMatrix(object.getTransform());
-			model->render(screenWidth, screenHeight, mCamera, shader, framebuffer);
+			const std::span<const Mesh> meshes{ model->getMeshes() };
+			for (const Mesh& mesh : meshes) {
+				shader.render(mesh, *model, framebuffer, object.getTransform());
+			}
 		}
 	}
 }

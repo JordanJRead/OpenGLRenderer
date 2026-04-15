@@ -121,26 +121,13 @@ size_t Model::addTexture(const std::string& filePath) {
 	return mTextures.size() - 1;
 }
 
-void Model::render(int screenWidth, int screenHeight, const Camera& camera, const ShaderObject& shader, const Framebuffer* const targetFramebuffer) const {
-	if (targetFramebuffer) {
-		targetFramebuffer->bind();
-	}
-	else {
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	}
-	
-	for (const Mesh& mesh : mMeshes) {
-		std::array<const Texture2D*, TextureTypes::max> textures;
-		for (int i = 0; i < TextureTypes::max; ++i) {
-			textures[i] = &(getTexture(mesh.getMaterial().mTextureIndices[i], (TextureTypes::Type)i));
-		}
-		shader.render(mesh.getVertexArray(), textures, mesh.getMaterial());
-	}
-}
-
 const Texture2D& Model::getTexture(size_t index, TextureTypes::Type textureType) const {
 	if (index >= mTextures.size() || index < 0) {
 		return *TextureTypes::defaultImages[(int)textureType];
 	}
 	return mTextures[index];
+}
+
+const std::span<const Mesh> Model::getMeshes() {
+	return mMeshes;
 }

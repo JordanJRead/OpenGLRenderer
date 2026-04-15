@@ -4,7 +4,8 @@
 #include "glm/glm.hpp"
 #include "texturetypes.h"
 
-struct Material {
+class Material {
+public:
 	glm::vec3 mDiffuseColour;
 	glm::vec3 mSpecularColour;
 	float mSpecularExponent{ 32.0 };

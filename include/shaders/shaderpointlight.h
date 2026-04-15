@@ -7,7 +7,7 @@
 class Camera;
 class VertexArray;
 class PointLight;
-struct Transform;
+class Transform;
 
 class ShaderPointLight : public ShaderI {
 public:

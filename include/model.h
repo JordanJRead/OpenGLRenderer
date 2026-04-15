@@ -11,6 +11,7 @@
 #include "glad/glad.h"
 #include "shaders/shaderobject.h"
 #include "component.h"
+#include <span>
 
 struct aiMesh;
 struct aiNode;
@@ -20,12 +21,14 @@ class ShaderI;
 class Camera;
 
 class Model : public Component {
+	friend class Mesh;
 public:
+	static ComponentTypes::Type getComponentType() { return ComponentTypes::model; }
+
 	Model(const std::string& objPath);
 	const std::vector<Mesh>& getMeshes() const { return mMeshes; }
 	void renderUIProperties() override {}
-	void render(int screenWidth, int screenHeight, const Camera& camera, const ShaderObject& shader, const Framebuffer* const targetFramebuffer) const;
-	static ComponentTypes::Type getComponentType() { return ComponentTypes::model; }
+	const std::span<const Mesh> getMeshes();
 
 private:
 	std::vector<Mesh> mMeshes;
