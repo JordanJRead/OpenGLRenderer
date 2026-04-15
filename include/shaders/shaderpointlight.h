@@ -12,7 +12,7 @@ struct Transform;
 class ShaderPointLight : public ShaderI {
 public:
 	ShaderPointLight(const std::string& vertPath, const std::string& fragPath);
-	void render(const VertexArray& vertexArray, const PointLight& pointLight, const glm::vec3& scale) const;
+	void render(const VertexArray& vertexArray, const glm::vec3& position, const glm::vec3& lightColour, const glm::vec3& scale) const;
 	void setModelMatrix(const Camera& camera, const Transform& transform) const;
 };
 

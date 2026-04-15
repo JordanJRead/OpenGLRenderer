@@ -22,5 +22,5 @@ void ShaderObject::render(const VertexArray& vertexArray, const std::array<const
 	for (int i = 0; i < textures.size(); ++i) {
 		textures[i]->bind(i);
 	}
-	glDrawElements(GL_TRIANGLES, vertexArray.getIndexCount(), GL_UNSIGNED_INT, nullptr);
+	glDrawElements(GL_TRIANGLES, (GLsizei)vertexArray.getIndexCount(), GL_UNSIGNED_INT, nullptr);
 }

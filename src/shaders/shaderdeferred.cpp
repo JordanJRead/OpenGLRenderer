@@ -20,5 +20,5 @@ void ShaderDeferred::render(const VertexArrayScreen& screenVertexArray, const Fr
 	setVector3("ambientLightColour", ambientLightColour);
 	screenVertexArray.bind();
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glDrawElements(GL_TRIANGLES, screenVertexArray.getIndexCount(), GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, (GLsizei)screenVertexArray.getIndexCount(), GL_UNSIGNED_INT, 0);
 }

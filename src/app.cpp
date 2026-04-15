@@ -4,7 +4,7 @@
 #include "shaders/shaderpostprocess.h"
 #include "shaders/shaderdeferred.h"
 #include "glm/glm.hpp"
-#include "sceneobject.h"
+#include "model.h"
 #include "transform.h"
 #include "framebuffer.h"
 #include "scene.h"
@@ -38,7 +38,7 @@ App::App(int screenWidth, int screenHeight, GLFWwindow* window)
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-    glClearColor(0.2, 0.2, 0.2, 1);
+    glClearColor(0.2f, 0.2f, 0.2f, 1);
     TextureTypes::memoryGuard.loadDefaultTextures();
     glfwSetWindowUserPointer(mWindow, this);
     glfwSetKeyCallback(mWindow, keyCallback);
@@ -47,8 +47,12 @@ App::App(int screenWidth, int screenHeight, GLFWwindow* window)
 void App::run() {
     mScene.getDirectionalLight().mDirTo = glm::vec3{ 0, 1, 0 };
     mScene.getDirectionalLight().mColour = glm::vec3{ 1, 1, 1 };
-    const int lightIndex = mScene.addPointLight({ {0, 1, 0}, {1, 1, 1} });
-    mScene.addObject("assets/objects/sponza/sponza.obj", Transform{ {0, 0, 0}, { 0.1, -0.1, 0.1 }, { 0, 0, 0 } });
+
+    const size_t lightIndex = mScene.addObject(Transform{ {0, 1, 0}, {1, 1, 1}, {0, 0, 0} });
+    mScene.getObject(lightIndex).addComponent(std::make_unique<PointLight>(glm::vec3{ 1, 1, 1 }));
+
+    const size_t modelIndex = mScene.addObject(Transform{ {0, 0, 0}, { 0.1, -0.1, 0.1 }, { 0, 0, 0 } });
+    mScene.getObject(modelIndex).addComponent(std::make_unique<Model>("assets/objects/sponza/sponza.obj"));
 
     //mScene.addObject("assets/objects/breakfast_room/breakfast_room.obj", Transform{ {0, 0, 0}, { 1, 1, 1 }, { 0, 0, 0 } });
     //mScene.addObject("assets/objects/bedroom/iscv2.obj", Transform{ {0, 0, 0}, { 0.3, 0.3, 0.3 }, { 270, 0, 0 } });

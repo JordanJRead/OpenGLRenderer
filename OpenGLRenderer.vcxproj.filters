@@ -30,7 +30,7 @@
     <ClCompile Include="src\texture2d.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\sceneobject.cpp">
+    <ClCompile Include="src\model.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\mesh.cpp">
@@ -87,6 +87,15 @@
     <ClCompile Include="src\editor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\componenttypes.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pointlight.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\sceneobject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\shaders\shaderi.h">
@@ -107,7 +116,7 @@
     <ClInclude Include="include\OpenGLObjects\VAO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\sceneobject.h">
+    <ClInclude Include="include\model.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\mesh.h">
@@ -165,6 +174,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\editor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\component.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\componenttypes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\sceneobject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -17,7 +17,7 @@ public:
 	void bind() const {
 		mVertexArray.bind();
 	}
-	int getIndexCount() const {
+	size_t getIndexCount() const {
 		return mVertexArray.getIndexCount();
 	}
 

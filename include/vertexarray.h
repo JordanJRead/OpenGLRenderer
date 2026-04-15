@@ -39,23 +39,23 @@ public:
 			aiNode* currentNode{ nodes.back() };
 			nodes.pop_back();
 
-			for (int meshI{ 0 }; meshI < currentNode->mNumMeshes; ++meshI) {
+			for (unsigned int meshI{ 0 }; meshI < currentNode->mNumMeshes; ++meshI) {
 				aiMesh* currentMesh{ scene->mMeshes[currentNode->mMeshes[meshI]] };
 
-				for (int vertexI{ 0 }; vertexI < currentMesh->mNumVertices; ++vertexI) {
+				for (unsigned int vertexI{ 0 }; vertexI < currentMesh->mNumVertices; ++vertexI) {
 					vertexData.push_back(currentMesh->mVertices[vertexI].x);
 					vertexData.push_back(currentMesh->mVertices[vertexI].y);
 					vertexData.push_back(currentMesh->mVertices[vertexI].z);
 				}
 
-				for (int faceI{ 0 }; faceI < currentMesh->mNumFaces; ++faceI) {
-					for (int indexI{ 0 }; indexI < currentMesh->mFaces[faceI].mNumIndices; ++indexI) {
+				for (unsigned int faceI{ 0 }; faceI < currentMesh->mNumFaces; ++faceI) {
+					for (unsigned int indexI{ 0 }; indexI < currentMesh->mFaces[faceI].mNumIndices; ++indexI) {
 						vertexIndices.push_back(currentMesh->mFaces[faceI].mIndices[indexI]);
 					}
 				}
 			}
 
-			for (int childI{ 0 }; childI < currentNode->mNumChildren; ++childI) {
+			for (unsigned int childI{ 0 }; childI < currentNode->mNumChildren; ++childI) {
 				nodes.push_back(currentNode->mChildren[childI]);
 			}
 

@@ -68,9 +68,9 @@ void Camera::update(GLFWwindow* window, float deltaTime) {
 
 glm::vec3 Camera::getForward() const {
 	glm::vec3 forward;
-	forward.x =  glm::sin(glm::radians(mYawDeg)) * glm::cos(glm::radians(mPitchDeg));
-	forward.y =  glm::sin(glm::radians(mPitchDeg));
-	forward.z = -glm::cos(glm::radians(mYawDeg)) * glm::cos(glm::radians(mPitchDeg));
+	forward.x = (float) (glm::sin(glm::radians(mYawDeg)) * glm::cos(glm::radians(mPitchDeg)));
+	forward.y = (float) (glm::sin(glm::radians(mPitchDeg)));
+	forward.z = (float)(-glm::cos(glm::radians(mYawDeg)) * glm::cos(glm::radians(mPitchDeg)));
 	return forward;
 }
 
