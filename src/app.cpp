@@ -1,16 +1,8 @@
 #include "app.h"
-#include "camera.h"
-#include "shaders/shaderobject.h"
-#include "shaders/shaderpostprocess.h"
-#include "shaders/shaderdeferred.h"
 #include "glm/glm.hpp"
 #include "model.h"
 #include "transform.h"
-#include "framebuffer.h"
-#include "scene.h"
 #include "pointlight.h"
-#include "vertexarrayscreen.h"
-#include "cameradatabuffer.h"
 #include "GLFW/glfw3.h"
 
 void App::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
@@ -67,6 +59,10 @@ void App::run() {
     float prevTime{ 0 };
     while (!glfwWindowShouldClose(mWindow)) {
         glfwPollEvents();
+        if (glfwGetKey(mWindow, GLFW_KEY_ESCAPE)) {
+            glfwSetWindowShouldClose(mWindow, true);
+        }
+
         float currentTime{ (float)glfwGetTime() };
         float deltaTime{ currentTime - prevTime };
         prevTime = currentTime;
@@ -85,21 +81,14 @@ void App::run() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
         glDisable(GL_BLEND);
-        mScene.render(mScreenWidth, mScreenHeight, mGeometryPassShader, &mGeometryBuffers);
-        if (glfwGetKey(mWindow, GLFW_KEY_ESCAPE)) {
-            glfwSetWindowShouldClose(mWindow, true);
-        }
+        mScene.render(mGeometryPassShader, mPointLightGeometryShader, &mGeometryBuffers, mRenderSettings);
 
-        mScene.renderPointLights(mScreenWidth, mScreenHeight, mPointLightGeometryShader, &mGeometryBuffers);
-
-        mShaderDeferred.render(mScreenVertexArray, mGeometryBuffers, mScene.getDirectionalLight(), mScene.getAmbientLightColour());
+        mShaderDeferred.render(mScreenVertexArray, nullptr, mGeometryBuffers, mScene.getDirectionalLight(), mScene.getAmbientLightColour());
 
         mEditor.updateRender(mScene);
 
         glfwSwapBuffers(mWindow);
     }
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();
+    mEditor.destroyUI();
     glfwTerminate();
 }

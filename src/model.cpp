@@ -2,18 +2,17 @@
 #include "assimp/importer.hpp"
 #include "assimp/postprocess.h"
 #include "assimp/scene.h"
-#include <vector>
 #include "camera.h"
 #include "texturetypes.h"
 
-Model::Model(const std::string& objPath)
+Model::Model(std::string_view objPath)
 	: mDirectory{ objPath }
 	, Component{ ComponentTypes::model }
 	{
 	mDirectory.resize(mDirectory.rfind("/"));
 
 	Assimp::Importer importer;
-	const aiScene* scene = importer.ReadFile(objPath, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace | aiProcess_GenSmoothNormals);
+	const aiScene* scene = importer.ReadFile(objPath.data(), aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace | aiProcess_GenSmoothNormals);
 
 	processNode(scene->mRootNode, scene);
 }
@@ -111,13 +110,16 @@ void Model::processMesh(aiMesh* mesh, const aiScene* scene) {
 /// Adds a new texture if the texture does not already exist
 /// </summary>
 /// <returns>The index to the texture</returns>
-size_t Model::addTexture(const std::string& filePath) {
+size_t Model::addTexture(std::string_view filePath) {
 	for (int i{ 0 }; i < mTextures.size(); ++i) {
 		if (mTextures[i].getFilePath() == filePath) {
 			return i;
 		}
 	}
-	mTextures.emplace_back(mDirectory + "/" + filePath);
+	std::string fullFilePath{ mDirectory };
+	fullFilePath += "/";
+	fullFilePath += filePath;
+	mTextures.emplace_back(fullFilePath);
 	return mTextures.size() - 1;
 }
 

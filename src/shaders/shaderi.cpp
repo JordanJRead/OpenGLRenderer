@@ -1,14 +1,13 @@
-#include <string>
-#include <glad/glad.h>
 #include "shaders/shaderi.h"
-#include <sstream>
 #include <iostream>
-#include <fstream>
+#include "glad/glad.h"
+#include "glm/gtc/type_ptr.hpp"
+
 #define STB_INCLUDE_IMPLEMENTATION
 #define STB_INCLUDE_LINE_GLSL
 #include "stb_include.h"
 
-ShaderI::ShaderI(const std::string& vertPath, const std::string& fragPath) {
+ShaderI::ShaderI(std::string_view vertPath, std::string_view fragPath) {
     
     // Read soruce code in
     char vertError[256];
@@ -69,4 +68,30 @@ ShaderI::ShaderI(const std::string& vertPath, const std::string& fragPath) {
     glDeleteShader(fragShader);
     free(vertSource);
     free(fragSource);
+}
+
+
+ShaderI::~ShaderI() { glDeleteProgram(mID); }
+void ShaderI::bind() const { glUseProgram(mID); }
+
+void ShaderI::setMatrix4(std::string_view name, const glm::mat4& mat4) const {
+    glUniformMatrix4fv(glGetUniformLocation(mID, name.data()), 1, false, glm::value_ptr(mat4));
+}
+void ShaderI::setVector3(std::string_view name, const glm::vec3& v) const {
+    glUniform3fv(glGetUniformLocation(mID, name.data()), 1, glm::value_ptr(v));
+}
+void ShaderI::setVector2(std::string_view name, const glm::vec2& v) const {
+    glUniform2fv(glGetUniformLocation(mID, name.data()), 1, glm::value_ptr(v));
+}
+void ShaderI::setFloat(std::string_view name, float f) const {
+    glUniform1f(glGetUniformLocation(mID, name.data()), f);
+}
+void ShaderI::setUInt(std::string_view name, unsigned int n) const {
+    glUniform1ui(glGetUniformLocation(mID, name.data()), n);
+}
+void ShaderI::setInt(std::string_view name, int n) const {
+    glUniform1i(glGetUniformLocation(mID, name.data()), n);
+}
+void ShaderI::setBool(std::string_view name, bool b) const {
+    glUniform1ui(glGetUniformLocation(mID, name.data()), b);
 }

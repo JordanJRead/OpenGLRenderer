@@ -6,11 +6,6 @@ in VertOut {
 	vec3 worldPos;
 } fragIn;
 
-out vec4 OutWorldPos;
-out vec4 OutNormal;
-out vec4 OutDiffuseColour;
-out vec4 OutSpecularData;
-
 uniform sampler2D diffuseTexture;
 uniform sampler2D specularTexture;
 uniform sampler2D normalTexture;
@@ -18,6 +13,11 @@ uniform sampler2D normalTexture;
 uniform vec3 diffuseColour;
 uniform vec3 specularColour;
 uniform float specularExponent;
+
+out vec4 OutWorldPos;
+out vec4 OutNormal;
+out vec4 OutDiffuseColour;
+out vec4 OutSpecularData;
 
 void main() {
 	vec4 diffuseSample = texture(diffuseTexture, fragIn.texCoords).rgba;

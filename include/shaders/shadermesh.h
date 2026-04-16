@@ -2,17 +2,15 @@
 #define OBJECT_SHADER_I
 
 #include "shaderi.h"
-#include "transform.h"
-#include "texturetypes.h"
-#include "mesh.h"
-#include "framebuffer.h"
 
 class Transform;
-class Material;
+class Mesh;
+class Framebuffer;
+class Model;
 
-class ShaderObject : public ShaderI {
+class ShaderMesh : public ShaderI {
 public:
-	ShaderObject(const std::string& vertPath, const std::string& fragPath);
+	ShaderMesh(std::string_view vertPath, std::string_view fragPath);
 	void render(const Mesh& mesh, const Model& parentModel, const Framebuffer* framebuffer, const Transform& transform) const;
 
 protected:

@@ -6,6 +6,7 @@ class Scene;
 class Editor {
 public:
 	void updateRender(Scene& scene);
+	void destroyUI();
 };
 
 #endif

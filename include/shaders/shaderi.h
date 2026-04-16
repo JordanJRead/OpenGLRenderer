@@ -1,11 +1,8 @@
 #ifndef SHADER_H
 #define SHADER_H
 
-#include <string>
 #include <string_view>
 #include "glm/glm.hpp"
-#include "glm/gtc/type_ptr.hpp"
-#include "glad/glad.h"
 
 class FramebufferI;
 class VertexArray;
@@ -17,31 +14,17 @@ protected:
 	ShaderI(const ShaderI&) = delete;
 	ShaderI(ShaderI&&) = delete;
 
-	ShaderI(const std::string& vertPath, const std::string& fragPath);
-	~ShaderI() { glDeleteProgram(mID); }
-	void bind() const { glUseProgram(mID); }
+	ShaderI(std::string_view vertPath, std::string_view fragPath);
+	~ShaderI();
+	void bind() const;
 
-	void setMatrix4(std::string_view name, const glm::mat4& mat4) const {
-		glUniformMatrix4fv(glGetUniformLocation(mID, name.data()), 1, false, glm::value_ptr(mat4));
-	}
-	void setVector3(std::string_view name, const glm::vec3& v) const {
-		glUniform3fv(glGetUniformLocation(mID, name.data()), 1, glm::value_ptr(v));
-	}
-	void setVector2(std::string_view name, const glm::vec2& v) const {
-		glUniform2fv(glGetUniformLocation(mID, name.data()), 1, glm::value_ptr(v));
-	}
-	void setFloat(std::string_view name, float f) const {
-		glUniform1f(glGetUniformLocation(mID, name.data()), f);
-	}
-	void setUInt(std::string_view name, unsigned int n) const {
-		glUniform1ui(glGetUniformLocation(mID, name.data()), n);
-	}
-	void setInt(std::string_view name, int n) const {
-		glUniform1i(glGetUniformLocation(mID, name.data()), n);
-	}
-	void setBool(std::string_view name, bool b) const {
-		glUniform1ui(glGetUniformLocation(mID, name.data()), b);
-	}
+	void setMatrix4(std::string_view name, const glm::mat4& mat4) const;
+	void setVector3(std::string_view name, const glm::vec3& v) const;
+	void setVector2(std::string_view name, const glm::vec2& v) const;
+	void setFloat(std::string_view name, float f) const;
+	void setUInt(std::string_view name, unsigned int n) const;
+	void setInt(std::string_view name, int n) const;
+	void setBool(std::string_view name, bool b) const;
 };
 
 #endif

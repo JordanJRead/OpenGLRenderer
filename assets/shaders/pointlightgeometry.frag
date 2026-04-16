@@ -1,5 +1,7 @@
 #version 430 core
 
+in vec3 worldPos;
+
 uniform vec3 colour;
 
 out vec4 OutWorldPos;
@@ -7,8 +9,6 @@ out vec4 OutNormal;
 out vec4 OutDiffuseColour;
 out vec4 OutSpecularColour;
 out vec4 OutAmbientColour;
-
-in vec3 worldPos;
 
 void main() {
 	OutAmbientColour = vec4(colour, 1);

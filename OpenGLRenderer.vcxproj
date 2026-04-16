@@ -161,7 +161,7 @@
     <ClCompile Include="src\scene.cpp" />
     <ClCompile Include="src\sceneobject.cpp" />
     <ClCompile Include="src\shaders\shaderdeferred.cpp" />
-    <ClCompile Include="src\shaders\shaderobject.cpp" />
+    <ClCompile Include="src\shaders\shadermesh.cpp" />
     <ClCompile Include="src\shaders\shaderpointlight.cpp" />
     <ClCompile Include="src\shaders\shaderpostprocess.cpp" />
     <ClCompile Include="src\texturetypes.cpp" />
@@ -191,12 +191,13 @@
     <ClInclude Include="include\OpenGLObjects\TEX.h" />
     <ClInclude Include="include\OpenGLObjects\VAO.h" />
     <ClInclude Include="include\pointlight.h" />
+    <ClInclude Include="include\rendersettings.h" />
     <ClInclude Include="include\scene.h" />
     <ClInclude Include="include\model.h" />
     <ClInclude Include="include\component.h" />
     <ClInclude Include="include\sceneobject.h" />
     <ClInclude Include="include\shaders\shaderdeferred.h" />
-    <ClInclude Include="include\shaders\shaderobject.h" />
+    <ClInclude Include="include\shaders\shadermesh.h" />
     <ClInclude Include="include\shaders\shaderi.h" />
     <ClInclude Include="include\shaders\shaderpointlight.h" />
     <ClInclude Include="include\shaders\shaderpostprocess.h" />
@@ -215,8 +216,8 @@
     <None Include="assets\shaders\buffers.glsl" />
     <None Include="assets\shaders\deferred.frag" />
     <None Include="assets\shaders\deferred.vert" />
-    <None Include="assets\shaders\geometrypass.frag" />
-    <None Include="assets\shaders\geometrypass.vert" />
+    <None Include="assets\shaders\meshgeometry.frag" />
+    <None Include="assets\shaders\meshgeometry.vert" />
     <None Include="assets\shaders\pointlightgeometry.frag" />
     <None Include="assets\shaders\pointlightgeometry.vert" />
     <None Include="assets\shaders\postprocess.frag" />

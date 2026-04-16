@@ -48,7 +48,7 @@
     <ClCompile Include="src\shaders\shaderdeferred.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\shaders\shaderobject.cpp">
+    <ClCompile Include="src\shaders\shadermesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\shaders\shaderpostprocess.cpp">
@@ -146,7 +146,7 @@
     <ClInclude Include="include\texturetypes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\shaders\shaderobject.h">
+    <ClInclude Include="include\shaders\shadermesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\shaders\shaderpostprocess.h">
@@ -185,6 +185,9 @@
     <ClInclude Include="include\sceneobject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\rendersettings.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Library Include="libraries\glfw3dll.lib" />
@@ -196,8 +199,8 @@
     <None Include="assimp-vc143-mt.dll" />
     <None Include="assets\shaders\deferred.frag" />
     <None Include="assets\shaders\deferred.vert" />
-    <None Include="assets\shaders\geometrypass.frag" />
-    <None Include="assets\shaders\geometrypass.vert" />
+    <None Include="assets\shaders\meshgeometry.frag" />
+    <None Include="assets\shaders\meshgeometry.vert" />
     <None Include="assets\shaders\pointlightgeometry.frag" />
     <None Include="assets\shaders\pointlightgeometry.vert" />
     <None Include="assets\shaders\postprocess.frag" />

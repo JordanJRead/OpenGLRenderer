@@ -2,13 +2,15 @@
 #define SHADER_POST_PROCESS
 
 #include "shaderi.h"
-#include <string>
-#include "texture2d.h"
+
+class Texture2D;
+class Framebuffer;
+class VertexArrayScreen;
 
 class ShaderPostProcess : public ShaderI {
 public:
-	ShaderPostProcess(const std::string& vertPath, const std::string& fragPath);
-	void setSourceTexture(const Texture2D& sourceTexture);
+	ShaderPostProcess(std::string_view vertPath, std::string_view fragPath);
+	void render(const VertexArrayScreen& screenVertexArray, const Framebuffer* targetFramebuffer, const Texture2D& sourceTexture);
 };
 
 #endif

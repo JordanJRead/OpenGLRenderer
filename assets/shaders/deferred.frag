@@ -3,7 +3,6 @@
 #include "buffers.glsl"
 
 in vec2 texCoord;
-out vec4 FragColour;
 
 uniform sampler2D worldPosBuffer;
 uniform sampler2D normalBuffer;
@@ -17,6 +16,8 @@ struct DirectionalLight {
 uniform DirectionalLight directionalLight;
 
 uniform vec3 ambientLightColour;
+
+out vec4 FragColour;
 
 vec3 getLightFromPointLight(vec3 objectPos, vec3 diffuseColour, vec3 specularColour, float specularExponent, vec3 objectNormal, vec3 lightPos, vec3 lightColour);
 vec3 getLightFromDirectionalLight(vec3 objectPos, vec3 diffuseColour, vec3 specularColour, float specularExponent, vec3 objectNormal, vec3 dirToLight, vec3 lightColour);

@@ -1,16 +1,22 @@
-#include "shaders/shaderobject.h"
+#include "shaders/shadermesh.h"
 #include "vertexarray.h"
 #include "transform.h"
-#include "material.h"
+#include "texturetypes.h"
+#include "mesh.h"
+#include "model.h"
+#include "framebuffer.h"
+#include <array>
+#include "texture2d.h"
+#include "glad/glad.h"
 
-ShaderObject::ShaderObject(const std::string& vertPath, const std::string& fragPath) : ShaderI{ vertPath, fragPath } {
+ShaderMesh::ShaderMesh(std::string_view vertPath, std::string_view fragPath) : ShaderI{ vertPath, fragPath } {
 	bind();
 	for (int i{ 0 }; i < (int)TextureTypes::max; ++i) {
 		setInt(TextureTypes::names[i] + "Texture", i);
 	}
 }
 
-void ShaderObject::render(const Mesh& mesh, const Model& parentModel, const Framebuffer* framebuffer, const Transform& transform) const {
+void ShaderMesh::render(const Mesh& mesh, const Model& parentModel, const Framebuffer* framebuffer, const Transform& transform) const {
 	bind();
 	if (framebuffer) {
 		framebuffer->bind();

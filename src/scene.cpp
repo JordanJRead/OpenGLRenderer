@@ -1,8 +1,13 @@
 #include "scene.h"
 #include "transform.h"
 #include "pointlight.h"
-#include "componenttypes.h"
 #include "glad/glad.h"
+#include "framebuffer.h"
+#include "rendersettings.h"
+#include "shaders/shadermesh.h"
+#include "shaders/shaderpointlight.h"
+#include <span>
+#include "model.h"
 
 Scene::Scene(int screenWidth, int screenHeight)
 	: mCamera{ glm::vec3{ 0, 0, 0 }, 100, 0.1, screenWidth, screenHeight }
@@ -27,31 +32,23 @@ SceneObject& Scene::getObject(size_t index) {
 	return mObjects.at(index);
 }
 
-void Scene::render(int screenWidth, int screenHeight, const ShaderObject& shader, const Framebuffer* const framebuffer) const {
+void Scene::render(const ShaderMesh& meshShader, const ShaderPointLight& pointLightShader, const Framebuffer* const framebuffer, const RenderSettings& renderSettings) const {
 	for (const SceneObject& object : mObjects) {
 		const Model* model{ object.getComponent<Model>() };
 		if (model) {
 			const std::span<const Mesh> meshes{ model->getMeshes() };
 			for (const Mesh& mesh : meshes) {
-				shader.render(mesh, *model, framebuffer, object.getTransform());
+				meshShader.render(mesh, *model, framebuffer, object.getTransform());
 			}
 		}
 	}
-}
 
-void Scene::renderPointLights(int screenWidth, int screenHeight, const ShaderPointLight& shader, const Framebuffer* const framebuffer) const {
-	if (framebuffer) {
-		framebuffer->bind();
-	}
-	else {
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	}
-
-	shader.setModelMatrix(mCamera, {});
-	for (const SceneObject& object : mObjects) {
-		const PointLight* pointLight{ object.getComponent<PointLight>() };
-		if (pointLight) {
-			shader.render(mSphereVertexArray, object.getTransform().mPosition, pointLight->mColour, glm::vec3{0.3,0.3,0.3});
+	if (renderSettings.mShouldRenderPointLights) {
+		for (const SceneObject& object : mObjects) {
+			const PointLight* pointLight{ object.getComponent<PointLight>() };
+			if (pointLight) {
+				pointLightShader.render(mSphereVertexArray, framebuffer, object.getTransform().mPosition, renderSettings.mPointLightRenderScale, pointLight->mColour);
+			}
 		}
 	}
 }
