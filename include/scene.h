@@ -9,6 +9,7 @@
 #include "directionallight.h"
 #include "glm/glm.hpp"
 #include "sceneobject.h"
+#include <string_view>
 
 class Framebuffer;
 struct RenderSettings;
@@ -20,11 +21,12 @@ class InputsJustPressed;
 class Scene {
 public:
 	Scene(int screenWidth, int screenHeight);
-	size_t addObject(const Transform& transform);
+	size_t addObject(const Transform& transform, std::string_view name);
 	SceneObject& getObject(size_t index);
 	void render(const ShaderMesh& meshShader, const ShaderPointLight& pointLightShader, const Framebuffer* const framebuffer, const RenderSettings& renderSettings) const;
 	void updatePointLights();
 	void updateCameraData(GLFWwindow* window, const InputsJustPressed& inputs, float deltaTime);
+	bool isValidObjectIndex(int index) const { return index >= 0 && index < mObjects.size(); }
 
 	Camera& getCamera() { return mCamera; }
 	DirectionalLight& getDirectionalLight() { return mDirectionalLight; }

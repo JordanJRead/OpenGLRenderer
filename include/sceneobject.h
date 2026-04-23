@@ -6,10 +6,12 @@
 #include "transform.h"
 #include <memory>
 #include <optional>
+#include <string>
+#include <string_view>
 
 class SceneObject {
 public:
-	SceneObject(const Transform& transform);
+	SceneObject(const Transform& transform, std::string_view name);
 	void addComponent(std::unique_ptr<Component> component);
 	
 	template <typename T>
@@ -36,10 +38,12 @@ public:
 
 	const Transform& getTransform() const;
 	Transform& getTransform();
+	std::string_view getName() { return mName; }
 
 private:
 	std::vector<std::unique_ptr<Component>> mComponents;
 	Transform mTransform;
+	std::string mName;
 };
 
 #endif

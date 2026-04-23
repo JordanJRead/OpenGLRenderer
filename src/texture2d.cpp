@@ -4,7 +4,9 @@
 #include "stbimage/stb_image.h"
 #include <iostream>
 
-Texture2D::Texture2D(int width, int height, GLenum format, GLenum wrapOption, GLenum filterOption) {
+Texture2D::Texture2D(int width, int height, GLenum format, GLenum wrapOption, GLenum filterOption)
+	: mFormat{ format }
+{
 	glBindTexture(GL_TEXTURE_2D, mTEX);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapOption);
@@ -12,7 +14,7 @@ Texture2D::Texture2D(int width, int height, GLenum format, GLenum wrapOption, GL
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filterOption);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filterOption);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
+	glTexImage2D(GL_TEXTURE_2D, 0, mFormat, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
@@ -35,7 +37,9 @@ Texture2D::Texture2D(std::string_view filePath, bool srgba, GLenum wrapOption, G
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filterOption);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filterOption);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, srgba ? GL_SRGB8_ALPHA8 : GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+	mFormat = srgba ? GL_SRGB8_ALPHA8 : GL_RGBA;
+
+	glTexImage2D(GL_TEXTURE_2D, 0, mFormat, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 	stbi_image_free(data);

@@ -1,6 +1,6 @@
 #include "sceneobject.h"
 
-SceneObject::SceneObject(const Transform& transform) : mTransform{ transform } {}
+SceneObject::SceneObject(const Transform& transform, std::string_view name) : mTransform{ transform }, mName{ name } {}
 
 void SceneObject::addComponent(std::unique_ptr<Component> component) {
 	mComponents.push_back(std::move(component));

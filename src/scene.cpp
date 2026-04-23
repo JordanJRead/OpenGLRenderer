@@ -24,8 +24,8 @@ void Scene::updateCameraData(GLFWwindow* window, const InputsJustPressed& inputs
 	mCameraDataBuffer.update(mCamera);
 }
 
-size_t Scene::addObject(const Transform& transform) {
-	mObjects.emplace_back(transform);
+size_t Scene::addObject(const Transform& transform, std::string_view name) {
+	mObjects.emplace_back(transform, name);
 	return mObjects.size() - 1;
 }
 

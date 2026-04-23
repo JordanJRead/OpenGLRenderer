@@ -70,12 +70,12 @@ public:
 	int getWidth() const { return mWidth; }
 	int getHeight() const { return mHeight; }
 
-	template <typename T>
-	std::array<T, 4> samplePixel(int x, int y, int colourTextureIndex) const {
+	std::array<float, 4> samplePixel(int x, int y, int colourTextureIndex) const {
 		bind();
 		glReadBuffer(GL_COLOR_ATTACHMENT0 + colourTextureIndex);
-		std::array<T, 4> data;
-		glReadPixels(x, y, 1, 1, mColourTextures[colourTextureIndex].getFormat(), GLFW_FLOATorwhatever, data.data()); // TODO everything
+		std::array<float, 4> data;
+		glReadPixels(x, y, 1, 1, GL_RGBA, GL_FLOAT, data.data());
+		glReadBuffer(GL_BACK);
 		return data;
 	}
 

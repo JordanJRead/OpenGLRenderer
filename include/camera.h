@@ -16,6 +16,8 @@ public:
 	glm::vec3 getPosition() const { return mPosition; }
 	void disableLooking() { mIsLookingEnabled = false; }
 	void enableLooking() { mIsLookingEnabled = true; mIsFirstMouseMovement = true; }
+	int getWidth() const { return mScreenHeight; }
+	int getHeight() const { return mScreenHeight; }
 
 private:
 	glm::vec3 mPosition;

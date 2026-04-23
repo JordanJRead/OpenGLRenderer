@@ -37,6 +37,8 @@ public:
 	/// </summary>
 	const std::string& getFilePath();
 
+	GLenum getFormat() const { return mFormat; }
+
 	operator unsigned int() {
 		return mTEX;
 	}
@@ -44,6 +46,7 @@ public:
 private:
 	TEX mTEX;
 	std::string mFilePath;
+	GLenum mFormat;
 };
 
 #endif
