@@ -11,7 +11,7 @@ class Model;
 class ShaderMesh : public ShaderI {
 public:
 	ShaderMesh(std::string_view vertPath, std::string_view fragPath);
-	void render(const Mesh& mesh, const Model& parentModel, const Framebuffer* framebuffer, const Transform& transform) const;
+	void render(const Mesh& mesh, const Model& parentModel, int objectSceneIndex, const Framebuffer* framebuffer, const Transform& transform) const;
 
 protected:
 };

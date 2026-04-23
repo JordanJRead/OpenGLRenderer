@@ -2,6 +2,7 @@
 #include "GLFW/glfw3.h"
 #include "glm/gtc/matrix_transform.hpp"
 #include "iostream"
+#include "inputsjustpressed.h"
 
 Camera::Camera(const glm::vec3& position, double horizontalFOVDeg, double lookSensitivity, int screenWidth, int screenHeight)
 	: mPosition{ position }
@@ -11,7 +12,19 @@ Camera::Camera(const glm::vec3& position, double horizontalFOVDeg, double lookSe
 	, mScreenHeight{ screenHeight }
 {}
 
-void Camera::update(GLFWwindow* window, float deltaTime) {
+void Camera::update(GLFWwindow* window, const InputsJustPressed& inputs, float deltaTime) {
+
+	if (inputs.checkKey(GLFW_KEY_R)) {
+	    if (glfwGetInputMode(window, GLFW_CURSOR) == GLFW_CURSOR_NORMAL) {
+	        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	        enableLooking();
+	    }
+	    else {
+	        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+	        disableLooking();
+	    }
+	}
+
 	double currentMouseX, currentMouseY;
 	glfwGetCursorPos(window, &currentMouseX, &currentMouseY);
 	

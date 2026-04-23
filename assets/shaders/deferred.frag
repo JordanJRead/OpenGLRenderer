@@ -4,7 +4,7 @@
 
 in vec2 texCoord;
 
-uniform sampler2D worldPosBuffer;
+uniform sampler2D worldPosSceneIndexBuffer;
 uniform sampler2D normalBuffer;
 uniform sampler2D diffuseBuffer;
 uniform sampler2D specularDataBuffer;
@@ -28,7 +28,9 @@ void main() {
 	vec3 specularColour = specularData.rgb;
 	float specularExponent = specularData.w;
 	vec3 normal = texture(normalBuffer, texCoord).rgb;
-	vec3 worldPos = texture(worldPosBuffer, texCoord).rgb;
+
+	vec4 worldPosIndexSample = texture(worldPosSceneIndexBuffer, texCoord);
+	vec3 worldPos = worldPosIndexSample.xyz;
 
 	if (normal == vec3(0, 0, 0)) {
 		FragColour = vec4(diffuseAlbedo, 1);

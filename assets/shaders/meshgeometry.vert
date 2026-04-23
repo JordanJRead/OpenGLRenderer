@@ -14,6 +14,7 @@ out VertOut {
 	mat3 normalMapMatrix;
 	vec2 texCoords;
 	vec3 worldPos;
+	flat int sceneIndex;
 } vertOut;
 
 void main() {

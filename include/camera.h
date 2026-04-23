@@ -2,13 +2,14 @@
 #define CAMERA_H
 
 #include "glm/glm.hpp"
+#include "inputsjustpressed.h"
 
 struct GLFWwindow;
 
 class Camera {
 public:
 	Camera(const glm::vec3& position, double horizontalFOVDeg, double lookSensitivity, int screenWidth, int screenHeight);
-	void update(GLFWwindow* window, float deltaTime);
+	void update(GLFWwindow* window, const InputsJustPressed& inputs, float deltaTime);
 	glm::mat4 getViewMatrix() const;
 	glm::mat4 getProjectionMatrix() const;
 	glm::vec3 getForward() const;

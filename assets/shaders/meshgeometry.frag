@@ -4,6 +4,7 @@ in VertOut {
 	mat3 normalMapMatrix;
 	vec2 texCoords;
 	vec3 worldPos;
+	flat int sceneIndex;
 } fragIn;
 
 uniform sampler2D diffuseTexture;
@@ -14,7 +15,7 @@ uniform vec3 diffuseColour;
 uniform vec3 specularColour;
 uniform float specularExponent;
 
-out vec4 OutWorldPos;
+out vec4 OutWorldPosSceneIndex;
 out vec4 OutNormal;
 out vec4 OutDiffuseColour;
 out vec4 OutSpecularData;
@@ -30,6 +31,6 @@ void main() {
 	OutSpecularData = vec4(specularSample.rgb * specularColour, specularExponent);
 
 	vec3 normal = normalize(fragIn.normalMapMatrix * texture(normalTexture, fragIn.texCoords).xyz);
-	OutWorldPos = vec4(fragIn.worldPos, 1);
+	OutWorldPosSceneIndex = vec4(fragIn.worldPos, fragIn.sceneIndex);
 	OutNormal = vec4(normal, 1);
 }

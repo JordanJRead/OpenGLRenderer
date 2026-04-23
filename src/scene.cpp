@@ -8,6 +8,7 @@
 #include "shaders/shaderpointlight.h"
 #include <span>
 #include "model.h"
+#include "inputsjustpressed.h"
 
 Scene::Scene(int screenWidth, int screenHeight)
 	: mCamera{ glm::vec3{ 0, 0, 0 }, 100, 0.1, screenWidth, screenHeight }
@@ -18,8 +19,8 @@ Scene::Scene(int screenWidth, int screenHeight)
 	mSphereVertexArray.create("assets/objects/sphere/sphere.obj");
 }
 
-void Scene::updateCameraData(GLFWwindow* window, float deltaTime) {
-	mCamera.update(window, deltaTime);
+void Scene::updateCameraData(GLFWwindow* window, const InputsJustPressed& inputs, float deltaTime) {
+	mCamera.update(window, inputs, deltaTime);
 	mCameraDataBuffer.update(mCamera);
 }
 
@@ -33,12 +34,13 @@ SceneObject& Scene::getObject(size_t index) {
 }
 
 void Scene::render(const ShaderMesh& meshShader, const ShaderPointLight& pointLightShader, const Framebuffer* const framebuffer, const RenderSettings& renderSettings) const {
-	for (const SceneObject& object : mObjects) {
+	for (int objectI{ 0 }; objectI < mObjects.size(); ++objectI) {
+		const SceneObject& object{ mObjects[objectI] };
 		const Model* model{ object.getComponent<Model>() };
 		if (model) {
 			const std::span<const Mesh> meshes{ model->getMeshes() };
 			for (const Mesh& mesh : meshes) {
-				meshShader.render(mesh, *model, framebuffer, object.getTransform());
+				meshShader.render(mesh, *model, objectI, framebuffer, object.getTransform());
 			}
 		}
 	}

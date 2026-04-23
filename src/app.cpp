@@ -8,15 +8,16 @@
 void App::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
     App* app = ((App*)glfwGetWindowUserPointer(window));
 
-    if (key == GLFW_KEY_R && action == GLFW_PRESS) {
-        if (glfwGetInputMode(window, GLFW_CURSOR) == GLFW_CURSOR_NORMAL) {
-            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-            app->mScene.getCamera().enableLooking();
-        }
-        else {
-            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-            app->mScene.getCamera().disableLooking();
-        }
+    if (action == GLFW_PRESS) {
+        app->mInputs.registerKey(key);
+    }
+}
+
+void App::mouseCallback(GLFWwindow* window, int button, int action, int mods) {
+    App* app = ((App*)glfwGetWindowUserPointer(window));
+
+    if (action == GLFW_PRESS) {
+        app->mInputs.registerMouseButton(button);
     }
 }
 
@@ -34,6 +35,7 @@ App::App(int screenWidth, int screenHeight, GLFWwindow* window)
     TextureTypes::memoryGuard.loadDefaultTextures();
     glfwSetWindowUserPointer(mWindow, this);
     glfwSetKeyCallback(mWindow, keyCallback);
+    glfwSetMouseButtonCallback(mWindow, mouseCallback);
 }
 
 void App::run() {
@@ -58,6 +60,7 @@ void App::run() {
 
     float prevTime{ 0 };
     while (!glfwWindowShouldClose(mWindow)) {
+        mInputs.clear();
         glfwPollEvents();
         if (glfwGetKey(mWindow, GLFW_KEY_ESCAPE)) {
             glfwSetWindowShouldClose(mWindow, true);
@@ -72,12 +75,14 @@ void App::run() {
         mScene.updatePointLights();
 
         // Update
-        mScene.updateCameraData(mWindow, deltaTime);
+        mScene.updateCameraData(mWindow, mInputs, deltaTime);
 
         // Render
         mGeometryBuffers.bind();
+        glClearColor(0, 0, 0, -1);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glClearColor(0, 0, 0, 0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
         glDisable(GL_BLEND);

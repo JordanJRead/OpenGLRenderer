@@ -15,6 +15,7 @@ struct RenderSettings;
 class ShaderMesh;
 class ShaderPointLight;
 class Transform;
+class InputsJustPressed;
 
 class Scene {
 public:
@@ -23,7 +24,7 @@ public:
 	SceneObject& getObject(size_t index);
 	void render(const ShaderMesh& meshShader, const ShaderPointLight& pointLightShader, const Framebuffer* const framebuffer, const RenderSettings& renderSettings) const;
 	void updatePointLights();
-	void updateCameraData(GLFWwindow* window, float deltaTime);
+	void updateCameraData(GLFWwindow* window, const InputsJustPressed& inputs, float deltaTime);
 
 	Camera& getCamera() { return mCamera; }
 	DirectionalLight& getDirectionalLight() { return mDirectionalLight; }

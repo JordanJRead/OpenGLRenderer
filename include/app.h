@@ -13,6 +13,7 @@
 #include "GLFW/glfw3.h"
 #include "editor.h"
 #include "rendersettings.h"
+#include "inputsjustpressed.h"
 
 class App {
 public:
@@ -21,6 +22,7 @@ public:
 
 private:
     static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+    static void mouseCallback(GLFWwindow* window, int button, int action, int mods);
 
 	int mScreenWidth;
 	int mScreenHeight;
@@ -32,9 +34,10 @@ private:
     ShaderPointLight mPointLightGeometryShader{ "assets/shaders/pointlightgeometry.vert", "assets/shaders/pointlightgeometry.frag" };
 	float mPrevTime{ 0 };
     GLFWwindow* mWindow;
-    Framebuffer mGeometryBuffers{ mScreenWidth, mScreenHeight, {GL_RGB16F, GL_RGB16F, GL_RGB16F, GL_RGBA16F } }; // worldPos, normal, diffuse, specular/exponent
+    Framebuffer mGeometryBuffers{ mScreenWidth, mScreenHeight, {GL_RGBA32F, GL_RGB16F, GL_RGB16F, GL_RGBA16F } }; // worldPos/sceneIndex, normal, diffuse, specular/exponent
     VertexArrayScreen mScreenVertexArray;
     RenderSettings mRenderSettings;
+    InputsJustPressed mInputs;
 };
 
 #endif

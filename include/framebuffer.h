@@ -8,6 +8,7 @@
 #include <iostream>
 #include "texture2d.h"
 #include <vector>
+#include <array>
 
 class Framebuffer {
 public:
@@ -68,6 +69,15 @@ public:
 	}
 	int getWidth() const { return mWidth; }
 	int getHeight() const { return mHeight; }
+
+	template <typename T>
+	std::array<T, 4> samplePixel(int x, int y, int colourTextureIndex) const {
+		bind();
+		glReadBuffer(GL_COLOR_ATTACHMENT0 + colourTextureIndex);
+		std::array<T, 4> data;
+		glReadPixels(x, y, 1, 1, mColourTextures[colourTextureIndex].getFormat(), GLFW_FLOATorwhatever, data.data()); // TODO everything
+		return data;
+	}
 
 private:
 	FBO mFBO;
