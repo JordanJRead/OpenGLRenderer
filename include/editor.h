@@ -5,12 +5,12 @@
 #include "GLFW/glfw3.h"
 
 class Scene;
-class InputsJustPressed;
+class Inputs;
 class Framebuffer;
 
 class Editor {
 public:
-	void updateRender(Scene& scene, GLFWwindow* window, const InputsJustPressed& inputs, const Framebuffer& gBuffer);
+	void updateRender(Scene& scene, GLFWwindow* window, const Inputs& inputs, const Framebuffer& gBuffer);
 	void destroyUI();
 
 private:

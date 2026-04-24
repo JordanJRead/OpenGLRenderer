@@ -13,7 +13,7 @@
 #include "GLFW/glfw3.h"
 #include "editor.h"
 #include "rendersettings.h"
-#include "inputsjustpressed.h"
+#include "inputs.h"
 
 class App {
 public:
@@ -37,7 +37,7 @@ private:
     Framebuffer mGeometryBuffers{ mScreenWidth, mScreenHeight, {GL_RGBA32F, GL_RGB16F, GL_RGB16F, GL_RGBA16F } }; // worldPos/sceneIndex, normal, diffuse, specular/exponent
     VertexArrayScreen mScreenVertexArray;
     RenderSettings mRenderSettings;
-    InputsJustPressed mInputs;
+    Inputs mInputs;
 };
 
 #endif

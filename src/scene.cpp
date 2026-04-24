@@ -8,7 +8,7 @@
 #include "shaders/shaderpointlight.h"
 #include <span>
 #include "model.h"
-#include "inputsjustpressed.h"
+#include "inputs.h"
 
 Scene::Scene(int screenWidth, int screenHeight)
 	: mCamera{ glm::vec3{ 0, 0, 0 }, 100, 0.1, screenWidth, screenHeight }
@@ -19,7 +19,7 @@ Scene::Scene(int screenWidth, int screenHeight)
 	mSphereVertexArray.create("assets/objects/sphere/sphere.obj");
 }
 
-void Scene::updateCameraData(GLFWwindow* window, const InputsJustPressed& inputs, float deltaTime) {
+void Scene::updateCameraData(GLFWwindow* window, const Inputs& inputs, float deltaTime) {
 	mCamera.update(window, inputs, deltaTime);
 	mCameraDataBuffer.update(mCamera);
 }

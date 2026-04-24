@@ -155,9 +155,10 @@
     <ClCompile Include="src\imgui\imgui_draw.cpp" />
     <ClCompile Include="src\imgui\imgui_impl_glfw.cpp" />
     <ClCompile Include="src\imgui\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="src\imgui\imgui_stdlib.cpp" />
     <ClCompile Include="src\imgui\imgui_tables.cpp" />
     <ClCompile Include="src\imgui\imgui_widgets.cpp" />
-    <ClCompile Include="src\inputsjustpressed.cpp" />
+    <ClCompile Include="src\inputs.cpp" />
     <ClCompile Include="src\pointlight.cpp" />
     <ClCompile Include="src\scene.cpp" />
     <ClCompile Include="src\sceneobject.cpp" />
@@ -184,7 +185,7 @@
     <ClInclude Include="include\directionallight.h" />
     <ClInclude Include="include\editor.h" />
     <ClInclude Include="include\framebuffer.h" />
-    <ClInclude Include="include\inputsjustpressed.h" />
+    <ClInclude Include="include\inputs.h" />
     <ClInclude Include="include\material.h" />
     <ClInclude Include="include\mesh.h" />
     <ClInclude Include="include\OpenGLObjects\BUF.h" />

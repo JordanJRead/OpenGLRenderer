@@ -38,7 +38,8 @@ public:
 
 	const Transform& getTransform() const;
 	Transform& getTransform();
-	std::string_view getName() { return mName; }
+	std::string_view getName() const { return mName; }
+	std::string& getName() { return mName; }
 
 private:
 	std::vector<std::unique_ptr<Component>> mComponents;

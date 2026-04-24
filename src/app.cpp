@@ -5,12 +5,16 @@
 #include "pointlight.h"
 #include "GLFW/glfw3.h"
 #include "imgui/imgui_impl_glfw.h"
+#include "imgui/imgui_impl_opengl3.h"
 
 void App::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+    ImGui_ImplGlfw_KeyCallback(window, key, scancode, action, mods);
     App* app = ((App*)glfwGetWindowUserPointer(window));
 
-    if (action == GLFW_PRESS) {
-        app->mInputs.registerKey(key);
+    if (!(ImGui::GetIO().WantCaptureKeyboard)) {
+        if (action == GLFW_PRESS) {
+            app->mInputs.registerKeyPress(key);
+        }
     }
 }
 
@@ -19,7 +23,7 @@ void App::mouseCallback(GLFWwindow* window, int button, int action, int mods) {
     App* app = ((App*)glfwGetWindowUserPointer(window));
 
     if (action == GLFW_PRESS) {
-        app->mInputs.registerMouseButton(button);
+        app->mInputs.registerMouseButtonPress(button);
     }
 }
 
@@ -62,7 +66,15 @@ void App::run() {
 
     float prevTime{ 0 };
     while (!glfwWindowShouldClose(mWindow)) {
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame(); // move elsewhere?
+
         mInputs.clear();
+        if (!(ImGui::GetIO().WantCaptureKeyboard)) {
+            mInputs.registerAllKeysDown(mWindow);
+        }
+
         glfwPollEvents();
         if (glfwGetKey(mWindow, GLFW_KEY_ESCAPE)) {
             glfwSetWindowShouldClose(mWindow, true);

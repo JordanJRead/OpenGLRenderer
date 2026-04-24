@@ -16,7 +16,7 @@ struct RenderSettings;
 class ShaderMesh;
 class ShaderPointLight;
 class Transform;
-class InputsJustPressed;
+class Inputs;
 
 class Scene {
 public:
@@ -25,7 +25,7 @@ public:
 	SceneObject& getObject(size_t index);
 	void render(const ShaderMesh& meshShader, const ShaderPointLight& pointLightShader, const Framebuffer* const framebuffer, const RenderSettings& renderSettings) const;
 	void updatePointLights();
-	void updateCameraData(GLFWwindow* window, const InputsJustPressed& inputs, float deltaTime);
+	void updateCameraData(GLFWwindow* window, const Inputs& inputs, float deltaTime);
 	bool isValidObjectIndex(int index) const { return index >= 0 && index < mObjects.size(); }
 
 	Camera& getCamera() { return mCamera; }

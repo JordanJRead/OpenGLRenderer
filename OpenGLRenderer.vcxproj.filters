@@ -96,7 +96,10 @@
     <ClCompile Include="src\sceneobject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\inputsjustpressed.cpp">
+    <ClCompile Include="src\inputs.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\imgui\imgui_stdlib.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -191,7 +194,7 @@
     <ClInclude Include="include\rendersettings.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\inputsjustpressed.h">
+    <ClInclude Include="include\inputs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

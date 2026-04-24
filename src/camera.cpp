@@ -2,7 +2,7 @@
 #include "GLFW/glfw3.h"
 #include "glm/gtc/matrix_transform.hpp"
 #include "iostream"
-#include "inputsjustpressed.h"
+#include "inputs.h"
 
 Camera::Camera(const glm::vec3& position, double horizontalFOVDeg, double lookSensitivity, int screenWidth, int screenHeight)
 	: mPosition{ position }
@@ -12,9 +12,9 @@ Camera::Camera(const glm::vec3& position, double horizontalFOVDeg, double lookSe
 	, mScreenHeight{ screenHeight }
 {}
 
-void Camera::update(GLFWwindow* window, const InputsJustPressed& inputs, float deltaTime) {
+void Camera::update(GLFWwindow* window, const Inputs& inputs, float deltaTime) {
 
-	if (inputs.checkKey(GLFW_KEY_R)) {
+	if (inputs.checkKeyPressed(GLFW_KEY_R)) {
 	    if (glfwGetInputMode(window, GLFW_CURSOR) == GLFW_CURSOR_NORMAL) {
 	        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	        enableLooking();
@@ -55,22 +55,22 @@ void Camera::update(GLFWwindow* window, const InputsJustPressed& inputs, float d
 	glm::vec3 flatRight{ -flatForward.z, 0, flatForward.x };
 
 	glm::vec3 moveDirection{ 0, 0, 0 };
-	if (glfwGetKey(window, GLFW_KEY_W)) {
+	if (inputs.checkKeyDown(GLFW_KEY_W)) {
 		moveDirection += flatForward;
 	}
-	if (glfwGetKey(window, GLFW_KEY_S)) {
+	if (inputs.checkKeyDown(GLFW_KEY_S)) {
 		moveDirection -= flatForward;
 	}
-	if (glfwGetKey(window, GLFW_KEY_D)) {
+	if (inputs.checkKeyDown(GLFW_KEY_D)) {
 		moveDirection += flatRight;
 	}
-	if (glfwGetKey(window, GLFW_KEY_A)) {
+	if (inputs.checkKeyDown(GLFW_KEY_A)) {
 		moveDirection -= flatRight;
 	}
-	if (glfwGetKey(window, GLFW_KEY_SPACE)) {
+	if (inputs.checkKeyDown(GLFW_KEY_SPACE)) {
 		moveDirection += glm::vec3{ 0, 1, 0 };
 	}
-	if (glfwGetKey(window, GLFW_KEY_C)) {
+	if (inputs.checkKeyDown(GLFW_KEY_C)) {
 		moveDirection -= glm::vec3{ 0, 1, 0 };
 	}
 

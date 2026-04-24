@@ -3,19 +3,16 @@
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
 #include "scene.h"
-#include "inputsjustpressed.h"
+#include "inputs.h"
 #include "framebuffer.h"
 #include <glad/glad.h>
 #include <iostream>
+#include "imgui/imgui_stdlib.h"
 
-void Editor::updateRender(Scene& scene, GLFWwindow* window, const InputsJustPressed& inputs, const Framebuffer& gBuffer) {
-
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplGlfw_NewFrame();
-    ImGui::NewFrame();
+void Editor::updateRender(Scene& scene, GLFWwindow* window, const Inputs& inputs, const Framebuffer& gBuffer) {
 
     // Select object
-    if (inputs.checkMouseButton(GLFW_MOUSE_BUTTON_LEFT) && !ImGui::IsAnyItemHovered()) {
+    if (inputs.checkMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT) && !ImGui::IsAnyItemHovered()) {
         double mouseX;
         double mouseY;
         glfwGetCursorPos(window, &mouseX, &mouseY);
@@ -32,10 +29,13 @@ void Editor::updateRender(Scene& scene, GLFWwindow* window, const InputsJustPres
     ImGui::Begin("Object Editor");
     if (scene.isValidObjectIndex(mSelectedObjectIndex)) {
         SceneObject& object{ scene.getObject(mSelectedObjectIndex) };
-        ImGui::LabelText(object.getName().data(), "Name:");
+        ImGui::PushID(&object);
+        ImGui::InputText("", &object.getName());
+        ImGui::PopID();
     }
+
     else {
-        ImGui::LabelText("XA", "XB");
+        ImGui::Text("No object selected");
     }
     ImGui::End();
 
