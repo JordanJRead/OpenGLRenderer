@@ -31,10 +31,11 @@ void Editor::updateRender(Scene& scene, GLFWwindow* window, const InputsJustPres
     // Inspector
     ImGui::Begin("Object Editor");
     if (scene.isValidObjectIndex(mSelectedObjectIndex)) {
-        ImGui::LabelText("XA", "XB");
+        SceneObject& object{ scene.getObject(mSelectedObjectIndex) };
+        ImGui::LabelText(object.getName().data(), "Name:");
     }
     else {
-        ImGui::LabelText("A", "B");
+        ImGui::LabelText("XA", "XB");
     }
     ImGui::End();
 

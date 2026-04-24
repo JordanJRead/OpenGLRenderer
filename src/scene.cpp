@@ -34,6 +34,7 @@ SceneObject& Scene::getObject(size_t index) {
 }
 
 void Scene::render(const ShaderMesh& meshShader, const ShaderPointLight& pointLightShader, const Framebuffer* const framebuffer, const RenderSettings& renderSettings) const {
+	glDisable(GL_BLEND);
 	for (int objectI{ 0 }; objectI < mObjects.size(); ++objectI) {
 		const SceneObject& object{ mObjects[objectI] };
 		const Model* model{ object.getComponent<Model>() };
@@ -46,10 +47,11 @@ void Scene::render(const ShaderMesh& meshShader, const ShaderPointLight& pointLi
 	}
 
 	if (renderSettings.mShouldRenderPointLights) {
-		for (const SceneObject& object : mObjects) {
+		for (int objectI{ 0 }; objectI < mObjects.size(); ++objectI) {
+			const SceneObject& object{ mObjects[objectI] };
 			const PointLight* pointLight{ object.getComponent<PointLight>() };
 			if (pointLight) {
-				pointLightShader.render(mSphereVertexArray, framebuffer, object.getTransform().mPosition, renderSettings.mPointLightRenderScale, pointLight->mColour);
+				pointLightShader.render(objectI, mSphereVertexArray, framebuffer, object.getTransform().mPosition, renderSettings.mPointLightRenderScale, pointLight->mColour);
 			}
 		}
 	}

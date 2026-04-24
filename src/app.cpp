@@ -4,6 +4,7 @@
 #include "transform.h"
 #include "pointlight.h"
 #include "GLFW/glfw3.h"
+#include "imgui/imgui_impl_glfw.h"
 
 void App::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
     App* app = ((App*)glfwGetWindowUserPointer(window));
@@ -14,6 +15,7 @@ void App::keyCallback(GLFWwindow* window, int key, int scancode, int action, int
 }
 
 void App::mouseCallback(GLFWwindow* window, int button, int action, int mods) {
+    ImGui_ImplGlfw_MouseButtonCallback(window, button, action, mods);
     App* app = ((App*)glfwGetWindowUserPointer(window));
 
     if (action == GLFW_PRESS) {
