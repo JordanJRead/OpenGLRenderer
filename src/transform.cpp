@@ -2,10 +2,11 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/euler_angles.hpp>
 #include <array>
+#include "imgui/imgui.h"
 
 glm::mat4 Transform::getModelMatrix() const {
 	glm::mat4 matrix{ 1 };
-	matrix = glm::scale(matrix, mScale);
+	matrix = glm::translate(matrix, mPosition);
 	matrix = glm::eulerAngleXYZ(glm::radians(mRotationDeg.x), glm::radians(mRotationDeg.y), glm::radians(mRotationDeg.z)) * matrix;
 	matrix = glm::scale(matrix, mScale);
 	return matrix;
@@ -41,4 +42,11 @@ Transform::Transform(const JSON& json) {
 	mRotationDeg.x = json["rotation"].at("x");
 	mRotationDeg.y = json["rotation"].at("y");
 	mRotationDeg.z = json["rotation"].at("z");
+}
+
+void Transform::renderUI() const {
+	ImGui::Text("Transform");
+	ImGui::DragFloat3("Position", (float*)&mPosition, 0.1f);
+	ImGui::DragFloat3("Scale", (float*)&mScale, 0.01f);
+	ImGui::DragFloat3("Rotation", (float*)&mRotationDeg, 1);
 }

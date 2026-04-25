@@ -45,14 +45,6 @@ App::App(int screenWidth, int screenHeight, GLFWwindow* window)
 }
 
 void App::run() {
-    mScene.getDirectionalLight().mDirTo = glm::vec3{ 0, 1, 0 };
-    mScene.getDirectionalLight().mColour = glm::vec3{ 1, 1, 1 };
-
-    //const size_t lightIndex = mScene.addObject(Transform{ {0, 1, 0}, {1, 1, 1}, {0, 0, 0} }, "Light");
-    //mScene.getObject(lightIndex).addComponent(std::make_unique<PointLight>(glm::vec3{ 1, 1, 1 }));
-
-    //const size_t modelIndex = mScene.addObject(Transform{ {0, 0, 0}, { 0.1, -0.1, 0.1 }, { 0, 0, 0 } }, "Sponza");
-    //mScene.getObject(modelIndex).addComponent(std::make_unique<Model>("assets/objects/sponza/sponza.obj"));
 
     //mScene.addObject("assets/objects/breakfast_room/breakfast_room.obj", Transform{ {0, 0, 0}, { 1, 1, 1 }, { 0, 0, 0 } });
     //mScene.addObject("assets/objects/bedroom/iscv2.obj", Transform{ {0, 0, 0}, { 0.3, 0.3, 0.3 }, { 270, 0, 0 } });

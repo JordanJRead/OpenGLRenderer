@@ -16,6 +16,7 @@ public:
 
 	glm::mat4 getModelMatrix() const;
 	JSON toJSON() const;
+	void renderUI() const;
 };
 
 #endif

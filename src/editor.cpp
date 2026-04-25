@@ -36,6 +36,8 @@ void Editor::updateRender(Scene& scene, GLFWwindow* window, const Inputs& inputs
         ImGui::PushID(&object);
         ImGui::InputText("", &object.getName());
         ImGui::PopID();
+
+        object.getTransform().renderUI();
     }
 
     else {
