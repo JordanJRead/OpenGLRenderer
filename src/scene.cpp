@@ -106,6 +106,6 @@ void Scene::saveToJSON(std::string_view saveFilePath) {
 		json["objects"].push_back(object.toJSON());
 	}
 	std::ofstream file{ saveFilePath.data() };
-	file << json;
+	file << std::setw(1) << json;
 	file.close();
 }
