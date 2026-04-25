@@ -23,7 +23,7 @@ json SceneObject::toJSON() const {
 	for (const auto& component : mComponents) {
 		j["components"].push_back({ ComponentTypes::names[component.get()->getComponentType()], component.get()->toJSON() });
 	}
-	return json;
+	return j;
 }
 
 SceneObject::SceneObject(const json& j) : mTransform{ j.at("transform")} {
