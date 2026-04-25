@@ -53,7 +53,7 @@ SceneObject& Scene::getObject(size_t index) {
 	return mObjects.at(index);
 }
 
-void Scene::render(const ShaderMesh& meshShader, const ShaderPointLight& pointLightShader, const Framebuffer* const framebuffer, const RenderSettings& renderSettings) const {
+void Scene::render(const ShaderMesh& meshShader, const ShaderPointLight& pointLightShader, const Framebuffer* const framebuffer, const RenderSettings& renderSettings, int selectedObjectIndex) const {
 	glDisable(GL_BLEND);
 	for (int objectI{ 0 }; objectI < mObjects.size(); ++objectI) {
 		const SceneObject& object{ mObjects[objectI] };
@@ -61,7 +61,7 @@ void Scene::render(const ShaderMesh& meshShader, const ShaderPointLight& pointLi
 		if (model) {
 			const std::span<const Mesh> meshes{ model->getMeshes() };
 			for (const Mesh& mesh : meshes) {
-				meshShader.render(mesh, *model, objectI, framebuffer, object.getTransform());
+				meshShader.render(mesh, *model, objectI, objectI == selectedObjectIndex, framebuffer, object.getTransform());
 			}
 		}
 	}
@@ -71,7 +71,7 @@ void Scene::render(const ShaderMesh& meshShader, const ShaderPointLight& pointLi
 			const SceneObject& object{ mObjects[objectI] };
 			const PointLight* pointLight{ object.getComponent<PointLight>() };
 			if (pointLight) {
-				pointLightShader.render(objectI, mSphereVertexArray, framebuffer, object.getTransform().mPosition, renderSettings.mPointLightRenderScale, pointLight->mColour);
+				pointLightShader.render(objectI, objectI == selectedObjectIndex, mSphereVertexArray, framebuffer, object.getTransform().mPosition, renderSettings.mPointLightRenderScale, pointLight->mColour);
 			}
 		}
 	}

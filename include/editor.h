@@ -12,6 +12,7 @@ class Editor {
 public:
 	void updateRender(Scene& scene, GLFWwindow* window, const Inputs& inputs, const Framebuffer& gBuffer);
 	void destroyUI();
+	int getSelectedObjectIndex() { return mSelectedObjectIndex; }
 
 private:
 	int mSelectedObjectIndex{ -1 };

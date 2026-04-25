@@ -22,7 +22,13 @@ void Editor::updateRender(Scene& scene, GLFWwindow* window, const Inputs& inputs
         double mouseY;
         glfwGetCursorPos(window, &mouseX, &mouseY);
         mouseY = scene.getCamera().getHeight() - 1 - mouseY;
-        mSelectedObjectIndex = (int)gBuffer.samplePixel((int)mouseX, (int)mouseY, 0)[3];
+        int selectedObjectIndex = (int)gBuffer.samplePixel((int)mouseX, (int)mouseY, 0)[3];
+        if (mSelectedObjectIndex != selectedObjectIndex) {
+            mSelectedObjectIndex = selectedObjectIndex;
+        }
+        else {
+            mSelectedObjectIndex = -1;
+        }
     }
 
     ImGui::Begin("Scene Lighting");

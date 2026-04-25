@@ -23,7 +23,7 @@ public:
 	Scene(int screenWidth, int screenHeight, std::string_view jsonFilePath);
 	size_t addObject(const Transform& transform, std::string_view name);
 	SceneObject& getObject(size_t index);
-	void render(const ShaderMesh& meshShader, const ShaderPointLight& pointLightShader, const Framebuffer* const framebuffer, const RenderSettings& renderSettings) const;
+	void render(const ShaderMesh& meshShader, const ShaderPointLight& pointLightShader, const Framebuffer* const framebuffer, const RenderSettings& renderSettings, int selectedObjectIndex) const;
 	void updatePointLights();
 	void updateCameraData(GLFWwindow* window, const Inputs& inputs, float deltaTime);
 	bool isValidObjectIndex(int index) const { return index >= 0 && index < mObjects.size(); }

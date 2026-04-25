@@ -14,6 +14,7 @@ uniform sampler2D normalTexture;
 uniform vec3 diffuseColour;
 uniform vec3 specularColour;
 uniform float specularExponent;
+uniform bool highlight;
 
 out vec4 OutWorldPosSceneIndex;
 out vec4 OutNormal;
@@ -27,7 +28,7 @@ void main() {
 		discard;
 	}
 
-	OutDiffuseColour = vec4(diffuseSample.rgb * diffuseColour, 1);
+	OutDiffuseColour = vec4(diffuseSample.rgb * diffuseColour + (highlight ? vec3(0.2) : vec3(0)), 1); //todo add to render settings
 	OutSpecularData = vec4(specularSample.rgb * specularColour, specularExponent);
 
 	vec3 normal = normalize(fragIn.normalMapMatrix * texture(normalTexture, fragIn.texCoords).xyz);

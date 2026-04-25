@@ -16,7 +16,7 @@ ShaderMesh::ShaderMesh(std::string_view vertPath, std::string_view fragPath) : S
 	}
 }
 
-void ShaderMesh::render(const Mesh& mesh, const Model& parentModel, int objectSceneIndex, const Framebuffer* framebuffer, const Transform& transform) const {
+void ShaderMesh::render(const Mesh& mesh, const Model& parentModel, int objectSceneIndex, bool highlight, const Framebuffer* framebuffer, const Transform& transform) const {
 	bind();
 	if (framebuffer) {
 		framebuffer->bind();
@@ -30,6 +30,7 @@ void ShaderMesh::render(const Mesh& mesh, const Model& parentModel, int objectSc
 	setVector3("specularColour", mesh.getMaterial().mSpecularColour);
 	setFloat("specularExponent", mesh.getMaterial().mSpecularExponent);
 	setInt("sceneIndex", objectSceneIndex);
+	setBool("highlight", highlight);
 
 	std::array<const Texture2D*, TextureTypes::max> textures{ mesh.getTextures(parentModel) };
 	for (int i = 0; i < textures.size(); ++i) {
