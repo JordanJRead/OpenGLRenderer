@@ -14,6 +14,7 @@ void Editor::updateRender(Scene& scene, GLFWwindow* window, const Inputs& inputs
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
+    ImGui::DockSpaceOverViewport(0, ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
 
     // Select object
     if (inputs.checkMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT) && !ImGui::IsAnyItemHovered()) {

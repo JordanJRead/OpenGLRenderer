@@ -39,7 +39,7 @@ int main() {
         std::cerr << "Failed to create GLFW window\n";
         return 1;
     }
-
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
     App app{ screenWidth, screenHeight, window };
     app.run();
 
