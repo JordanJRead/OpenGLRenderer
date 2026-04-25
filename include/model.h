@@ -7,6 +7,10 @@
 #include "glad/glad.h"
 #include "component.h"
 #include <span>
+#include <memory>
+#include <nlohmann/json.hpp>
+
+using json = nlohmann::json;
 
 struct aiMesh;
 struct aiNode;
@@ -22,14 +26,17 @@ public:
 	static ComponentTypes::Type getComponentType() { return ComponentTypes::model; }
 
 	Model(std::string_view objPath);
+	static std::unique_ptr<Component> fromJSON(const json& json);
 	const std::vector<Mesh>& getMeshes() const { return mMeshes; }
 	void renderUIProperties() override {}
 	const std::span<const Mesh> getMeshes();
+	json toJSON() override;
 
 private:
 	std::vector<Mesh> mMeshes;
 	std::vector<Texture2D> mTextures;
 	std::string mDirectory;
+	std::string mObjPath;
 
 	void processNode(aiNode* mesh, const aiScene* scene);
 	void processMesh(aiMesh* mesh, const aiScene* scene);

@@ -149,6 +149,7 @@
   <ItemGroup>
     <ClCompile Include="src\app.cpp" />
     <ClCompile Include="src\componenttypes.cpp" />
+    <ClCompile Include="src\directionallight.cpp" />
     <ClCompile Include="src\editor.cpp" />
     <ClCompile Include="src\imgui\imgui.cpp" />
     <ClCompile Include="src\imgui\imgui_demo.cpp" />
@@ -188,6 +189,7 @@
     <ClInclude Include="include\inputs.h" />
     <ClInclude Include="include\material.h" />
     <ClInclude Include="include\mesh.h" />
+    <ClInclude Include="include\nlohmann\json.hpp" />
     <ClInclude Include="include\OpenGLObjects\BUF.h" />
     <ClInclude Include="include\OpenGLObjects\FBO.h" />
     <ClInclude Include="include\OpenGLObjects\RBO.h" />

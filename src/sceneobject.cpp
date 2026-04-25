@@ -13,3 +13,26 @@ const Transform& SceneObject::getTransform() const {
 Transform& SceneObject::getTransform() {
 	return mTransform;
 }
+
+json SceneObject::toJSON() const {
+	json j;
+	j["name"] = mName;
+	j["transform"] = mTransform.toJSON();
+	j["components"] = json::array();
+
+	for (const auto& component : mComponents) {
+		j["components"].push_back({ ComponentTypes::names[component.get()->getComponentType()], component.get()->toJSON() });
+	}
+}
+
+SceneObject::SceneObject(const json& j) : mTransform{ j.at("transform")} {
+	mName = j.at("name");
+
+	json components = j.at("components");
+	for (auto item : components.items()) {
+		std::string componentName{ item.key() };
+		json componentJSON{ item.value() };
+		ComponentTypes::Type type{ ComponentTypes::nameToType[componentName] };
+		mComponents.push_back(ComponentTypes::fromJSON[(int)type](componentJSON));
+	}
+}

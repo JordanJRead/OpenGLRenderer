@@ -20,7 +20,7 @@ class Inputs;
 
 class Scene {
 public:
-	Scene(int screenWidth, int screenHeight);
+	Scene(int screenWidth, int screenHeight, std::string_view jsonFilePath);
 	size_t addObject(const Transform& transform, std::string_view name);
 	SceneObject& getObject(size_t index);
 	void render(const ShaderMesh& meshShader, const ShaderPointLight& pointLightShader, const Framebuffer* const framebuffer, const RenderSettings& renderSettings) const;
@@ -31,6 +31,8 @@ public:
 	Camera& getCamera() { return mCamera; }
 	DirectionalLight& getDirectionalLight() { return mDirectionalLight; }
 	glm::vec3& getAmbientLightColour() { return mAmbientLightColour; }
+	
+	void saveToJSON(std::string_view saveFilePath);
 
 private:
 	std::vector<SceneObject> mObjects;

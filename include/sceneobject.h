@@ -41,6 +41,9 @@ public:
 	std::string_view getName() const { return mName; }
 	std::string& getName() { return mName; }
 
+	json toJSON() const;
+	SceneObject(const json& json);
+
 private:
 	std::vector<std::unique_ptr<Component>> mComponents;
 	Transform mTransform;

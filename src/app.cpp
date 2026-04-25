@@ -31,7 +31,7 @@ App::App(int screenWidth, int screenHeight, GLFWwindow* window)
     : mScreenWidth{ screenWidth }
     , mScreenHeight{ screenHeight }
     , mWindow{ window }
-    , mScene{ screenWidth, screenHeight }
+    , mScene{ screenWidth, screenHeight, "scene.json" }
 {
     glfwSetInputMode(mWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glEnable(GL_DEPTH_TEST);
@@ -66,9 +66,6 @@ void App::run() {
 
     float prevTime{ 0 };
     while (!glfwWindowShouldClose(mWindow)) {
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame(); // move elsewhere?
 
         mInputs.clear();
         if (!(ImGui::GetIO().WantCaptureKeyboard)) {
@@ -108,6 +105,7 @@ void App::run() {
 
         glfwSwapBuffers(mWindow);
     }
+    mScene.saveToJSON("scene.json");
     mEditor.destroyUI();
     glfwTerminate();
 }

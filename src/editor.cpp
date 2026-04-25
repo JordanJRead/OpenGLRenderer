@@ -8,8 +8,12 @@
 #include <glad/glad.h>
 #include <iostream>
 #include "imgui/imgui_stdlib.h"
+#include "nlohmann/json.hpp"
 
 void Editor::updateRender(Scene& scene, GLFWwindow* window, const Inputs& inputs, const Framebuffer& gBuffer) {
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
 
     // Select object
     if (inputs.checkMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT) && !ImGui::IsAnyItemHovered()) {

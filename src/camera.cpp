@@ -7,10 +7,28 @@
 Camera::Camera(const glm::vec3& position, double horizontalFOVDeg, double lookSensitivity, int screenWidth, int screenHeight)
 	: mPosition{ position }
 	, mHorizontalFOVDeg{ horizontalFOVDeg }
-	, mLookSensitivity{ lookSensitivity }
+	, mSensitivity{ lookSensitivity }
 	, mScreenWidth{ screenWidth }
 	, mScreenHeight{ screenHeight }
 {}
+
+void Camera::loadJSONData(const JSON& json) {
+	mHorizontalFOVDeg = json.at("horizontalFOVDeg");
+	mSensitivity = json.at("sensitivity");
+	mPosition.x = json["position"].at("x");
+	mPosition.y = json["position"].at("y");
+	mPosition.z = json["position"].at("z");
+}
+
+JSON Camera::toJSON() const {
+	JSON json;
+	json["position"]["x"] = mPosition.x;
+	json["position"]["y"] = mPosition.y;
+	json["position"]["z"] = mPosition.z;
+	json["sensitivity"] = mSensitivity;
+	json["horizontalFOVDeg"] = mHorizontalFOVDeg;
+	return json;
+}
 
 void Camera::update(GLFWwindow* window, const Inputs& inputs, float deltaTime) {
 
@@ -32,8 +50,8 @@ void Camera::update(GLFWwindow* window, const Inputs& inputs, float deltaTime) {
 		if (!mIsFirstMouseMovement) {
 			double dX = currentMouseX - mPrevMouseX;
 			double dY = currentMouseY - mPrevMouseY;
-			mYawDeg += dX * mLookSensitivity;
-			mPitchDeg -= dY * mLookSensitivity;
+			mYawDeg += dX * mSensitivity;
+			mPitchDeg -= dY * mSensitivity;
 
 			if (mPitchDeg > 85) {
 				mPitchDeg = 85;

@@ -9,10 +9,30 @@
 #include <span>
 #include "model.h"
 #include "inputs.h"
+#include <fstream>
 
-Scene::Scene(int screenWidth, int screenHeight)
+Scene::Scene(int screenWidth, int screenHeight, std::string_view jsonFilePath)
 	: mCamera{ glm::vec3{ 0, 0, 0 }, 100, 0.1, screenWidth, screenHeight }
 {
+	std::ifstream file{ jsonFilePath.data() };
+	if (file.is_open()) {
+		JSON json{ JSON::parse(file) };
+		file.close();
+
+		mAmbientLightColour.r = json.at("ambientLightColour").at("r");
+		mAmbientLightColour.g = json.at("ambientLightColour").at("g");
+		mAmbientLightColour.b = json.at("ambientLightColour").at("b");
+
+
+		mCamera.loadJSONData(json.at("camera"));
+		mDirectionalLight = DirectionalLight{ json.at("directionalLight") };
+
+		for (const JSON& objectJSON : json.at("objects")) {
+			mObjects.emplace_back(objectJSON);
+		}
+	}
+
+	// todo move
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, mPointLightBuffer);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, mPointLightBuffer);
 	glBufferData(GL_SHADER_STORAGE_BUFFER, 0, 0, GL_STATIC_DRAW);
@@ -72,4 +92,20 @@ void Scene::updatePointLights() {
 	}
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, mPointLightBuffer);
 	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(float) * data.size(), data.data(), GL_STATIC_DRAW);
+}
+
+void Scene::saveToJSON(std::string_view saveFilePath) {
+	JSON json;
+	json["camera"] = mCamera.toJSON();
+	json["directionalLight"] = mDirectionalLight.toJSON();
+	json["ambientLightColour"]["r"] = mAmbientLightColour.r;
+	json["ambientLightColour"]["g"] = mAmbientLightColour.g;
+	json["ambientLightColour"]["b"] = mAmbientLightColour.b;
+
+	for (const SceneObject& object : mObjects) {
+		json["objects"].push_back(object.toJSON());
+	}
+	std::ofstream file{ saveFilePath.data() };
+	file << json;
+	file.close();
 }
