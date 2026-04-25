@@ -22,6 +22,7 @@ JSON Transform::toJSON() const {
 	json["rotation"]["x"] = mRotationDeg.x;
 	json["rotation"]["y"] = mRotationDeg.y;
 	json["rotation"]["z"] = mRotationDeg.z;
+	return json;
 }
 
 Transform::Transform(const glm::vec3& position, const glm::vec3& scale, const glm::vec3& rotationDeg)

@@ -22,4 +22,5 @@ JSON DirectionalLight::toJSON() const {
 	json["colour"]["r"] = mColour.r;
 	json["colour"]["g"] = mColour.g;
 	json["colour"]["b"] = mColour.b;
+	return json;
 }
