@@ -10,7 +10,7 @@
 #include <memory>
 #include <nlohmann/json.hpp>
 
-using json = nlohmann::json;
+using JSON = nlohmann::json;
 
 struct aiMesh;
 struct aiNode;
@@ -26,11 +26,11 @@ public:
 	static ComponentTypes::Type getComponentType() { return ComponentTypes::model; }
 
 	Model(std::string_view objPath);
-	static std::unique_ptr<Component> fromJSON(const json& json);
+	static std::unique_ptr<Component> fromJSON(const JSON& json);
 	const std::vector<Mesh>& getMeshes() const { return mMeshes; }
 	void renderUIProperties() override {}
 	const std::span<const Mesh> getMeshes();
-	json toJSON() override;
+	JSON toJSON() override;
 
 private:
 	std::vector<Mesh> mMeshes;

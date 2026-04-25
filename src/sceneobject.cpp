@@ -14,25 +14,25 @@ Transform& SceneObject::getTransform() {
 	return mTransform;
 }
 
-json SceneObject::toJSON() const {
-	json j;
-	j["name"] = mName;
-	j["transform"] = mTransform.toJSON();
-	j["components"] = json::array();
+JSON SceneObject::toJSON() const {
+	JSON json;
+	json["name"] = mName;
+	json["transform"] = mTransform.toJSON();
 
 	for (const auto& component : mComponents) {
-		j["components"].push_back({ ComponentTypes::names[component.get()->getComponentType()], component.get()->toJSON() });
+		const std::string& componentName{ ComponentTypes::names[component.get()->getComponentType()] };
+		json["components"][componentName] = component.get()->toJSON();
 	}
-	return j;
+	return json;
 }
 
-SceneObject::SceneObject(const json& j) : mTransform{ j.at("transform")} {
-	mName = j.at("name");
+SceneObject::SceneObject(const JSON& json) : mTransform{ json.at("transform")} {
+	mName = json.at("name");
 
-	json components = j.at("components");
-	for (auto item : components.items()) {
+	JSON components = json.at("components");
+	for (const auto& item : components.items()) {
 		std::string componentName{ item.key() };
-		json componentJSON{ item.value() };
+		JSON componentJSON{ item.value() };
 		ComponentTypes::Type type{ ComponentTypes::nameToType[componentName] };
 		mComponents.push_back(ComponentTypes::fromJSON[(int)type](componentJSON));
 	}

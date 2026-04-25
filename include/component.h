@@ -4,13 +4,13 @@
 #include "componenttypes.h"
 #include <nlohmann/json.hpp>
 
-using json = nlohmann::json;
+using JSON = nlohmann::json;
 
 class Component {
 public:
 	Component(ComponentTypes::Type componentType) : mComponentType{ componentType } {}
 	virtual void renderUIProperties() = 0;
-	virtual json toJSON() = 0;
+	virtual JSON toJSON() = 0;
 	virtual ComponentTypes::Type getComponentType() const { return mComponentType; };
 	virtual ~Component() {}
 

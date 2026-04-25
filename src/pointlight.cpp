@@ -7,7 +7,7 @@ PointLight::PointLight(const glm::vec3& colour)
 	, mColour{ colour }
 {}
 
-std::unique_ptr<Component> PointLight::fromJSON(const json& json) {
+std::unique_ptr<Component> PointLight::fromJSON(const JSON& json) {
 	glm::vec3 colour;
 	colour.r = json["colour"].at("r");
 	colour.g = json["colour"].at("g");
@@ -15,10 +15,10 @@ std::unique_ptr<Component> PointLight::fromJSON(const json& json) {
 	return std::make_unique<PointLight>(colour);
 }
 
-json PointLight::toJSON() {
-	json j;
-	j["colour"]["r"] = mColour.r;
-	j["colour"]["g"] = mColour.g;
-	j["colour"]["b"] = mColour.b;
-	return j;
+JSON PointLight::toJSON() {
+	JSON json;
+	json["colour"]["r"] = mColour.r;
+	json["colour"]["g"] = mColour.g;
+	json["colour"]["b"] = mColour.b;
+	return json;
 }

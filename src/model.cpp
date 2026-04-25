@@ -20,7 +20,7 @@ Model::Model(std::string_view objPath)
 	processNode(scene->mRootNode, scene);
 }
 
-std::unique_ptr<Component> Model::fromJSON(const json& json) {
+std::unique_ptr<Component> Model::fromJSON(const JSON& json) {
 	return std::make_unique<Model>(json.at("objPath"));
 }
 
@@ -141,8 +141,8 @@ const std::span<const Mesh> Model::getMeshes() {
 	return mMeshes;
 }
 
-json Model::toJSON() {
-	json j;
-	j["objPath"] = mObjPath;
-	return j;
+JSON Model::toJSON() {
+	JSON json;
+	json["objPath"] = mObjPath;
+	return json;
 }

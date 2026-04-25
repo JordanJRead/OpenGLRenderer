@@ -8,7 +8,7 @@
 #include <nlohmann/json.hpp>
 #include <unordered_map>
 
-using json = nlohmann::json;
+using JSON = nlohmann::json;
 class Component;
 
 namespace ComponentTypes {
@@ -19,7 +19,7 @@ namespace ComponentTypes {
 	};
 
 	extern std::array<std::string, (int)Type::max> names;
-	extern std::array<std::function<std::unique_ptr<Component>(const json& json)>, (int)Type::max> fromJSON;
+	extern std::array<std::function<std::unique_ptr<Component>(const JSON& json)>, (int)Type::max> fromJSON;
 	extern std::unordered_map<std::string, ComponentTypes::Type> nameToType;
 }
 
