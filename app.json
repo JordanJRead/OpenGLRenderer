@@ -1,0 +1,11 @@
+{
+ "renderSettings": {
+  "highlightColour": {
+   "x": 0.19607841968536377,
+   "y": 0.19607841968536377,
+   "z": 0.19607841968536377
+  },
+  "pointLightRenderScale": 0.20999999344348907,
+  "shouldRenderPointLights": true
+ }
+}

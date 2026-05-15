@@ -61,7 +61,6 @@ void Editor::updateRender(Scene& scene, GLFWwindow* window, const Inputs& inputs
 
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-    renderSettings.updateGPU();
 }
 
 void Editor::destroyUI() {

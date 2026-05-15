@@ -69,6 +69,8 @@
     #include <string_view>
 #endif
 
+using JSON = nlohmann::json;
+
 /*!
 @brief namespace for Niels Lohmann
 @see https://github.com/nlohmann

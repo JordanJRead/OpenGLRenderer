@@ -160,8 +160,8 @@
     <ClCompile Include="src\imgui\imgui_tables.cpp" />
     <ClCompile Include="src\imgui\imgui_widgets.cpp" />
     <ClCompile Include="src\inputs.cpp" />
+    <ClCompile Include="src\jsonhelpers.cpp" />
     <ClCompile Include="src\pointlight.cpp" />
-    <ClCompile Include="src\rendersettings.cpp" />
     <ClCompile Include="src\scene.cpp" />
     <ClCompile Include="src\sceneobject.cpp" />
     <ClCompile Include="src\shaders\shaderdeferred.cpp" />
@@ -188,9 +188,11 @@
     <ClInclude Include="include\editor.h" />
     <ClInclude Include="include\framebuffer.h" />
     <ClInclude Include="include\inputs.h" />
+    <ClInclude Include="include\jsonhelpers.h" />
     <ClInclude Include="include\material.h" />
     <ClInclude Include="include\mesh.h" />
     <ClInclude Include="include\nlohmann\json.hpp" />
+    <ClInclude Include="include\openglbuffer.h" />
     <ClInclude Include="include\OpenGLObjects\BUF.h" />
     <ClInclude Include="include\OpenGLObjects\FBO.h" />
     <ClInclude Include="include\OpenGLObjects\RBO.h" />

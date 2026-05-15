@@ -6,6 +6,8 @@
 #include "GLFW/glfw3.h"
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
+#include "nlohmann/json.hpp"
+#include <fstream>
 
 void App::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
     ImGui_ImplGlfw_KeyCallback(window, key, scancode, action, mods);
@@ -33,6 +35,7 @@ App::App(int screenWidth, int screenHeight, GLFWwindow* window)
     , mWindow{ window }
     , mScene{ screenWidth, screenHeight, "scene.json" }
 {
+    loadFromJSON("app.json");
     glfwSetInputMode(mWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
@@ -89,15 +92,34 @@ void App::run() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
         glDisable(GL_BLEND);
-        mScene.render(mGeometryPassShader, mPointLightGeometryShader, &mGeometryBuffers, mRenderSettings, mEditor.getSelectedObjectIndex());
+        mScene.render(mGeometryPassShader, mPointLightGeometryShader, &mGeometryBuffers, mRenderSettings.mValue, mEditor.getSelectedObjectIndex());
 
         mShaderDeferred.render(mScreenVertexArray, nullptr, mGeometryBuffers, mScene.getDirectionalLight(), mScene.getAmbientLightColour());
 
-        mEditor.updateRender(mScene, mWindow, mInputs, mGeometryBuffers, mRenderSettings);
+        mEditor.updateRender(mScene, mWindow, mInputs, mGeometryBuffers, mRenderSettings.mValue);
+        mRenderSettings.updateGPU();
 
         glfwSwapBuffers(mWindow);
     }
     mScene.saveToJSON("scene.json");
+    saveToJSON("app.json");
     mEditor.destroyUI();
     glfwTerminate();
+}
+
+void App::saveToJSON(std::string_view fileName) const {
+    JSON json;
+    json["renderSettings"] = mRenderSettings.mValue.toJSON();
+    std::ofstream file{ fileName.data() };
+    file << std::setw(1) << json;
+    file.close();
+}
+
+void App::loadFromJSON(std::string_view fileName) {
+    std::ifstream file{ fileName.data() };
+    if (file.is_open()) {
+        JSON json{ JSON::parse(file) };
+        file.close();
+        mRenderSettings.mValue.fromJSON(json["renderSettings"]);
+    }
 }

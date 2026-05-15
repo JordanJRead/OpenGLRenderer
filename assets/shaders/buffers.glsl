@@ -11,9 +11,10 @@ layout(binding = 1, std140) uniform CameraData {
 	uniform vec3 position;
 } cameraData;
 
-layout(binding = 2, std430) buffer RenderSettings {
+layout(binding = 2, std140) uniform RenderSettings {
 	vec3 highlightColour;
 	float pointLightScale;
+	bool shouldRenderPointLights;
 } renderSettings;
 
 #endif

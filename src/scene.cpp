@@ -10,6 +10,7 @@
 #include "model.h"
 #include "inputs.h"
 #include <fstream>
+#include "nlohmann/json.hpp"
 
 Scene::Scene(int screenWidth, int screenHeight, std::string_view jsonFilePath)
 	: mCamera{ glm::vec3{ 0, 0, 0 }, 100, 0.1, screenWidth, screenHeight }

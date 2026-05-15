@@ -3,21 +3,28 @@
 
 #include "glm/glm.hpp"
 #include "OpenGLObjects/BUF.h"
+#include "nlohmann/json.hpp"
+#include "jsonhelpers.h"
 
 class RenderSettings {
 public:
-	RenderSettings();
 	glm::vec3 mHighlightColour{ 0.2f, 0.2f, 0.2f };
 	float mPointLightRenderScale{ 0.3f };
 	bool mShouldRenderPointLights{ true };
-	void updateGPU();
 
-private:
-	glm::vec3 mPrevHighlightColour;
-	float mPrevPointLightRenderScale;
-
-	BUF mBuffer;
-	void sendToGPU();
+	bool operator==(const RenderSettings&) const = default;
+	JSON toJSON() const {
+		JSON json;
+		json["highlightColour"] = JSONHelpers::fromVec3(mHighlightColour);
+		json["pointLightRenderScale"] = mPointLightRenderScale;
+		json["shouldRenderPointLights"] = mShouldRenderPointLights;
+		return json;
+	}
+	void fromJSON(const JSON& json) {
+		mHighlightColour = JSONHelpers::toVec3(json["highlightColour"]);
+		mPointLightRenderScale = json["pointLightRenderScale"];
+		mShouldRenderPointLights = json["shouldRenderPointLights"];
+	}
 };
 
 #endif

@@ -14,6 +14,8 @@
 #include "editor.h"
 #include "rendersettings.h"
 #include "inputs.h"
+#include "openglbuffer.h"
+#include <string_view>
 
 class App {
 public:
@@ -23,6 +25,8 @@ public:
 private:
     static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
     static void mouseCallback(GLFWwindow* window, int button, int action, int mods);
+    void saveToJSON(std::string_view fileName) const;
+    void loadFromJSON(std::string_view fileName);
 
 	int mScreenWidth;
 	int mScreenHeight;
@@ -36,7 +40,7 @@ private:
     GLFWwindow* mWindow;
     Framebuffer mGeometryBuffers{ mScreenWidth, mScreenHeight, {GL_RGBA32F, GL_RGB16F, GL_RGB16F, GL_RGBA16F } }; // worldPos/sceneIndex, normal, diffuse, specular/exponent
     VertexArrayScreen mScreenVertexArray;
-    RenderSettings mRenderSettings;
+    OpenGLBuffer<RenderSettings> mRenderSettings{ 2, BufferTypes::uniform };
     Inputs mInputs;
 };
 

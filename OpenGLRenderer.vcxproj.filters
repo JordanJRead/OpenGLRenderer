@@ -105,7 +105,7 @@
     <ClCompile Include="src\directionallight.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\rendersettings.cpp">
+    <ClCompile Include="src\jsonhelpers.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -204,6 +204,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\nlohmann\json.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\openglbuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\jsonhelpers.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
