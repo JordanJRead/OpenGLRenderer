@@ -11,6 +11,7 @@
 #include "inputs.h"
 #include <fstream>
 #include "nlohmann/json.hpp"
+#include "jsonhelpers.h"
 
 Scene::Scene(int screenWidth, int screenHeight, std::string_view jsonFilePath)
 	: mCamera{ glm::vec3{ 0, 0, 0 }, 100, 0.1, screenWidth, screenHeight }
@@ -19,11 +20,7 @@ Scene::Scene(int screenWidth, int screenHeight, std::string_view jsonFilePath)
 	if (file.is_open()) {
 		JSON json{ JSON::parse(file) };
 		file.close();
-
-		mAmbientLightColour.r = json.at("ambientLightColour").at("r");
-		mAmbientLightColour.g = json.at("ambientLightColour").at("g");
-		mAmbientLightColour.b = json.at("ambientLightColour").at("b");
-
+		mAmbientLightColour = JSONHelpers::toVec3(json.at("ambientLightColour"));
 
 		mCamera.loadJSONData(json.at("camera"));
 		mDirectionalLight = DirectionalLight{ json.at("directionalLight") };
@@ -99,9 +96,7 @@ void Scene::saveToJSON(std::string_view saveFilePath) {
 	JSON json;
 	json["camera"] = mCamera.toJSON();
 	json["directionalLight"] = mDirectionalLight.toJSON();
-	json["ambientLightColour"]["r"] = mAmbientLightColour.r;
-	json["ambientLightColour"]["g"] = mAmbientLightColour.g;
-	json["ambientLightColour"]["b"] = mAmbientLightColour.b;
+	json["ambientLightColour"] = JSONHelpers::fromVec3(mAmbientLightColour);
 
 	for (const SceneObject& object : mObjects) {
 		json["objects"].push_back(object.toJSON());

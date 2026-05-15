@@ -3,6 +3,7 @@
 #include <glm/gtx/euler_angles.hpp>
 #include <array>
 #include "imgui/imgui.h"
+#include "jsonhelpers.h"
 
 glm::mat4 Transform::getModelMatrix() const {
 	glm::mat4 matrix{ 1 };
@@ -14,15 +15,9 @@ glm::mat4 Transform::getModelMatrix() const {
 
 JSON Transform::toJSON() const {
 	JSON json;
-	json["position"]["x"] = mPosition.x;
-	json["position"]["y"] = mPosition.y;
-	json["position"]["z"] = mPosition.z;
-	json["scale"]["x"] = mScale.x;
-	json["scale"]["y"] = mScale.y;
-	json["scale"]["z"] = mScale.z;
-	json["rotation"]["x"] = mRotationDeg.x;
-	json["rotation"]["y"] = mRotationDeg.y;
-	json["rotation"]["z"] = mRotationDeg.z;
+	json["position"] = JSONHelpers::fromVec3(mPosition);
+	json["scale"] = JSONHelpers::fromVec3(mScale);
+	json["rotation"] = JSONHelpers::fromVec3(mRotationDeg);
 	return json;
 }
 
@@ -33,15 +28,9 @@ Transform::Transform(const glm::vec3& position, const glm::vec3& scale, const gl
 {}
 
 Transform::Transform(const JSON& json) {
-	mPosition.x = json["position"].at("x");
-	mPosition.y = json["position"].at("y");
-	mPosition.z = json["position"].at("z");
-	mScale.x = json["scale"].at("x");
-	mScale.y = json["scale"].at("y");
-	mScale.z = json["scale"].at("z");
-	mRotationDeg.x = json["rotation"].at("x");
-	mRotationDeg.y = json["rotation"].at("y");
-	mRotationDeg.z = json["rotation"].at("z");
+	mPosition = JSONHelpers::toVec3(json.at("position"));
+	mScale = JSONHelpers::toVec3(json.at("scale"));
+	mRotationDeg = JSONHelpers::toVec3(json.at("rotation"));
 }
 
 void Transform::renderUI() const {

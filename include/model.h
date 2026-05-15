@@ -10,8 +10,6 @@
 #include <memory>
 #include <nlohmann/json.hpp>
 
-using JSON = nlohmann::json;
-
 struct aiMesh;
 struct aiNode;
 struct aiScene;

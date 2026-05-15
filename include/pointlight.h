@@ -5,8 +5,6 @@
 #include "component.h"
 #include <nlohmann/json.hpp>
 
-using JSON = nlohmann::json;
-
 class PointLight : public Component {
 public:
 	PointLight(const glm::vec3& colour);

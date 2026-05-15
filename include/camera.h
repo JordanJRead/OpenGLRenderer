@@ -5,8 +5,6 @@
 #include "inputs.h"
 #include "nlohmann/json.hpp"
 
-using JSON = nlohmann::json;
-
 struct GLFWwindow;
 
 class Camera {

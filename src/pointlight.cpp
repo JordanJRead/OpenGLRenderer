@@ -1,6 +1,7 @@
 #include "pointlight.h"
 #include <stdexcept>
 #include <array>
+#include "jsonhelpers.h"
 
 PointLight::PointLight(const glm::vec3& colour)
 	: Component{ ComponentTypes::pointLight }
@@ -8,17 +9,12 @@ PointLight::PointLight(const glm::vec3& colour)
 {}
 
 std::unique_ptr<Component> PointLight::fromJSON(const JSON& json) {
-	glm::vec3 colour;
-	colour.r = json["colour"].at("r");
-	colour.g = json["colour"].at("g");
-	colour.b = json["colour"].at("b");
+	glm::vec3 colour{ JSONHelpers::toVec3(json.at("colour"))};
 	return std::make_unique<PointLight>(colour);
 }
 
 JSON PointLight::toJSON() {
 	JSON json;
-	json["colour"]["r"] = mColour.r;
-	json["colour"]["g"] = mColour.g;
-	json["colour"]["b"] = mColour.b;
+	json["colour"] = JSONHelpers::fromVec3(mColour);
 	return json;
 }

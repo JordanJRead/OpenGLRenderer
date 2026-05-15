@@ -4,8 +4,6 @@
 #include "glm/glm.hpp"
 #include "nlohmann/json.hpp"
 
-using JSON = nlohmann::json;
-
 class Transform {
 public:
 	Transform(const JSON& json);

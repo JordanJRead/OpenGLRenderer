@@ -3,6 +3,7 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "iostream"
 #include "inputs.h"
+#include "jsonhelpers.h"
 
 Camera::Camera(const glm::vec3& position, double horizontalFOVDeg, double lookSensitivity, int screenWidth, int screenHeight)
 	: mPosition{ position }
@@ -15,16 +16,12 @@ Camera::Camera(const glm::vec3& position, double horizontalFOVDeg, double lookSe
 void Camera::loadJSONData(const JSON& json) {
 	mHorizontalFOVDeg = json.at("horizontalFOVDeg");
 	mSensitivity = json.at("sensitivity");
-	mPosition.x = json["position"].at("x");
-	mPosition.y = json["position"].at("y");
-	mPosition.z = json["position"].at("z");
+	mPosition = JSONHelpers::toVec3(json.at("position"));
 }
 
 JSON Camera::toJSON() const {
 	JSON json;
-	json["position"]["x"] = mPosition.x;
-	json["position"]["y"] = mPosition.y;
-	json["position"]["z"] = mPosition.z;
+	json["position"] = JSONHelpers::fromVec3(mPosition);
 	json["sensitivity"] = mSensitivity;
 	json["horizontalFOVDeg"] = mHorizontalFOVDeg;
 	return json;

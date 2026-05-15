@@ -4,8 +4,6 @@
 #include "componenttypes.h"
 #include <nlohmann/json.hpp>
 
-using JSON = nlohmann::json;
-
 class Component {
 public:
 	Component(ComponentTypes::Type componentType) : mComponentType{ componentType } {}

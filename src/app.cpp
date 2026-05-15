@@ -120,6 +120,6 @@ void App::loadFromJSON(std::string_view fileName) {
     if (file.is_open()) {
         JSON json{ JSON::parse(file) };
         file.close();
-        mRenderSettings.mValue.fromJSON(json["renderSettings"]);
+        mRenderSettings.mValue.fromJSON(json.at("renderSettings"));
     }
 }

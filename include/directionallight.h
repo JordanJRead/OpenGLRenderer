@@ -4,8 +4,6 @@
 #include "glm/glm.hpp"
 #include "nlohmann/json.hpp"
 
-using JSON = nlohmann::json;
-
 struct DirectionalLight {
 	glm::vec3 mDirTo;
 	glm::vec3 mColour;

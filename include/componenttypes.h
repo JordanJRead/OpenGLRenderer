@@ -8,7 +8,6 @@
 #include <nlohmann/json.hpp>
 #include <unordered_map>
 
-using JSON = nlohmann::json;
 class Component;
 
 namespace ComponentTypes {

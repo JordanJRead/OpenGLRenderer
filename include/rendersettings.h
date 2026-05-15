@@ -21,9 +21,9 @@ public:
 		return json;
 	}
 	void fromJSON(const JSON& json) {
-		mHighlightColour = JSONHelpers::toVec3(json["highlightColour"]);
-		mPointLightRenderScale = json["pointLightRenderScale"];
-		mShouldRenderPointLights = json["shouldRenderPointLights"];
+		mHighlightColour = JSONHelpers::toVec3(json.at("highlightColour"));
+		mPointLightRenderScale = json.at("pointLightRenderScale");
+		mShouldRenderPointLights = json.at("shouldRenderPointLights");
 	}
 };
 

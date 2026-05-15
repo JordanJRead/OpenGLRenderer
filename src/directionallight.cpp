@@ -1,4 +1,5 @@
 #include "directionallight.h"
+#include "jsonhelpers.h"
 
 DirectionalLight::DirectionalLight(const glm::vec3& dirTo, const glm::vec3& colour)
 	: mDirTo{ dirTo }
@@ -6,21 +7,13 @@ DirectionalLight::DirectionalLight(const glm::vec3& dirTo, const glm::vec3& colo
 {}
 
 DirectionalLight::DirectionalLight(const JSON& json) {
-	mDirTo.x = json["dirTo"].at("x");
-	mDirTo.y = json["dirTo"].at("y");
-	mDirTo.z = json["dirTo"].at("z");
-	mColour.r = json["colour"].at("r");
-	mColour.g = json["colour"].at("g");
-	mColour.b = json["colour"].at("b");
+	mDirTo = JSONHelpers::toVec3(json.at("dirTo"));
+	mColour = JSONHelpers::toVec3(json.at("colour"));
 }
 
 JSON DirectionalLight::toJSON() const {
 	JSON json;
-	json["dirTo"]["x"] = mDirTo.x;
-	json["dirTo"]["y"] = mDirTo.y;
-	json["dirTo"]["z"] = mDirTo.z;
-	json["colour"]["r"] = mColour.r;
-	json["colour"]["g"] = mColour.g;
-	json["colour"]["b"] = mColour.b;
+	json["dirTo"] = JSONHelpers::fromVec3(mDirTo);
+	json["colour"] = JSONHelpers::fromVec3(mColour);
 	return json;
 }
