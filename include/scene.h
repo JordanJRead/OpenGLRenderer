@@ -12,7 +12,7 @@
 #include <string_view>
 
 class Framebuffer;
-struct RenderSettings;
+class RenderSettings;
 class ShaderMesh;
 class ShaderPointLight;
 class Transform;

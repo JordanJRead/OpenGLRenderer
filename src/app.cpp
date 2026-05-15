@@ -93,7 +93,7 @@ void App::run() {
 
         mShaderDeferred.render(mScreenVertexArray, nullptr, mGeometryBuffers, mScene.getDirectionalLight(), mScene.getAmbientLightColour());
 
-        mEditor.updateRender(mScene, mWindow, mInputs, mGeometryBuffers);
+        mEditor.updateRender(mScene, mWindow, mInputs, mGeometryBuffers, mRenderSettings);
 
         glfwSwapBuffers(mWindow);
     }

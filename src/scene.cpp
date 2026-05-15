@@ -71,7 +71,7 @@ void Scene::render(const ShaderMesh& meshShader, const ShaderPointLight& pointLi
 			const SceneObject& object{ mObjects[objectI] };
 			const PointLight* pointLight{ object.getComponent<PointLight>() };
 			if (pointLight) {
-				pointLightShader.render(objectI, objectI == selectedObjectIndex, mSphereVertexArray, framebuffer, object.getTransform().mPosition, renderSettings.mPointLightRenderScale, pointLight->mColour);
+				pointLightShader.render(objectI, objectI == selectedObjectIndex, mSphereVertexArray, framebuffer, object.getTransform().mPosition, pointLight->mColour);
 			}
 		}
 	}

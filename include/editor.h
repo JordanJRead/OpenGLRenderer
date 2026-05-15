@@ -7,10 +7,11 @@
 class Scene;
 class Inputs;
 class Framebuffer;
+class RenderSettings;
 
 class Editor {
 public:
-	void updateRender(Scene& scene, GLFWwindow* window, const Inputs& inputs, const Framebuffer& gBuffer);
+	void updateRender(Scene& scene, GLFWwindow* window, const Inputs& inputs, const Framebuffer& gBuffer, RenderSettings& renderSettings);
 	void destroyUI();
 	int getSelectedObjectIndex() { return mSelectedObjectIndex; }
 

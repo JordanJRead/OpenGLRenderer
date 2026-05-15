@@ -161,6 +161,7 @@
     <ClCompile Include="src\imgui\imgui_widgets.cpp" />
     <ClCompile Include="src\inputs.cpp" />
     <ClCompile Include="src\pointlight.cpp" />
+    <ClCompile Include="src\rendersettings.cpp" />
     <ClCompile Include="src\scene.cpp" />
     <ClCompile Include="src\sceneobject.cpp" />
     <ClCompile Include="src\shaders\shaderdeferred.cpp" />

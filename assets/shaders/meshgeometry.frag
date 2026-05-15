@@ -1,5 +1,7 @@
 #version 430 core
 
+#include "buffers.glsl"
+
 in VertOut {
 	mat3 normalMapMatrix;
 	vec2 texCoords;
@@ -28,7 +30,7 @@ void main() {
 		discard;
 	}
 
-	OutDiffuseColour = vec4(diffuseSample.rgb * diffuseColour + (highlight ? vec3(0.2) : vec3(0)), 1); //todo add to render settings
+	OutDiffuseColour = vec4(diffuseSample.rgb * diffuseColour + (highlight ? renderSettings.highlightColour : vec3(0)), 1); //todo add to render settings
 	OutSpecularData = vec4(specularSample.rgb * specularColour, specularExponent);
 
 	vec3 normal = normalize(fragIn.normalMapMatrix * texture(normalTexture, fragIn.texCoords).xyz);

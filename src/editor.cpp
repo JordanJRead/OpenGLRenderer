@@ -9,8 +9,9 @@
 #include <iostream>
 #include "imgui/imgui_stdlib.h"
 #include "nlohmann/json.hpp"
+#include "rendersettings.h"
 
-void Editor::updateRender(Scene& scene, GLFWwindow* window, const Inputs& inputs, const Framebuffer& gBuffer) {
+void Editor::updateRender(Scene& scene, GLFWwindow* window, const Inputs& inputs, const Framebuffer& gBuffer, RenderSettings& renderSettings) {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
@@ -36,6 +37,12 @@ void Editor::updateRender(Scene& scene, GLFWwindow* window, const Inputs& inputs
     ImGui::ColorEdit3("Ambient Colour", (float*)&scene.getAmbientLightColour());
     ImGui::End();
 
+    ImGui::Begin("Render Settings");
+    ImGui::ColorEdit3("Highlight Colour", (float*)&renderSettings.mHighlightColour);
+    ImGui::DragFloat("Point Light Size", &renderSettings.mPointLightRenderScale, 0.01f);
+    ImGui::Checkbox("Render Point Lights", &renderSettings.mShouldRenderPointLights);
+    ImGui::End();
+
     // Inspector
     ImGui::Begin("Object Editor");
     if (scene.isValidObjectIndex(mSelectedObjectIndex)) {
@@ -54,6 +61,7 @@ void Editor::updateRender(Scene& scene, GLFWwindow* window, const Inputs& inputs
 
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+    renderSettings.updateGPU();
 }
 
 void Editor::destroyUI() {

@@ -1,5 +1,7 @@
 #version 430 core
 
+#include "buffers.glsl"
+
 in vec3 worldPos;
 in flat int outSceneIndex;
 
@@ -12,7 +14,7 @@ out vec4 OutDiffuseColour;
 out vec4 OutSpecularData;
 
 void main() {
-	OutDiffuseColour = vec4(colour - (highlight ? vec3(0.3) : vec3(0)), 1);
+	OutDiffuseColour = vec4(colour - (highlight ? renderSettings.highlightColour : vec3(0)), 1);
 	OutWorldPosSceneIndex = vec4(worldPos, outSceneIndex);
 	OutNormal = vec4(0, 0, 0, 1);
 }
