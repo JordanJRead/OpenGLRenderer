@@ -9,6 +9,7 @@
 #include "texture2d.h"
 #include <vector>
 #include <array>
+#include "glm/glm.hpp"
 
 class Framebuffer {
 public:
@@ -18,11 +19,12 @@ public:
 	/// <param name="width">The width of the framebuffer</param>
 	/// <param name="height">The height of the framebuffer</param>
 	/// <param name="formats">The internal pixel formats of each colour texture (GL_RGB, GL_RGBA, etc.)</param>
-	Framebuffer(int width, int height, std::vector<GLenum> formats)
+	Framebuffer(int width, int height, std::vector<GLenum> formats, glm::vec4 clearColour)
 		: mWidth{ width }
 		, mHeight{ height }
+		, mClearColour{ clearColour }
 	{
-		glBindFramebuffer(GL_FRAMEBUFFER, mFBO);
+		bind();
 		const size_t colourTextureCount = formats.size();
 		std::vector<GLenum> attachments;
 		for (int i{ 0 }; i < colourTextureCount; ++i) {
@@ -48,12 +50,26 @@ public:
 		}
 	}
 
+	void resize(int width, int height) {
+		mWidth = width;
+		mHeight = height;
+		for (const Texture2D& texture : mColourTextures) {
+			texture.resize(width, height);
+		}
+	}
+
 	/// <summary>
 	/// Binds the framebuffer and sets the viewport size to fit
 	/// </summary>
 	void bind() const {
 		glBindFramebuffer(GL_FRAMEBUFFER, mFBO);
 		glViewport(0, 0, mWidth, mHeight);
+	}
+
+	void clear() const {
+		bind();
+		glClearColor(mClearColour.r, mClearColour.g, mClearColour.b, mClearColour.a);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 	}
 
 	/// <summary>
@@ -67,8 +83,11 @@ public:
 	const Texture2D& getColourTexture(int colourTextureIndex) const {
 		return mColourTextures[colourTextureIndex];
 	}
+
 	int getWidth() const { return mWidth; }
 	int getHeight() const { return mHeight; }
+	float getAspectRatio() const { return (float)mWidth / mHeight; }
+	unsigned int getTextureID(size_t index) const { return mColourTextures[index]; }
 
 	std::array<float, 4> samplePixel(int x, int y, int colourTextureIndex) const {
 		bind();
@@ -85,6 +104,7 @@ private:
 	RBO mDepthStencilRenderbuffer;
 	int mWidth;
 	int mHeight;
+	glm::vec4 mClearColour;
 };
 
 #endif

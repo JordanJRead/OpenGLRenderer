@@ -28,8 +28,6 @@ private:
     void saveToJSON(std::string_view fileName) const;
     void loadFromJSON(std::string_view fileName);
 
-	int mScreenWidth;
-	int mScreenHeight;
     Scene mScene;
     Editor mEditor;
     ShaderPostProcess mPostProcessShader{ "assets/shaders/postprocess.vert", "assets/shaders/postprocess.frag" };
@@ -38,7 +36,8 @@ private:
     ShaderPointLight mPointLightGeometryShader{ "assets/shaders/pointlightgeometry.vert", "assets/shaders/pointlightgeometry.frag" };
 	float mPrevTime{ 0 };
     GLFWwindow* mWindow;
-    Framebuffer mGeometryBuffers{ mScreenWidth, mScreenHeight, {GL_RGBA32F, GL_RGB16F, GL_RGB16F, GL_RGBA16F } }; // worldPos/sceneIndex, normal, diffuse, specular/exponent
+    Framebuffer mGeometryBuffers; // worldPos/sceneIndex, normal, diffuse, specular/exponent
+    Framebuffer mOutputFramebuffer;
     VertexArrayScreen mScreenVertexArray;
     OpenGLBuffer<RenderSettings> mRenderSettings{ 2, BufferTypes::uniform };
     Inputs mInputs;

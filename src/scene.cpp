@@ -13,8 +13,8 @@
 #include "nlohmann/json.hpp"
 #include "jsonhelpers.h"
 
-Scene::Scene(int screenWidth, int screenHeight, std::string_view jsonFilePath)
-	: mCamera{ glm::vec3{ 0, 0, 0 }, 100, 0.1, screenWidth, screenHeight }
+Scene::Scene(std::string_view jsonFilePath)
+	: mCamera{ glm::vec3{ 0, 0, 0 }, 100, 0.1 }
 {
 	std::ifstream file{ jsonFilePath.data() };
 	if (file.is_open()) {
@@ -33,9 +33,9 @@ Scene::Scene(int screenWidth, int screenHeight, std::string_view jsonFilePath)
 	mSphereVertexArray.create("assets/objects/sphere/sphere.obj");
 }
 
-void Scene::updateCameraData(GLFWwindow* window, const Inputs& inputs, float deltaTime) {
+void Scene::updateCameraData(GLFWwindow* window, const Inputs& inputs, float deltaTime, float aspectRatio) {
 	mCamera.update(window, inputs, deltaTime);
-	mCameraDataBuffer.mValue = mCamera.getCameraRenderData();
+	mCameraDataBuffer.mValue = mCamera.getCameraRenderData(aspectRatio);
 	mCameraDataBuffer.updateGPU();
 }
 

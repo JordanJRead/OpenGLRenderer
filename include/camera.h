@@ -10,18 +10,16 @@ struct GLFWwindow;
 
 class Camera {
 public:
-	Camera(const glm::vec3& position, double horizontalFOVDeg, double lookSensitivity, int screenWidth, int screenHeight);
+	Camera(const glm::vec3& position, double horizontalFOVDeg, double lookSensitivity);
 	void loadJSONData(const JSON& json);
 	void update(GLFWwindow* window, const Inputs& inputs, float deltaTime);
 	glm::mat4 getViewMatrix() const;
-	glm::mat4 getProjectionMatrix() const;
+	glm::mat4 getProjectionMatrix(float aspectRatio) const;
 	glm::vec3 getForward() const;
 	glm::vec3 getPosition() const { return mPosition; }
 	void disableLooking() { mIsLookingEnabled = false; }
 	void enableLooking() { mIsLookingEnabled = true; mIsFirstMouseMovement = true; }
-	int getWidth() const { return mScreenHeight; }
-	int getHeight() const { return mScreenHeight; }
-	CameraRenderData getCameraRenderData() const { return CameraRenderData{ getViewMatrix(), getProjectionMatrix(), mPosition }; }
+	CameraRenderData getCameraRenderData(float aspectRatio) const { return CameraRenderData{ getViewMatrix(), getProjectionMatrix(aspectRatio), mPosition }; }
 
 	JSON toJSON() const;
 
@@ -35,8 +33,6 @@ private:
 	double mPrevMouseY;
 	bool mIsLookingEnabled = true;
 	bool mIsFirstMouseMovement{ true };
-	int mScreenWidth;
-	int mScreenHeight;
 };
 
 #endif

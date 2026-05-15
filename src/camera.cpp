@@ -5,12 +5,10 @@
 #include "inputs.h"
 #include "jsonhelpers.h"
 
-Camera::Camera(const glm::vec3& position, double horizontalFOVDeg, double lookSensitivity, int screenWidth, int screenHeight)
+Camera::Camera(const glm::vec3& position, double horizontalFOVDeg, double lookSensitivity)
 	: mPosition{ position }
 	, mHorizontalFOVDeg{ horizontalFOVDeg }
 	, mSensitivity{ lookSensitivity }
-	, mScreenWidth{ screenWidth }
-	, mScreenHeight{ screenHeight }
 {}
 
 void Camera::loadJSONData(const JSON& json) {
@@ -107,6 +105,6 @@ glm::mat4 Camera::getViewMatrix() const {
 	return glm::lookAt(mPosition, mPosition + forward, glm::vec3{ 0, 1, 0 });
 }
 
-glm::mat4 Camera::getProjectionMatrix() const {
-	return glm::perspective(glm::radians((float)mHorizontalFOVDeg), (float)mScreenWidth / mScreenHeight, 0.1f, 1000.0f);
+glm::mat4 Camera::getProjectionMatrix(float aspectRatio) const {
+	return glm::perspective(glm::radians((float)mHorizontalFOVDeg), aspectRatio, 0.1f, 1000.0f);
 }

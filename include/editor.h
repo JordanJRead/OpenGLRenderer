@@ -3,6 +3,7 @@
 
 #define GLFW_INCLUDE_NONE
 #include "GLFW/glfw3.h"
+#include "glm/glm.hpp"
 
 class Scene;
 class Inputs;
@@ -11,7 +12,7 @@ class RenderSettings;
 
 class Editor {
 public:
-	void updateRender(Scene& scene, GLFWwindow* window, const Inputs& inputs, const Framebuffer& gBuffer, RenderSettings& renderSettings);
+	glm::ivec2 updateRender(Scene& scene, GLFWwindow* window, const Inputs& inputs, const Framebuffer& gBuffer, RenderSettings& renderSettings, const Framebuffer& displayFramebuffer);
 	void destroyUI();
 	int getSelectedObjectIndex() { return mSelectedObjectIndex; }
 

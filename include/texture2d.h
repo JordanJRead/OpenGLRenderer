@@ -37,9 +37,15 @@ public:
 	/// </summary>
 	const std::string& getFilePath();
 
+	void resize(int width, int height) const;
+
 	GLenum getFormat() const { return mFormat; }
 
 	operator unsigned int() {
+		return mTEX;
+	}
+
+	operator const unsigned int() const {
 		return mTEX;
 	}
 

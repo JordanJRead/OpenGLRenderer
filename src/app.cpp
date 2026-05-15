@@ -30,10 +30,10 @@ void App::mouseCallback(GLFWwindow* window, int button, int action, int mods) {
 }
 
 App::App(int screenWidth, int screenHeight, GLFWwindow* window)
-    : mScreenWidth{ screenWidth }
-    , mScreenHeight{ screenHeight }
-    , mWindow{ window }
-    , mScene{ screenWidth, screenHeight, "scene.json" }
+    : mWindow{ window }
+    , mScene{ "scene.json" }
+    , mGeometryBuffers{ screenWidth, screenHeight, {GL_RGBA32F, GL_RGB16F, GL_RGB16F, GL_RGBA16F }, {0, 0, 0, -1} } // worldPos/sceneIndex, normal, diffuse, specular/exponent
+    , mOutputFramebuffer{ screenWidth, screenHeight, {GL_RGBA8}, {0, 0, 0, 1} }
 {
     loadFromJSON("app.json");
     glfwSetInputMode(mWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -81,12 +81,12 @@ void App::run() {
         mScene.updatePointLights();
 
         // Update
-        mScene.updateCameraData(mWindow, mInputs, deltaTime);
+        mScene.updateCameraData(mWindow, mInputs, deltaTime, mOutputFramebuffer.getAspectRatio());
 
         // Render
-        mGeometryBuffers.bind();
-        glClearColor(0, 0, 0, -1);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+        mGeometryBuffers.clear();
+        mOutputFramebuffer.clear();
+
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glClearColor(0, 0, 0, 0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
@@ -94,9 +94,16 @@ void App::run() {
         glDisable(GL_BLEND);
         mScene.render(mGeometryPassShader, mPointLightGeometryShader, &mGeometryBuffers, mRenderSettings.mValue, mEditor.getSelectedObjectIndex());
 
-        mShaderDeferred.render(mScreenVertexArray, nullptr, mGeometryBuffers, mScene.getDirectionalLight(), mScene.getAmbientLightColour());
+        mShaderDeferred.render(mScreenVertexArray, &mOutputFramebuffer, mGeometryBuffers, mScene.getDirectionalLight(), mScene.getAmbientLightColour());
 
-        mEditor.updateRender(mScene, mWindow, mInputs, mGeometryBuffers, mRenderSettings.mValue);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glm::ivec2 newDim = mEditor.updateRender(mScene, mWindow, mInputs, mGeometryBuffers, mRenderSettings.mValue, mOutputFramebuffer);
+        if (newDim.x != mOutputFramebuffer.getWidth() || newDim.y != mOutputFramebuffer.getHeight()) {
+            mOutputFramebuffer.resize(newDim.x, newDim.y);
+            mOutputFramebuffer.clear();
+            mGeometryBuffers.resize(newDim.x, newDim.y);
+            mGeometryBuffers.clear();
+        }
         mRenderSettings.updateGPU();
 
         glfwSwapBuffers(mWindow);

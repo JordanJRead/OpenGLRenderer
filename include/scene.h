@@ -22,12 +22,12 @@ class Inputs;
 
 class Scene {
 public:
-	Scene(int screenWidth, int screenHeight, std::string_view jsonFilePath);
+	Scene(std::string_view jsonFilePath);
 	size_t addObject(const Transform& transform, std::string_view name);
 	SceneObject& getObject(size_t index);
 	void render(const ShaderMesh& meshShader, const ShaderPointLight& pointLightShader, const Framebuffer* const framebuffer, const RenderSettings& renderSettings, int selectedObjectIndex) const;
 	void updatePointLights();
-	void updateCameraData(GLFWwindow* window, const Inputs& inputs, float deltaTime);
+	void updateCameraData(GLFWwindow* window, const Inputs& inputs, float deltaTime, float aspectRatio);
 	bool isValidObjectIndex(int index) const { return index >= 0 && index < mObjects.size(); }
 
 	Camera& getCamera() { return mCamera; }

@@ -11,7 +11,7 @@
 #include "nlohmann/json.hpp"
 #include "rendersettings.h"
 
-void Editor::updateRender(Scene& scene, GLFWwindow* window, const Inputs& inputs, const Framebuffer& gBuffer, RenderSettings& renderSettings) {
+glm::ivec2 Editor::updateRender(Scene& scene, GLFWwindow* window, const Inputs& inputs, const Framebuffer& gBuffer, RenderSettings& renderSettings, const Framebuffer& displayFramebuffer) {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
@@ -22,7 +22,7 @@ void Editor::updateRender(Scene& scene, GLFWwindow* window, const Inputs& inputs
         double mouseX;
         double mouseY;
         glfwGetCursorPos(window, &mouseX, &mouseY);
-        mouseY = scene.getCamera().getHeight() - 1 - mouseY;
+        mouseY = displayFramebuffer.getHeight() - 1 - mouseY;
         int selectedObjectIndex = (int)gBuffer.samplePixel((int)mouseX, (int)mouseY, 0)[3];
         if (mSelectedObjectIndex != selectedObjectIndex) {
             mSelectedObjectIndex = selectedObjectIndex;
@@ -59,8 +59,14 @@ void Editor::updateRender(Scene& scene, GLFWwindow* window, const Inputs& inputs
     }
     ImGui::End();
 
+    ImGui::Begin("Game");
+    ImVec2 dim = ImGui::GetContentRegionAvail();
+    ImGui::Image(displayFramebuffer.getTextureID(0), { (float)displayFramebuffer.getWidth(), (float)displayFramebuffer.getHeight() }, { 0, 1 }, { 1, 0 });
+    ImGui::End();
+
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+    return { (int)dim.x, (int)dim.y };
 }
 
 void Editor::destroyUI() {

@@ -7,7 +7,7 @@
 Texture2D::Texture2D(int width, int height, GLenum format, GLenum wrapOption, GLenum filterOption)
 	: mFormat{ format }
 {
-	glBindTexture(GL_TEXTURE_2D, mTEX);
+	bind(GL_TEXTURE_2D);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapOption);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapOption);
@@ -30,7 +30,7 @@ Texture2D::Texture2D(std::string_view filePath, bool srgba, GLenum wrapOption, G
 		std::cerr << "Error loading file " << filePath << ". Reason: " << stbi_failure_reason() << "\n";
 	}
 
-	glBindTexture(GL_TEXTURE_2D, mTEX);
+	bind(GL_TEXTURE_2D);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapOption);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapOption);
@@ -52,4 +52,9 @@ void Texture2D::bind(unsigned int unit) const {
 
 const std::string& Texture2D::getFilePath() {
 	return mFilePath;
+}
+
+void Texture2D::resize(int width, int height) const {
+	bind(GL_TEXTURE_2D);
+	glTexImage2D(GL_TEXTURE_2D, 0, mFormat, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
 }
