@@ -182,7 +182,7 @@
   <ItemGroup>
     <ClInclude Include="include\app.h" />
     <ClInclude Include="include\camera.h" />
-    <ClInclude Include="include\cameradatabuffer.h" />
+    <ClInclude Include="include\camerarenderdata.h" />
     <ClInclude Include="include\componenttypes.h" />
     <ClInclude Include="include\directionallight.h" />
     <ClInclude Include="include\editor.h" />
@@ -199,6 +199,7 @@
     <ClInclude Include="include\OpenGLObjects\TEX.h" />
     <ClInclude Include="include\OpenGLObjects\VAO.h" />
     <ClInclude Include="include\pointlight.h" />
+    <ClInclude Include="include\pointlightdata.h" />
     <ClInclude Include="include\rendersettings.h" />
     <ClInclude Include="include\scene.h" />
     <ClInclude Include="include\model.h" />

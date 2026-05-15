@@ -4,6 +4,7 @@
 #include "glm/glm.hpp"
 #include "inputs.h"
 #include "nlohmann/json.hpp"
+#include "camerarenderdata.h"
 
 struct GLFWwindow;
 
@@ -20,6 +21,7 @@ public:
 	void enableLooking() { mIsLookingEnabled = true; mIsFirstMouseMovement = true; }
 	int getWidth() const { return mScreenHeight; }
 	int getHeight() const { return mScreenHeight; }
+	CameraRenderData getCameraRenderData() const { return CameraRenderData{ getViewMatrix(), getProjectionMatrix(), mPosition }; }
 
 	JSON toJSON() const;
 

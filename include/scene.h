@@ -5,11 +5,13 @@
 #include "OpenGLObjects/BUF.h"
 #include "camera.h"
 #include "vertexarray.h"
-#include "cameradatabuffer.h"
+#include "camerarenderdata.h"
 #include "directionallight.h"
 #include "glm/glm.hpp"
 #include "sceneobject.h"
 #include <string_view>
+#include "openglbuffer.h"
+#include "pointlightdata.h"
 
 class Framebuffer;
 class RenderSettings;
@@ -36,10 +38,11 @@ public:
 
 private:
 	std::vector<SceneObject> mObjects;
-	BUF mPointLightBuffer;
+	OpenGLBuffer<PointLightData> mPointLightBuffer{ 0, BufferTypes::ssbo };
 	VertexArray mSphereVertexArray;
 	Camera mCamera;
-	CameraDataBuffer mCameraDataBuffer;
+
+	OpenGLBuffer<CameraRenderData> mCameraDataBuffer{ 1, BufferTypes::uniform };
 	DirectionalLight mDirectionalLight{ {0, 1, 0}, {1, 1, 1} };
 	glm::vec3 mAmbientLightColour{ 0.1, 0.1, 0.1 };
 };

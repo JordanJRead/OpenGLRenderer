@@ -179,9 +179,6 @@
     <ClInclude Include="include\shaders\shaderpointlight.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\cameradatabuffer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\directionallight.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -210,6 +207,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\jsonhelpers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pointlightdata.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\camerarenderdata.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -30,16 +30,13 @@ Scene::Scene(int screenWidth, int screenHeight, std::string_view jsonFilePath)
 		}
 	}
 
-	// todo move
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, mPointLightBuffer);
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, mPointLightBuffer);
-	glBufferData(GL_SHADER_STORAGE_BUFFER, 0, 0, GL_STATIC_DRAW);
 	mSphereVertexArray.create("assets/objects/sphere/sphere.obj");
 }
 
 void Scene::updateCameraData(GLFWwindow* window, const Inputs& inputs, float deltaTime) {
 	mCamera.update(window, inputs, deltaTime);
-	mCameraDataBuffer.update(mCamera);
+	mCameraDataBuffer.mValue = mCamera.getCameraRenderData();
+	mCameraDataBuffer.updateGPU();
 }
 
 size_t Scene::addObject(const Transform& transform, std::string_view name) {
@@ -88,8 +85,8 @@ void Scene::updatePointLights() {
 			data.push_back(pointLight->mColour.z);
 		}
 	}
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, mPointLightBuffer);
-	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(float) * data.size(), data.data(), GL_STATIC_DRAW);
+	mPointLightBuffer.mValue.mData = data;
+	mPointLightBuffer.updateGPU();
 }
 
 void Scene::saveToJSON(std::string_view saveFilePath) {
