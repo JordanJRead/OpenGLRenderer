@@ -10,6 +10,26 @@ void SceneObject::addChild(const Transform& transform, std::string_view name) {
 	mChildren.emplace_back(std::make_unique<SceneObject>(transform, name, this));
 }
 
+SceneObject::SceneObject(const JSON& json, SceneObject* parent) : mTransform{ json.at("transform") }, mParent{ parent } {
+	mName = json.at("name");
+
+	JSON components = json.at("components");
+	for (const auto& item : components.items()) {
+		std::string componentName{ item.key() };
+		JSON componentJSON{ item.value() };
+		ComponentTypes::Type type{ ComponentTypes::nameToType[componentName] };
+		mComponents.push_back(ComponentTypes::fromJSON[(int)type](componentJSON));
+	}
+
+	for (const auto& item : json.at("children")) {
+		mChildren.emplace_back(std::make_unique<SceneObject>(item, this));
+	}
+}
+
+void SceneObject::addChild(const JSON& json) {
+	mChildren.emplace_back(std::make_unique<SceneObject>(json, this));
+}
+
 const Transform& SceneObject::getTransform() const {
 	return mTransform;
 }
@@ -34,20 +54,4 @@ JSON SceneObject::toJSON() const {
 		json["children"].push_back(child->toJSON());
 	}
 	return json;
-}
-
-SceneObject::SceneObject(const JSON& json, SceneObject* parent) : mTransform{ json.at("transform") }, mParent{ parent } {
-	mName = json.at("name");
-
-	JSON components = json.at("components");
-	for (const auto& item : components.items()) {
-		std::string componentName{ item.key() };
-		JSON componentJSON{ item.value() };
-		ComponentTypes::Type type{ ComponentTypes::nameToType[componentName] };
-		mComponents.push_back(ComponentTypes::fromJSON[(int)type](componentJSON));
-	}
-
-	for (const auto& item : json.at("children")) {
-		mChildren.emplace_back(std::make_unique<SceneObject>(item, this));
-	}
 }

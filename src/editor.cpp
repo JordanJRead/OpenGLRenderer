@@ -83,10 +83,7 @@ glm::ivec2 Editor::updateRender(const Framebuffer* const outputFramebuffer, App&
 
     // Hierarchy
     ImGui::Begin("Hierarchy");
-    const std::vector<std::unique_ptr<SceneObject>>& rootObjects{ app.mScene.getRootObjects() };
-    for (const auto& object : rootObjects) {
-        renderSceneObject(object.get(), app.mScene);
-    }
+    renderSceneObject(app.mScene.getRootObject().get(), app.mScene);
     ImGui::End();
 
     ImGui::Render();
@@ -112,7 +109,7 @@ void Editor::renderSceneObject(SceneObject* object, Scene& scene) {
         object->addChild({ {0, 0, 0}, {1, 1 ,1}, {0, 0, 0} }, "New Object");
     }
 
-    bool doChildren{ ImGui::CollapsingHeader("Children") };
+    bool doChildren{ ImGui::CollapsingHeader("Children", object->getName() == "root" ? ImGuiTreeNodeFlags_DefaultOpen : 0)};
     ImGui::PopID();
     if (doChildren) {
         ImGui::Indent();

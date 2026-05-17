@@ -25,9 +25,7 @@ Scene::Scene(std::string_view jsonFilePath)
 		mCamera.loadJSONData(json.at("camera"));
 		mDirectionalLight = DirectionalLight{ json.at("directionalLight") };
 
-		for (const JSON& objectJSON : json.at("objects")) {
-			mObjects.emplace_back(std::make_unique<SceneObject>(objectJSON, nullptr));
-		}
+		mRootObject = std::make_unique<SceneObject>(json.at("rootObject"), nullptr);
 	}
 
 	mSphereVertexArray.create("assets/objects/sphere/sphere.obj");
@@ -39,50 +37,52 @@ void Scene::updateCameraData(GLFWwindow* window, const Inputs& inputs, float del
 	mCameraDataBuffer.updateGPU();
 }
 
-SceneObject* Scene::addObject(const Transform& transform, std::string_view name) {
-	return mObjects.emplace_back(std::make_unique<SceneObject>(transform, name, nullptr)).get();
-}
-
 void Scene::render(const ShaderMesh& meshShader, const ShaderPointLight& pointLightShader, const Framebuffer* const framebuffer, const RenderSettings& renderSettings, SceneObject* selectedObject) const {
 	glDisable(GL_BLEND);
+	renderSceneObject(mRootObject.get(), meshShader, pointLightShader, framebuffer, renderSettings, selectedObject);
+}
 
-	for (const std::unique_ptr<SceneObject>& objectUP : mObjects) {
-		const SceneObject* const object{ objectUP.get() };
-		const Model* model{ object->getComponent<Model>() };
-		if (model) {
-			const std::span<const Mesh> meshes{ model->getMeshes() };
-			for (const Mesh& mesh : meshes) {
-				meshShader.render(mesh, *model, object, object == selectedObject, framebuffer, object->getTransform());
-			}
+void Scene::renderSceneObject(const SceneObject* const sceneObject, const ShaderMesh& meshShader, const ShaderPointLight& pointLightShader, const Framebuffer* const framebuffer, const RenderSettings& renderSettings, SceneObject* selectedObject) const {
+	const Model* model{ sceneObject->getComponent<Model>() };
+	if (model) {
+		const std::span<const Mesh> meshes{ model->getMeshes() };
+		for (const Mesh& mesh : meshes) {
+			meshShader.render(mesh, *model, sceneObject, sceneObject == selectedObject, framebuffer, sceneObject->getTransform());
 		}
 	}
 
 	if (renderSettings.mShouldRenderPointLights) {
-		for (const std::unique_ptr<SceneObject>& objectUP : mObjects) {
-			const SceneObject* const object{ objectUP.get() };
-			const PointLight* pointLight{ object->getComponent<PointLight>() };
-			if (pointLight) {
-				pointLightShader.render(object, object == selectedObject, mSphereVertexArray, framebuffer, object->getTransform().mPosition, pointLight->mColour);
-			}
+		const PointLight* pointLight{ sceneObject->getComponent<PointLight>() };
+		if (pointLight) {
+			pointLightShader.render(sceneObject, sceneObject == selectedObject, mSphereVertexArray, framebuffer, sceneObject->getTransform().mPosition, pointLight->mColour);
 		}
+	}
+
+	for (const auto& child : sceneObject->getChildren()) {
+		renderSceneObject(child.get(), meshShader, pointLightShader, framebuffer, renderSettings, selectedObject);
 	}
 }
 
 void Scene::updatePointLights() {
 	std::vector<float> data;
-	for (const std::unique_ptr<SceneObject>& object : mObjects) {
-		const PointLight* pointLight{ object->getComponent<PointLight>() };
-		if (pointLight) {
-			data.push_back(object->getTransform().mPosition.x);
-			data.push_back(object->getTransform().mPosition.y);
-			data.push_back(object->getTransform().mPosition.z);
-			data.push_back(pointLight->mColour.x);
-			data.push_back(pointLight->mColour.y);
-			data.push_back(pointLight->mColour.z);
-		}
-	}
+	getPointLightData(mRootObject.get(), data);
 	mPointLightBuffer.mValue.mData = data;
 	mPointLightBuffer.updateGPU();
+}
+
+void Scene::getPointLightData(const SceneObject* const sceneObject, std::vector<float>& data) {
+	const PointLight* pointLight{ sceneObject->getComponent<PointLight>() };
+	if (pointLight) {
+		data.push_back(sceneObject->getTransform().mPosition.x);
+		data.push_back(sceneObject->getTransform().mPosition.y);
+		data.push_back(sceneObject->getTransform().mPosition.z);
+		data.push_back(pointLight->mColour.x);
+		data.push_back(pointLight->mColour.y);
+		data.push_back(pointLight->mColour.z);
+	}
+	for (const auto& child : sceneObject->getChildren()) {
+		getPointLightData(child.get(), data);
+	}
 }
 
 void Scene::saveToJSON(std::string_view saveFilePath) {
@@ -91,9 +91,7 @@ void Scene::saveToJSON(std::string_view saveFilePath) {
 	json["directionalLight"] = mDirectionalLight.toJSON();
 	json["ambientLightColour"] = JSONHelpers::fromVec3(mAmbientLightColour);
 
-	for (const std::unique_ptr<SceneObject>& object : mObjects) {
-		json["objects"].push_back(object->toJSON());
-	}
+	json["rootObject"] = mRootObject->toJSON();
 	std::ofstream file{ saveFilePath.data() };
 	file << std::setw(1) << json;
 	file.close();
