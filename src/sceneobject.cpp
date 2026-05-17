@@ -1,6 +1,6 @@
 #include "sceneobject.h"
 
-SceneObject::SceneObject(const Transform& transform, std::string_view name) : mTransform{ transform }, mName{ name } {}
+SceneObject::SceneObject(const Transform& transform, std::string_view name, SceneObject* parent) : mTransform{ transform }, mName{ name }, mParent{ parent } {}
 
 void SceneObject::addComponent(std::unique_ptr<Component> component) {
 	mComponents.push_back(std::move(component));
@@ -31,7 +31,7 @@ JSON SceneObject::toJSON() const {
 	return json;
 }
 
-SceneObject::SceneObject(const JSON& json) : mTransform{ json.at("transform")} {
+SceneObject::SceneObject(const JSON& json, SceneObject* parent) : mTransform{ json.at("transform") }, mParent{ parent } {
 	mName = json.at("name");
 
 	JSON components = json.at("components");
@@ -43,6 +43,6 @@ SceneObject::SceneObject(const JSON& json) : mTransform{ json.at("transform")} {
 	}
 
 	for (const auto& item : json.at("children")) {
-		mChildren.emplace_back(std::make_unique<SceneObject>(item));
+		mChildren.emplace_back(std::make_unique<SceneObject>(item, this));
 	}
 }

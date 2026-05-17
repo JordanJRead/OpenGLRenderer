@@ -26,7 +26,7 @@ Scene::Scene(std::string_view jsonFilePath)
 		mDirectionalLight = DirectionalLight{ json.at("directionalLight") };
 
 		for (const JSON& objectJSON : json.at("objects")) {
-			mObjects.emplace_back(std::make_unique<SceneObject>(objectJSON));
+			mObjects.emplace_back(std::make_unique<SceneObject>(objectJSON, nullptr));
 		}
 	}
 
@@ -39,8 +39,8 @@ void Scene::updateCameraData(GLFWwindow* window, const Inputs& inputs, float del
 	mCameraDataBuffer.updateGPU();
 }
 
-SceneObject* Scene::addObject(const Transform& transform, std::string_view name) {
-	return mObjects.emplace_back(std::make_unique<SceneObject>(transform, name)).get();
+SceneObject* Scene::addObject(const Transform& transform, std::string_view name, SceneObject* parent) {
+	return mObjects.emplace_back(std::make_unique<SceneObject>(transform, name, parent)).get();
 }
 
 void Scene::render(const ShaderMesh& meshShader, const ShaderPointLight& pointLightShader, const Framebuffer* const framebuffer, const RenderSettings& renderSettings, SceneObject* selectedObject) const {

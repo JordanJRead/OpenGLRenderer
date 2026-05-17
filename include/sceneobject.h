@@ -11,7 +11,7 @@
 
 class SceneObject {
 public:
-	SceneObject(const Transform& transform, std::string_view name);
+	SceneObject(const Transform& transform, std::string_view name, SceneObject* parent);
 	void addComponent(std::unique_ptr<Component> component);
 	
 	template <typename T>
@@ -42,11 +42,12 @@ public:
 	std::string& getName() { return mName; }
 
 	JSON toJSON() const;
-	SceneObject(const JSON& json);
+	SceneObject(const JSON& json, SceneObject* parent);
 
 private:
 	std::vector<std::unique_ptr<Component>> mComponents;
 	std::vector<std::unique_ptr<SceneObject>> mChildren;
+	SceneObject* mParent;
 	Transform mTransform;
 	std::string mName;
 };
