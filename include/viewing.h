@@ -49,11 +49,10 @@ void Viewer<T>::lookAt(Viewable<T>* viewable) {
 	if (mViewable) {
 		mViewable->removeViewer(this);
 	}
-	if (!viewable) {
-		mViewable = nullptr;
-	}
-	else {
-		mViewable = viewable;
+
+	mViewable = viewable;
+
+	if (mViewable) {
 		mViewable->registerViewer(this);
 	}
 }
