@@ -7,9 +7,9 @@
  "camera": {
   "horizontalFOVDeg": 100.0,
   "position": {
-   "x": -1.0948644876480103,
-   "y": 1.7607953548431396,
-   "z": -0.7154309153556824
+   "x": 0.5651044249534607,
+   "y": 2.0778653621673584,
+   "z": 0.13429293036460876
   },
   "sensitivity": 0.1
  },
@@ -27,6 +27,7 @@
  },
  "objects": [
   {
+   "children": [],
    "components": {
     "Point Light": {
      "colour": {
@@ -56,6 +57,7 @@
    }
   },
   {
+   "children": [],
    "components": {
     "Model": {
      "objPath": "assets/objects/sponza/sponza.obj"

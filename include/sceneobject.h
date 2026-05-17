@@ -46,6 +46,7 @@ public:
 
 private:
 	std::vector<std::unique_ptr<Component>> mComponents;
+	std::vector<std::unique_ptr<SceneObject>> mChildren;
 	Transform mTransform;
 	std::string mName;
 };

@@ -23,6 +23,11 @@ JSON SceneObject::toJSON() const {
 		const std::string& componentName{ ComponentTypes::names[component.get()->getComponentType()] };
 		json["components"][componentName] = component.get()->toJSON();
 	}
+
+	json["children"] = JSON::array();
+	for (const auto& child : mChildren) {
+		json["children"].push_back(child->toJSON());
+	}
 	return json;
 }
 
@@ -35,5 +40,9 @@ SceneObject::SceneObject(const JSON& json) : mTransform{ json.at("transform")} {
 		JSON componentJSON{ item.value() };
 		ComponentTypes::Type type{ ComponentTypes::nameToType[componentName] };
 		mComponents.push_back(ComponentTypes::fromJSON[(int)type](componentJSON));
+	}
+
+	for (const auto& item : json.at("children")) {
+		mChildren.emplace_back(std::make_unique<SceneObject>(item));
 	}
 }
