@@ -13,6 +13,13 @@
 
 class Framebuffer {
 public:
+	static void bind(const Framebuffer* const fb) {
+		if (fb)
+			fb->bind();
+		else
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	}
+
 	/// <summary>
 	/// Creates a framebuffer with one colour attachment and one depth/stencil attachment
 	/// </summary>

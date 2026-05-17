@@ -10,47 +10,40 @@
 #include "imgui/imgui_stdlib.h"
 #include "nlohmann/json.hpp"
 #include "rendersettings.h"
+#include "app.h"
 
-glm::ivec2 Editor::updateRender(Scene& scene, GLFWwindow* window, const Inputs& inputs, const Framebuffer& gBuffer, RenderSettings& renderSettings, const Framebuffer& displayFramebuffer) {
+Editor::Editor() {
+    ImGuiStyle& style{ ImGui::GetStyle() };
+    //style.Colors[ImGuiCol_Text] = ImVec4{ 0, 0, 1, 1 };
+    //style.Colors[ImGuiCol_TextDisabled] = ImVec4{ 0, 0, 1, 1 };
+    //style.Colors[ImGuiCol_WindowBg] = ImVec4{0, 0, 1, 1};
+}
+
+glm::ivec2 Editor::updateRender(const Framebuffer* const outputFramebuffer, App& app) {
+    Framebuffer::bind(outputFramebuffer);
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
     ImGui::DockSpaceOverViewport(0, ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
 
-    // Select object
-    if (inputs.checkMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT) && !ImGui::IsAnyItemHovered()) {
-        double mouseX;
-        double mouseY;
-        glfwGetCursorPos(window, &mouseX, &mouseY);
-        mouseY = displayFramebuffer.getHeight() - 1 - mouseY;
-        int selectedObjectIndex = (int)gBuffer.samplePixel((int)mouseX, (int)mouseY, 0)[3];
-        if (mSelectedObjectIndex != selectedObjectIndex) {
-            mSelectedObjectIndex = selectedObjectIndex;
-        }
-        else {
-            mSelectedObjectIndex = -1;
-        }
-    }
-
     ImGui::Begin("Scene Lighting");
-    ImGui::ColorEdit3("Sunlight Colour", (float*)&scene.getDirectionalLight().mColour);
-    ImGui::ColorEdit3("Ambient Colour", (float*)&scene.getAmbientLightColour());
+    ImGui::ColorEdit3("Sunlight Colour", (float*)&app.mScene.getDirectionalLight().mColour);
+    ImGui::ColorEdit3("Ambient Colour", (float*)&app.mScene.getAmbientLightColour());
     ImGui::End();
 
     ImGui::Begin("Render Settings");
-    ImGui::ColorEdit3("Highlight Colour", (float*)&renderSettings.mHighlightColour);
-    ImGui::DragFloat("Point Light Size", &renderSettings.mPointLightRenderScale, 0.01f);
-    ImGui::Checkbox("Render Point Lights", &renderSettings.mShouldRenderPointLights);
+    ImGui::ColorEdit3("Highlight Colour", (float*)&app.mRenderSettings.mValue.mHighlightColour);
+    ImGui::DragFloat("Point Light Size", &app.mRenderSettings.mValue.mPointLightRenderScale, 0.01f);
+    ImGui::Checkbox("Render Point Lights", &app.mRenderSettings.mValue.mShouldRenderPointLights);
     ImGui::End();
 
     // Inspector
     ImGui::Begin("Object Editor");
-    if (scene.isValidObjectIndex(mSelectedObjectIndex)) {
-        SceneObject& object{ scene.getObject(mSelectedObjectIndex) };
+    if (app.mScene.isValidObjectIndex(mSelectedObjectIndex)) {
+        SceneObject& object{ app.mScene.getObject(mSelectedObjectIndex) };
         ImGui::PushID(&object);
         ImGui::InputText("", &object.getName());
         ImGui::PopID();
-
         object.getTransform().renderUI();
     }
 
@@ -61,7 +54,28 @@ glm::ivec2 Editor::updateRender(Scene& scene, GLFWwindow* window, const Inputs& 
 
     ImGui::Begin("Game");
     ImVec2 dim = ImGui::GetContentRegionAvail();
-    ImGui::Image(displayFramebuffer.getTextureID(0), { (float)displayFramebuffer.getWidth(), (float)displayFramebuffer.getHeight() }, { 0, 1 }, { 1, 0 });
+    ImGui::Image(app.mOutputFramebuffer.getTextureID(0), { (float)app.mOutputFramebuffer.getWidth(), (float)app.mOutputFramebuffer.getHeight() }, { 0, 1 }, { 1, 0 });
+
+    app.mUIStyle.renderUIWindow();
+
+    // Select object
+    ImVec2 mousePos{ ImGui::GetMousePos() };
+    ImVec2 windowPos{ ImGui::GetItemRectMin() };
+    double mouseX = mousePos.x - windowPos.x;
+    double mouseY = mousePos.y - windowPos.y;
+    mouseY = app.mOutputFramebuffer.getHeight() - 1 - mouseY;
+    bool isCursorInGameWindow = mouseX > 0 && mouseX < app.mOutputFramebuffer.getWidth() && mouseY > 0 && mouseY < app.mOutputFramebuffer.getHeight();
+    if (app.mScene.getCamera().isCursorFree() && app.mInputs.checkMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT) && isCursorInGameWindow) {
+        int selectedObjectIndex = (int)app.mGeometryBuffers.samplePixel((int)mouseX, (int)mouseY, 0)[3];
+        Framebuffer::bind(outputFramebuffer);
+        if (mSelectedObjectIndex != selectedObjectIndex) {
+            mSelectedObjectIndex = selectedObjectIndex;
+        }
+        else {
+            mSelectedObjectIndex = -1;
+        }
+    }
+
     ImGui::End();
 
     ImGui::Render();

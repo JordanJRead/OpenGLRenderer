@@ -177,12 +177,14 @@
     <ClCompile Include="src\shaders\shaderi.cpp" />
     <ClCompile Include="src\texture2d.cpp" />
     <ClCompile Include="src\transform.cpp" />
+    <ClCompile Include="src\uistyle.cpp" />
     <ClCompile Include="src\vertexarray.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\app.h" />
     <ClInclude Include="include\camera.h" />
     <ClInclude Include="include\camerarenderdata.h" />
+    <ClInclude Include="include\changeable.h" />
     <ClInclude Include="include\componenttypes.h" />
     <ClInclude Include="include\directionallight.h" />
     <ClInclude Include="include\editor.h" />
@@ -213,6 +215,7 @@
     <ClInclude Include="include\texture2d.h" />
     <ClInclude Include="include\texturetypes.h" />
     <ClInclude Include="include\transform.h" />
+    <ClInclude Include="include\uistyle.h" />
     <ClInclude Include="include\vertexarray.h" />
     <ClInclude Include="include\vertexarrayscreen.h" />
   </ItemGroup>

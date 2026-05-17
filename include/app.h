@@ -16,8 +16,10 @@
 #include "inputs.h"
 #include "openglbuffer.h"
 #include <string_view>
+#include "uistyle.h"
 
 class App {
+    friend class Editor;
 public:
     App(int screenWidth, int screenHeight, GLFWwindow* window);
     void run();
@@ -41,6 +43,7 @@ private:
     VertexArrayScreen mScreenVertexArray;
     OpenGLBuffer<RenderSettings> mRenderSettings{ 2, BufferTypes::uniform };
     Inputs mInputs;
+    UIStyle mUIStyle;
 };
 
 #endif

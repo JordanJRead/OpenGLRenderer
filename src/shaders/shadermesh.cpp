@@ -18,12 +18,7 @@ ShaderMesh::ShaderMesh(std::string_view vertPath, std::string_view fragPath) : S
 
 void ShaderMesh::render(const Mesh& mesh, const Model& parentModel, int objectSceneIndex, bool highlight, const Framebuffer* framebuffer, const Transform& transform) const {
 	bind();
-	if (framebuffer) {
-		framebuffer->bind();
-	}
-	else {
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	}
+	Framebuffer::bind(framebuffer);
 
 	setMatrix4("model", transform.getModelMatrix());
 	setVector3("diffuseColour", mesh.getMaterial().mDiffuseColour);

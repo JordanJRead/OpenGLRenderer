@@ -34,8 +34,9 @@ Transform::Transform(const JSON& json) {
 }
 
 void Transform::renderUI() const {
-	ImGui::Text("Transform");
-	ImGui::DragFloat3("Position", (float*)&mPosition, 0.01f);
-	ImGui::DragFloat3("Scale", (float*)&mScale, 0.01f);
-	ImGui::DragFloat3("Rotation", (float*)&mRotationDeg, 1);
+	if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen)) {
+		ImGui::DragFloat3("Position", (float*)&mPosition, 0.01f);
+		ImGui::DragFloat3("Scale", (float*)&mScale, 0.01f);
+		ImGui::DragFloat3("Rotation", (float*)&mRotationDeg, 1);
+	}
 }

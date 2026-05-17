@@ -11,12 +11,7 @@ ShaderPostProcess::ShaderPostProcess(std::string_view vertPath, std::string_view
 
 void ShaderPostProcess::render(const VertexArrayScreen& screenVertexArray, const Framebuffer* targetFramebuffer, const Texture2D& sourceTexture) {
 	bind();
-	if (targetFramebuffer) {
-		targetFramebuffer->bind();
-	}
-	else {
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	}
+	Framebuffer::bind(targetFramebuffer);
 
 	sourceTexture.bind(0);
 

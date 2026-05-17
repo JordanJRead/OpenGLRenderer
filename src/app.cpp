@@ -97,7 +97,7 @@ void App::run() {
         mShaderDeferred.render(mScreenVertexArray, &mOutputFramebuffer, mGeometryBuffers, mScene.getDirectionalLight(), mScene.getAmbientLightColour());
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glm::ivec2 newDim = mEditor.updateRender(mScene, mWindow, mInputs, mGeometryBuffers, mRenderSettings.mValue, mOutputFramebuffer);
+        glm::ivec2 newDim = mEditor.updateRender(nullptr, *this);
         if (newDim.x != mOutputFramebuffer.getWidth() || newDim.y != mOutputFramebuffer.getHeight()) {
             mOutputFramebuffer.resize(newDim.x, newDim.y);
             mOutputFramebuffer.clear();
@@ -117,6 +117,7 @@ void App::run() {
 void App::saveToJSON(std::string_view fileName) const {
     JSON json;
     json["renderSettings"] = mRenderSettings.mValue.toJSON();
+    json["uiStyle"] = mUIStyle.toJSON();
     std::ofstream file{ fileName.data() };
     file << std::setw(1) << json;
     file.close();
@@ -128,5 +129,6 @@ void App::loadFromJSON(std::string_view fileName) {
         JSON json{ JSON::parse(file) };
         file.close();
         mRenderSettings.mValue.fromJSON(json.at("renderSettings"));
+        mUIStyle.fromJSON(json.at("uiStyle"));
     }
 }

@@ -19,6 +19,7 @@ public:
 	glm::vec3 getPosition() const { return mPosition; }
 	void disableLooking() { mIsLookingEnabled = false; }
 	void enableLooking() { mIsLookingEnabled = true; mIsFirstMouseMovement = true; }
+	bool isCursorFree() const { return !mIsLookingEnabled; }
 	CameraRenderData getCameraRenderData(float aspectRatio) const { return CameraRenderData{ getViewMatrix(), getProjectionMatrix(aspectRatio), mPosition }; }
 
 	JSON toJSON() const;

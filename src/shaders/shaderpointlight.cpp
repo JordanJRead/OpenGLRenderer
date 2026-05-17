@@ -11,12 +11,7 @@ ShaderPointLight::ShaderPointLight(std::string_view vertPath, std::string_view f
 
 void ShaderPointLight::render(int sceneObjectIndex, bool highlight, const VertexArray& vertexArray, const Framebuffer* framebuffer, const glm::vec3& position, const glm::vec3& lightColour) const {
 	bind();
-	if (framebuffer) {
-		framebuffer->bind();
-	}
-	else {
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	}
+	Framebuffer::bind(framebuffer);
 
 	setVector3("position", position);;
 	setVector3("colour", lightColour);

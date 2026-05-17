@@ -14,12 +14,7 @@ ShaderDeferred::ShaderDeferred(std::string_view vertPath, std::string_view fragP
 
 void ShaderDeferred::render(const VertexArrayScreen& screenVertexArray, const Framebuffer* targetFramebuffer, const Framebuffer& geometryBuffers, const DirectionalLight& directionalLight, const glm::vec3& ambientLightColour) {
 	bind();
-	if (targetFramebuffer) {
-		targetFramebuffer->bind();
-	}
-	else {
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	}
+	Framebuffer::bind(targetFramebuffer);
 
 	geometryBuffers.bindColourTexture(0, 0);
 	geometryBuffers.bindColourTexture(1, 1);
