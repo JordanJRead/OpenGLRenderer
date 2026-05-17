@@ -11,6 +11,7 @@
 #include "nlohmann/json.hpp"
 #include "rendersettings.h"
 #include "app.h"
+#include "sceneobject.h"
 
 Editor::Editor() {
     ImGuiStyle& style{ ImGui::GetStyle() };
@@ -39,12 +40,11 @@ glm::ivec2 Editor::updateRender(const Framebuffer* const outputFramebuffer, App&
 
     // Inspector
     ImGui::Begin("Object Editor");
-    if (app.mScene.isValidObjectIndex(mSelectedObjectIndex)) {
-        SceneObject& object{ app.mScene.getObject(mSelectedObjectIndex) };
-        ImGui::PushID(&object);
-        ImGui::InputText("", &object.getName());
+    if (mSelectedObject) {
+        ImGui::PushID(mSelectedObject);
+        ImGui::InputText("", &mSelectedObject->getName());
         ImGui::PopID();
-        object.getTransform().renderUI();
+        mSelectedObject->getTransform().renderUI();
     }
 
     else {
@@ -66,13 +66,16 @@ glm::ivec2 Editor::updateRender(const Framebuffer* const outputFramebuffer, App&
     mouseY = app.mOutputFramebuffer.getHeight() - 1 - mouseY;
     bool isCursorInGameWindow = mouseX > 0 && mouseX < app.mOutputFramebuffer.getWidth() && mouseY > 0 && mouseY < app.mOutputFramebuffer.getHeight();
     if (app.mScene.getCamera().isCursorFree() && app.mInputs.checkMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT) && isCursorInGameWindow) {
-        int selectedObjectIndex = (int)app.mGeometryBuffers.samplePixel((int)mouseX, (int)mouseY, 0)[3];
+        SceneObject* selectedObjectPtr;
+        std::array<float, 4> sample{ app.mGeometryBuffers.samplePixel((int)mouseX, (int)mouseY, 4) };
+        *((float*)(&selectedObjectPtr)) = sample[0];
+        *(((float*)(&selectedObjectPtr)) + 1) = sample[1];
         Framebuffer::bind(outputFramebuffer);
-        if (mSelectedObjectIndex != selectedObjectIndex) {
-            mSelectedObjectIndex = selectedObjectIndex;
+        if (selectedObjectPtr != mSelectedObject) {
+            mSelectedObject = selectedObjectPtr;
         }
         else {
-            mSelectedObjectIndex = -1;
+            mSelectedObject = nullptr;
         }
     }
 

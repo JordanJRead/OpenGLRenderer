@@ -8,11 +8,12 @@ class VertexArray;
 class PointLight;
 class Transform;
 class Framebuffer;
+class SceneObject;
 
 class ShaderPointLight : public ShaderI {
 public:
 	ShaderPointLight(std::string_view vertPath, std::string_view fragPath);
-	void render(int sceneObjectIndex, bool highlight, const VertexArray& vertexArray, const Framebuffer* framebuffer, const glm::vec3& position, const glm::vec3& lightColour) const;
+	void render(const SceneObject* const object, bool highlight, const VertexArray& vertexArray, const Framebuffer* framebuffer, const glm::vec3& position, const glm::vec3& lightColour) const;
 };
 
 #endif
