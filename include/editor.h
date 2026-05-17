@@ -4,6 +4,7 @@
 #define GLFW_INCLUDE_NONE
 #include "GLFW/glfw3.h"
 #include "glm/glm.hpp"
+#include "viewing.h"
 
 class Scene;
 class Inputs;
@@ -17,11 +18,12 @@ public:
 	Editor();
 	glm::ivec2 updateRender(const Framebuffer* const outputFramebuffer, App& app);
 	void destroyUI();
-	SceneObject* getSelectedObject() { return mSelectedObject; }
+	SceneObject* getSelectedObject() { return mSelectedObjectViewer.get(); }
 
 private:
-	SceneObject* mSelectedObject{ nullptr };
+	Viewer<SceneObject> mSelectedObjectViewer;
 	void renderSceneObject(SceneObject* object, Scene& scene);
+	void toggleSelect(SceneObject* object);
 };
 
 #endif

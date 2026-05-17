@@ -218,6 +218,7 @@
     <ClInclude Include="include\uistyle.h" />
     <ClInclude Include="include\vertexarray.h" />
     <ClInclude Include="include\vertexarrayscreen.h" />
+    <ClInclude Include="include\viewing.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="libraries\assimp-vc143-mtd.lib" />

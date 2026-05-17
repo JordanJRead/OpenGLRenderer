@@ -7,9 +7,9 @@
  "camera": {
   "horizontalFOVDeg": 100.0,
   "position": {
-   "x": -2.4393720626831055,
-   "y": 2.309446334838867,
-   "z": -1.2591519355773926
+   "x": -2.899127960205078,
+   "y": 3.6473026275634766,
+   "z": -1.863732933998108
   },
   "sensitivity": 0.1
  },
@@ -58,76 +58,7 @@
     }
    },
    {
-    "children": [
-     {
-      "children": [
-       {
-        "children": [
-         {
-          "children": [],
-          "components": {},
-          "name": "New Object",
-          "transform": {
-           "position": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-           },
-           "rotation": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-           },
-           "scale": {
-            "x": 1.0,
-            "y": 1.0,
-            "z": 1.0
-           }
-          }
-         }
-        ],
-        "components": {},
-        "name": "New Object",
-        "transform": {
-         "position": {
-          "x": 0.0,
-          "y": 0.0,
-          "z": 0.0
-         },
-         "rotation": {
-          "x": 0.0,
-          "y": 0.0,
-          "z": 0.0
-         },
-         "scale": {
-          "x": 1.0,
-          "y": 1.0,
-          "z": 1.0
-         }
-        }
-       }
-      ],
-      "components": {},
-      "name": "Sponza Child",
-      "transform": {
-       "position": {
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0
-       },
-       "rotation": {
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0
-       },
-       "scale": {
-        "x": 1.0,
-        "y": 1.0,
-        "z": 1.0
-       }
-      }
-     }
-    ],
+    "children": [],
     "components": {
      "Model": {
       "objPath": "assets/objects/sponza/sponza.obj"

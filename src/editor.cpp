@@ -40,11 +40,11 @@ glm::ivec2 Editor::updateRender(const Framebuffer* const outputFramebuffer, App&
 
     // Inspector
     ImGui::Begin("Object Editor");
-    if (mSelectedObject) {
-        ImGui::PushID(mSelectedObject);
-        ImGui::InputText("", &mSelectedObject->getName());
+    if (mSelectedObjectViewer.get()) {
+        ImGui::PushID(mSelectedObjectViewer.get());
+        ImGui::InputText("", &mSelectedObjectViewer.get()->getName());
         ImGui::PopID();
-        mSelectedObject->getTransform().renderUI();
+        mSelectedObjectViewer.get()->getTransform().renderUI();
     }
 
     else {
@@ -71,12 +71,7 @@ glm::ivec2 Editor::updateRender(const Framebuffer* const outputFramebuffer, App&
         *((float*)(&selectedObjectPtr)) = sample[0];
         *(((float*)(&selectedObjectPtr)) + 1) = sample[1];
         Framebuffer::bind(outputFramebuffer);
-        if (selectedObjectPtr != mSelectedObject) {
-            mSelectedObject = selectedObjectPtr;
-        }
-        else {
-            mSelectedObject = nullptr;
-        }
+        toggleSelect(selectedObjectPtr);
     }
 
     ImGui::End();
@@ -97,16 +92,19 @@ void Editor::renderSceneObject(SceneObject* object, Scene& scene) {
 
     ImGui::PushID(object);
     if (ImGui::Button(object->getName().data())) {
-        if (mSelectedObject == object) {
-            mSelectedObject = nullptr;
-        }   
-        else {
-            mSelectedObject = object;
-        }
+        toggleSelect(object);
     }
     ImGui::SameLine();
     if (ImGui::Button("+")) {
         object->addChild({ {0, 0, 0}, {1, 1 ,1}, {0, 0, 0} }, "New Object");
+    }
+    ImGui::SameLine();
+    if (ImGui::Button("X")) {
+        if (object->getParent()) {
+            object->getParent()->destroyChild(object);
+            ImGui::PopID();
+            return;
+        }
     }
 
     bool doChildren{ ImGui::CollapsingHeader("Children", object->getName() == "root" ? ImGuiTreeNodeFlags_DefaultOpen : 0)};
@@ -124,4 +122,13 @@ void Editor::destroyUI() {
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
+}
+
+void Editor::toggleSelect(SceneObject * object) {
+    if (object != mSelectedObjectViewer.get()) {
+        mSelectedObjectViewer.lookAt(&object->mViewable);
+    }
+    else {
+        mSelectedObjectViewer.lookAt(nullptr);
+    }
 }

@@ -6,6 +6,15 @@ void SceneObject::addComponent(std::unique_ptr<Component> component) {
 	mComponents.push_back(std::move(component));
 }
 
+void SceneObject::destroyChild(SceneObject* child) {
+	for (auto& testChild : mChildren) {
+		if (testChild.get() == child) {
+			std::erase(mChildren, testChild);
+			return;
+		}
+	}
+}
+
 void SceneObject::addChild(const Transform& transform, std::string_view name) {
 	mChildren.emplace_back(std::make_unique<SceneObject>(transform, name, this));
 }

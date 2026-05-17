@@ -8,17 +8,26 @@
 #include <optional>
 #include <string>
 #include <string_view>
+#include "viewing.h"
 
 class SceneObject {
 public:
-	SceneObject(const Transform& transform, std::string_view name, SceneObject* parent);
+	SceneObject  (const Transform& transform, std::string_view name, SceneObject* parent);
 	void addChild(const Transform& transform, std::string_view name);
-	SceneObject(const JSON& json, SceneObject* parent);
+	SceneObject  (const JSON& json, SceneObject* parent);
 	void addChild(const JSON& json);
 
 	JSON toJSON() const;
 
 	void addComponent(std::unique_ptr<Component> component);
+	void destroyChild(SceneObject* child);
+
+	const Transform& getTransform() const;
+	Transform& getTransform();
+	std::string_view getName() const { return mName; }
+	std::string& getName() { return mName; }
+	SceneObject* getParent() const { return mParent; }
+	const std::vector<std::unique_ptr<SceneObject>>& getChildren() const { return mChildren; }
 	
 	template <typename T>
 		requires std::is_base_of_v<Component, T>
@@ -42,11 +51,7 @@ public:
 		return nullptr;
 	}
 
-	const Transform& getTransform() const;
-	Transform& getTransform();
-	std::string_view getName() const { return mName; }
-	std::string& getName() { return mName; }
-	const std::vector<std::unique_ptr<SceneObject>>& getChildren() const { return mChildren; }
+	Viewable<SceneObject> mViewable{ this };
 
 private:
 	std::vector<std::unique_ptr<Component>> mComponents;
