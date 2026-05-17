@@ -12,6 +12,7 @@
 #include <string_view>
 #include "openglbuffer.h"
 #include "pointlightdata.h"
+#include <memory>
 
 class Framebuffer;
 class RenderSettings;
@@ -23,12 +24,10 @@ class Inputs;
 class Scene {
 public:
 	Scene(std::string_view jsonFilePath);
-	size_t addObject(const Transform& transform, std::string_view name);
-	SceneObject& getObject(size_t index);
-	void render(const ShaderMesh& meshShader, const ShaderPointLight& pointLightShader, const Framebuffer* const framebuffer, const RenderSettings& renderSettings, int selectedObjectIndex) const;
+	SceneObject* addObject(const Transform& transform, std::string_view name);
+	void render(const ShaderMesh& meshShader, const ShaderPointLight& pointLightShader, const Framebuffer* const framebuffer, const RenderSettings& renderSettings, SceneObject* selectedObject) const;
 	void updatePointLights();
 	void updateCameraData(GLFWwindow* window, const Inputs& inputs, float deltaTime, float aspectRatio);
-	bool isValidObjectIndex(int index) const { return index >= 0 && index < mObjects.size(); }
 
 	Camera& getCamera() { return mCamera; }
 	DirectionalLight& getDirectionalLight() { return mDirectionalLight; }
@@ -37,7 +36,7 @@ public:
 	void saveToJSON(std::string_view saveFilePath);
 
 private:
-	std::vector<SceneObject> mObjects;
+	std::vector<std::unique_ptr<SceneObject>> mObjects;
 	OpenGLBuffer<PointLightData> mPointLightBuffer{ 0, BufferTypes::ssbo };
 	VertexArray mSphereVertexArray;
 	Camera mCamera;

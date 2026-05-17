@@ -10,16 +10,17 @@ class Inputs;
 class Framebuffer;
 class RenderSettings;
 class App;
+class SceneObject;
 
 class Editor {
 public:
 	Editor();
 	glm::ivec2 updateRender(const Framebuffer* const outputFramebuffer, App& app);
 	void destroyUI();
-	int getSelectedObjectIndex() { return mSelectedObjectIndex; }
+	SceneObject* getSelectedObject() { return mSelectedObject; }
 
 private:
-	int mSelectedObjectIndex{ -1 };
+	SceneObject* mSelectedObject{ nullptr };
 };
 
 #endif

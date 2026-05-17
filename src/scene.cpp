@@ -26,7 +26,7 @@ Scene::Scene(std::string_view jsonFilePath)
 		mDirectionalLight = DirectionalLight{ json.at("directionalLight") };
 
 		for (const JSON& objectJSON : json.at("objects")) {
-			mObjects.emplace_back(objectJSON);
+			mObjects.emplace_back(std::make_unique<SceneObject>(objectJSON));
 		}
 	}
 
@@ -39,34 +39,30 @@ void Scene::updateCameraData(GLFWwindow* window, const Inputs& inputs, float del
 	mCameraDataBuffer.updateGPU();
 }
 
-size_t Scene::addObject(const Transform& transform, std::string_view name) {
-	mObjects.emplace_back(transform, name);
-	return mObjects.size() - 1;
+SceneObject* Scene::addObject(const Transform& transform, std::string_view name) {
+	return mObjects.emplace_back(std::make_unique<SceneObject>(transform, name)).get();
 }
 
-SceneObject& Scene::getObject(size_t index) {
-	return mObjects.at(index);
-}
-
-void Scene::render(const ShaderMesh& meshShader, const ShaderPointLight& pointLightShader, const Framebuffer* const framebuffer, const RenderSettings& renderSettings, int selectedObjectIndex) const {
+void Scene::render(const ShaderMesh& meshShader, const ShaderPointLight& pointLightShader, const Framebuffer* const framebuffer, const RenderSettings& renderSettings, SceneObject* selectedObject) const {
 	glDisable(GL_BLEND);
-	for (int objectI{ 0 }; objectI < mObjects.size(); ++objectI) {
-		const SceneObject& object{ mObjects[objectI] };
-		const Model* model{ object.getComponent<Model>() };
+
+	for (const std::unique_ptr<SceneObject>& objectUP : mObjects) {
+		const SceneObject* const object{ objectUP.get() };
+		const Model* model{ object->getComponent<Model>() };
 		if (model) {
 			const std::span<const Mesh> meshes{ model->getMeshes() };
 			for (const Mesh& mesh : meshes) {
-				meshShader.render(mesh, *model, objectI, objectI == selectedObjectIndex, framebuffer, object.getTransform());
+				meshShader.render(mesh, *model, object, object == selectedObject, framebuffer, object->getTransform());
 			}
 		}
 	}
 
 	if (renderSettings.mShouldRenderPointLights) {
-		for (int objectI{ 0 }; objectI < mObjects.size(); ++objectI) {
-			const SceneObject& object{ mObjects[objectI] };
-			const PointLight* pointLight{ object.getComponent<PointLight>() };
+		for (const std::unique_ptr<SceneObject>& objectUP : mObjects) {
+			const SceneObject* const object{ objectUP.get() };
+			const PointLight* pointLight{ object->getComponent<PointLight>() };
 			if (pointLight) {
-				pointLightShader.render(objectI, objectI == selectedObjectIndex, mSphereVertexArray, framebuffer, object.getTransform().mPosition, pointLight->mColour);
+				pointLightShader.render(object, object == selectedObject, mSphereVertexArray, framebuffer, object->getTransform().mPosition, pointLight->mColour);
 			}
 		}
 	}
@@ -74,12 +70,12 @@ void Scene::render(const ShaderMesh& meshShader, const ShaderPointLight& pointLi
 
 void Scene::updatePointLights() {
 	std::vector<float> data;
-	for (const SceneObject& object : mObjects) {
-		const PointLight* pointLight{ object.getComponent<PointLight>() };
+	for (const std::unique_ptr<SceneObject>& object : mObjects) {
+		const PointLight* pointLight{ object->getComponent<PointLight>() };
 		if (pointLight) {
-			data.push_back(object.getTransform().mPosition.x);
-			data.push_back(object.getTransform().mPosition.y);
-			data.push_back(object.getTransform().mPosition.z);
+			data.push_back(object->getTransform().mPosition.x);
+			data.push_back(object->getTransform().mPosition.y);
+			data.push_back(object->getTransform().mPosition.z);
 			data.push_back(pointLight->mColour.x);
 			data.push_back(pointLight->mColour.y);
 			data.push_back(pointLight->mColour.z);
@@ -95,8 +91,8 @@ void Scene::saveToJSON(std::string_view saveFilePath) {
 	json["directionalLight"] = mDirectionalLight.toJSON();
 	json["ambientLightColour"] = JSONHelpers::fromVec3(mAmbientLightColour);
 
-	for (const SceneObject& object : mObjects) {
-		json["objects"].push_back(object.toJSON());
+	for (const std::unique_ptr<SceneObject>& object : mObjects) {
+		json["objects"].push_back(object->toJSON());
 	}
 	std::ofstream file{ saveFilePath.data() };
 	file << std::setw(1) << json;

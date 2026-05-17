@@ -9,17 +9,14 @@ layout(location = 4) in vec2 vTexCoord;
 #include "buffers.glsl"
 
 uniform mat4 model;
-uniform int sceneIndex;
 
 out VertOut {
 	mat3 normalMapMatrix;
 	vec2 texCoords;
 	vec3 worldPos;
-	flat int sceneIndex;
 } vertOut;
 
 void main() {
-	vertOut.sceneIndex = sceneIndex;
 	vertOut.worldPos = (model * vec4(vPos + vNormal * 0.0001, 1)).xyz;
 	gl_Position = cameraData.projection * cameraData.view * vec4(vertOut.worldPos, 1);
 	vertOut.texCoords = vTexCoord;

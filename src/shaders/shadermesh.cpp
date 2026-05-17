@@ -8,6 +8,7 @@
 #include <array>
 #include "texture2d.h"
 #include "glad/glad.h"
+#include "sceneobject.h"
 
 ShaderMesh::ShaderMesh(std::string_view vertPath, std::string_view fragPath) : ShaderI{ vertPath, fragPath } {
 	bind();
@@ -16,7 +17,7 @@ ShaderMesh::ShaderMesh(std::string_view vertPath, std::string_view fragPath) : S
 	}
 }
 
-void ShaderMesh::render(const Mesh& mesh, const Model& parentModel, int objectSceneIndex, bool highlight, const Framebuffer* framebuffer, const Transform& transform) const {
+void ShaderMesh::render(const Mesh& mesh, const Model& parentModel, const SceneObject* const object, bool highlight, const Framebuffer* framebuffer, const Transform& transform) const {
 	bind();
 	Framebuffer::bind(framebuffer);
 
@@ -24,7 +25,8 @@ void ShaderMesh::render(const Mesh& mesh, const Model& parentModel, int objectSc
 	setVector3("diffuseColour", mesh.getMaterial().mDiffuseColour);
 	setVector3("specularColour", mesh.getMaterial().mSpecularColour);
 	setFloat("specularExponent", mesh.getMaterial().mSpecularExponent);
-	setInt("sceneIndex", objectSceneIndex);
+	setFloat("objectPtrFirst", *((float*)(&object)));
+	setFloat("objectPtrSecond", *(((float*)(&object)) + 1));
 	setBool("highlight", highlight);
 
 	std::array<const Texture2D*, TextureTypes::max> textures{ mesh.getTextures(parentModel) };
