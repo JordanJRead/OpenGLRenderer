@@ -6,6 +6,10 @@ void SceneObject::addComponent(std::unique_ptr<Component> component) {
 	mComponents.push_back(std::move(component));
 }
 
+void SceneObject::addChild(const Transform& transform, std::string_view name) {
+	mChildren.emplace_back(std::make_unique<SceneObject>(transform, name, this));
+}
+
 const Transform& SceneObject::getTransform() const {
 	return mTransform;
 }
@@ -19,6 +23,7 @@ JSON SceneObject::toJSON() const {
 	json["name"] = mName;
 	json["transform"] = mTransform.toJSON();
 
+	json["components"] = JSON::object();
 	for (const auto& component : mComponents) {
 		const std::string& componentName{ ComponentTypes::names[component.get()->getComponentType()] };
 		json["components"][componentName] = component.get()->toJSON();

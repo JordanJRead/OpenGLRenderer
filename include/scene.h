@@ -24,7 +24,8 @@ class Inputs;
 class Scene {
 public:
 	Scene(std::string_view jsonFilePath);
-	SceneObject* addObject(const Transform& transform, std::string_view name, SceneObject* parent = nullptr);
+	SceneObject* addObject(const Transform& transform, std::string_view name);
+	const std::vector<std::unique_ptr<SceneObject>>& getRootObjects() const { return mObjects; }
 	void render(const ShaderMesh& meshShader, const ShaderPointLight& pointLightShader, const Framebuffer* const framebuffer, const RenderSettings& renderSettings, SceneObject* selectedObject) const;
 	void updatePointLights();
 	void updateCameraData(GLFWwindow* window, const Inputs& inputs, float deltaTime, float aspectRatio);

@@ -21,6 +21,7 @@ public:
 
 private:
 	SceneObject* mSelectedObject{ nullptr };
+	void renderSceneObject(SceneObject* object, Scene& scene);
 };
 
 #endif

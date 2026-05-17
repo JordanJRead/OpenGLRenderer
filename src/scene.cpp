@@ -39,8 +39,8 @@ void Scene::updateCameraData(GLFWwindow* window, const Inputs& inputs, float del
 	mCameraDataBuffer.updateGPU();
 }
 
-SceneObject* Scene::addObject(const Transform& transform, std::string_view name, SceneObject* parent) {
-	return mObjects.emplace_back(std::make_unique<SceneObject>(transform, name, parent)).get();
+SceneObject* Scene::addObject(const Transform& transform, std::string_view name) {
+	return mObjects.emplace_back(std::make_unique<SceneObject>(transform, name, nullptr)).get();
 }
 
 void Scene::render(const ShaderMesh& meshShader, const ShaderPointLight& pointLightShader, const Framebuffer* const framebuffer, const RenderSettings& renderSettings, SceneObject* selectedObject) const {

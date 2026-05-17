@@ -81,9 +81,46 @@ glm::ivec2 Editor::updateRender(const Framebuffer* const outputFramebuffer, App&
 
     ImGui::End();
 
+    // Hierarchy
+    ImGui::Begin("Hierarchy");
+    const std::vector<std::unique_ptr<SceneObject>>& rootObjects{ app.mScene.getRootObjects() };
+    for (const auto& object : rootObjects) {
+        renderSceneObject(object.get(), app.mScene);
+    }
+    ImGui::End();
+
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
     return { (int)dim.x, (int)dim.y };
+}
+
+void Editor::renderSceneObject(SceneObject* object, Scene& scene) {
+    if (!object)
+        return;
+
+    ImGui::PushID(object);
+    if (ImGui::Button(object->getName().data())) {
+        if (mSelectedObject == object) {
+            mSelectedObject = nullptr;
+        }   
+        else {
+            mSelectedObject = object;
+        }
+    }
+    ImGui::SameLine();
+    if (ImGui::Button("+")) {
+        object->addChild({ {0, 0, 0}, {1, 1 ,1}, {0, 0, 0} }, "New Object");
+    }
+
+    bool doChildren{ ImGui::CollapsingHeader("Children") };
+    ImGui::PopID();
+    if (doChildren) {
+        ImGui::Indent();
+        for (const auto& child : object->getChildren()) {
+            renderSceneObject(child.get(), scene);
+        }
+        ImGui::Unindent();
+    }
 }
 
 void Editor::destroyUI() {

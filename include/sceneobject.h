@@ -12,7 +12,12 @@
 class SceneObject {
 public:
 	SceneObject(const Transform& transform, std::string_view name, SceneObject* parent);
+	SceneObject(const JSON& json, SceneObject* parent);
+
+	JSON toJSON() const;
+
 	void addComponent(std::unique_ptr<Component> component);
+	void addChild(const Transform& transform, std::string_view name);
 	
 	template <typename T>
 		requires std::is_base_of_v<Component, T>
@@ -40,9 +45,7 @@ public:
 	Transform& getTransform();
 	std::string_view getName() const { return mName; }
 	std::string& getName() { return mName; }
-
-	JSON toJSON() const;
-	SceneObject(const JSON& json, SceneObject* parent);
+	const std::vector<std::unique_ptr<SceneObject>>& getChildren() { return mChildren; }
 
 private:
 	std::vector<std::unique_ptr<Component>> mComponents;
