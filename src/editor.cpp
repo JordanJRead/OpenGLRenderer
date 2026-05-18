@@ -45,6 +45,10 @@ glm::ivec2 Editor::updateRender(const Framebuffer* const outputFramebuffer, App&
         ImGui::InputText("", &mSelectedObjectViewer.get()->getName());
         ImGui::PopID();
         mSelectedObjectViewer.get()->getTransform().renderUI();
+
+        for (auto& component : mSelectedObjectViewer.get()->getComponents()) {
+            component->renderUIProperties();
+        }
     }
 
     else {

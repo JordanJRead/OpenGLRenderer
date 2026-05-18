@@ -28,6 +28,7 @@ public:
 	std::string& getName() { return mName; }
 	SceneObject* getParent() const { return mParent; }
 	const std::vector<std::unique_ptr<SceneObject>>& getChildren() const { return mChildren; }
+	const std::vector<std::unique_ptr<Component>>& getComponents() const { return mComponents; }
 	
 	template <typename T>
 		requires std::is_base_of_v<Component, T>
