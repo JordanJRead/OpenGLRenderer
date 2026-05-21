@@ -20,8 +20,8 @@ Model::Model(std::string_view objPath)
 	processNode(scene->mRootNode, scene);
 }
 
-std::unique_ptr<Component> Model::fromJSON(const JSON& json) {
-	return std::make_unique<Model>(json.at("objPath"));
+Model::Model(const JSON& metaJSON) : Model{ static_cast<std::string_view>(metaJSON.at("objPath")) } {
+	mInitialMetaJSON = metaJSON;
 }
 
 void Model::processNode(aiNode* node, const aiScene* scene) {
@@ -141,8 +141,9 @@ const std::span<const Mesh> Model::getMeshes() {
 	return mMeshes;
 }
 
-JSON Model::toJSON() {
-	JSON json;
-	json["objPath"] = mObjPath;
-	return json;
-}
+//JSON Model::toMetaJSON() {
+//	JSON json{ JSON::object() };
+//	json["name"] = ComponentTypes::names[mComponentType];
+//	json["data"]["objPath"] = mObjPath;
+//	return json;
+//}

@@ -202,11 +202,13 @@
     <ClInclude Include="include\OpenGLObjects\VAO.h" />
     <ClInclude Include="include\pointlight.h" />
     <ClInclude Include="include\pointlightdata.h" />
+    <ClInclude Include="include\reconstructableviewer.h" />
     <ClInclude Include="include\rendersettings.h" />
     <ClInclude Include="include\scene.h" />
     <ClInclude Include="include\model.h" />
     <ClInclude Include="include\component.h" />
     <ClInclude Include="include\sceneobject.h" />
+    <ClInclude Include="include\sceneobjectinspector.h" />
     <ClInclude Include="include\shaders\shaderdeferred.h" />
     <ClInclude Include="include\shaders\shadermesh.h" />
     <ClInclude Include="include\shaders\shaderi.h" />

@@ -8,9 +8,23 @@ namespace ComponentTypes {
 		"Point Light"
 	};
 
-	std::array<std::function<std::unique_ptr<Component>(const JSON& json)>, (int)Type::max> fromJSON{
-		[](const JSON& json) { return Model::fromJSON(json); },
-		[](const JSON& json) { return PointLight::fromJSON(json); }
+	extern std::array<std::function<Component* (const JSON& json, std::optional<void*> location)>, (int)Type::max> heapFromJSON {
+		[](const JSON& json, std::optional<void*> location) {
+			if (location) { 
+				return new (location.value()) Model(json);
+			}
+			else {
+				return new Model(json);
+			}
+		},
+		[](const JSON& json, std::optional<void*> location) {
+			if (location) {
+				return new (location.value()) PointLight(json);
+			}
+			else {
+				return new PointLight(json);
+			}
+		}
 	};
 
 	std::unordered_map<std::string, ComponentTypes::Type> nameToType{

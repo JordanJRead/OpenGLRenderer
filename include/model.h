@@ -24,11 +24,11 @@ public:
 	static ComponentTypes::Type getComponentType() { return ComponentTypes::model; }
 
 	Model(std::string_view objPath);
-	static std::unique_ptr<Component> fromJSON(const JSON& json);
+	Model(const JSON& json);
 	const std::vector<Mesh>& getMeshes() const { return mMeshes; }
 	void renderUIProperties() override {}
 	const std::span<const Mesh> getMeshes();
-	JSON toJSON() override;
+	//JSON toMetaJSON() override;
 
 private:
 	std::vector<Mesh> mMeshes;

@@ -227,6 +227,12 @@
     <ClInclude Include="include\viewing.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\sceneobjectinspector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\reconstructableviewer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Library Include="libraries\glfw3dll.lib" />

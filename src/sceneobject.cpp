@@ -22,12 +22,9 @@ void SceneObject::addChild(const Transform& transform, std::string_view name) {
 SceneObject::SceneObject(const JSON& json, SceneObject* parent) : mTransform{ json.at("transform") }, mParent{ parent } {
 	mName = json.at("name");
 
-	JSON components = json.at("components");
-	for (const auto& item : components.items()) {
-		std::string componentName{ item.key() };
-		JSON componentJSON{ item.value() };
-		ComponentTypes::Type type{ ComponentTypes::nameToType[componentName] };
-		mComponents.push_back(ComponentTypes::fromJSON[(int)type](componentJSON));
+	std::vector<JSON> componentMetaJSONs = json.at("components");
+	for (const JSON& componentMetaJSON : componentMetaJSONs) {
+		mComponents.emplace_back((Component::heapFromMetaJSON(componentMetaJSON)));
 	}
 
 	for (const auto& item : json.at("children")) {
@@ -52,10 +49,10 @@ JSON SceneObject::toJSON() const {
 	json["name"] = mName;
 	json["transform"] = mTransform.toJSON();
 
-	json["components"] = JSON::object();
+	json["components"] = JSON::array();
 	for (const auto& component : mComponents) {
-		const std::string& componentName{ ComponentTypes::names[component.get()->getComponentType()] };
-		json["components"][componentName] = component.get()->toJSON();
+		JSON metaJSON = JSON::object();
+		json["components"].push_back(component.get()->copyInitialMetaJSON());
 	}
 
 	json["children"] = JSON::array();

@@ -8,13 +8,13 @@ PointLight::PointLight(const glm::vec3& colour)
 	, mColour{ colour }
 {}
 
-std::unique_ptr<Component> PointLight::fromJSON(const JSON& json) {
-	glm::vec3 colour{ JSONHelpers::toVec3(json.at("colour"))};
-	return std::make_unique<PointLight>(colour);
+PointLight::PointLight(const JSON& metaJSON) : PointLight{ JSONHelpers::toVec3(metaJSON.at("colour")) } {
+	mInitialMetaJSON = metaJSON;
 }
 
-JSON PointLight::toJSON() {
-	JSON json;
-	json["colour"] = JSONHelpers::fromVec3(mColour);
-	return json;
-}
+//JSON PointLight::toMetaJSON() {
+//	JSON json;
+//	json["name"] = ComponentTypes::names[mComponentType];
+//	json["data"]["colour"] = JSONHelpers::fromVec3(mColour);
+//	return json;
+//}

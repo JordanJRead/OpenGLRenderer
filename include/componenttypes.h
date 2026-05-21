@@ -7,6 +7,7 @@
 #include <memory>
 #include <nlohmann/json.hpp>
 #include <unordered_map>
+#include <optional>
 
 class Component;
 
@@ -18,7 +19,7 @@ namespace ComponentTypes {
 	};
 
 	extern std::array<std::string, (int)Type::max> names;
-	extern std::array<std::function<std::unique_ptr<Component>(const JSON& json)>, (int)Type::max> fromJSON;
+	extern std::array<std::function<Component* (const JSON& json, std::optional<void*> location)>, (int)Type::max> heapFromJSON;
 	extern std::unordered_map<std::string, ComponentTypes::Type> nameToType;
 }
 
