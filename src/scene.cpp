@@ -44,7 +44,7 @@ void Scene::render(const ShaderMesh& meshShader, const ShaderPointLight& pointLi
 
 void Scene::renderSceneObject(const SceneObject* const sceneObject, const ShaderMesh& meshShader, const ShaderPointLight& pointLightShader, const Framebuffer* const framebuffer, const RenderSettings& renderSettings, SceneObject* selectedObject) const {
 	const Model* model{ sceneObject->getComponent<Model>() };
-	if (model) {
+	if (model && model->isValid()) {
 		const std::span<const Mesh> meshes{ model->getMeshes() };
 		for (const Mesh& mesh : meshes) {
 			meshShader.render(mesh, *model, sceneObject, sceneObject == selectedObject, framebuffer, sceneObject->getTransform());

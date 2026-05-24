@@ -116,7 +116,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
@@ -131,7 +131,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
@@ -150,6 +150,7 @@
     <ClCompile Include="src\app.cpp" />
     <ClCompile Include="src\componenttypes.cpp" />
     <ClCompile Include="src\directionallight.cpp" />
+    <ClCompile Include="src\editableproperties.cpp" />
     <ClCompile Include="src\editor.cpp" />
     <ClCompile Include="src\imgui\imgui.cpp" />
     <ClCompile Include="src\imgui\imgui_demo.cpp" />
@@ -209,6 +210,7 @@
     <ClInclude Include="include\component.h" />
     <ClInclude Include="include\sceneobject.h" />
     <ClInclude Include="include\editableproperty.h" />
+    <ClInclude Include="include\sceneobjectinspector.h" />
     <ClInclude Include="include\shaders\shaderdeferred.h" />
     <ClInclude Include="include\shaders\shadermesh.h" />
     <ClInclude Include="include\shaders\shaderi.h" />

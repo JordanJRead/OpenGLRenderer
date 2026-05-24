@@ -109,7 +109,7 @@ private:
 		int i{ 0 };
 		constexpr int maxI{ boost::pfr::tuple_size<StructType>::value - 1 };
 
-		boost::pfr::for_each_field_with_name(structToAdd, [&]<typename MemberType>(std::string_view name, const MemberType& value) mutable {
+		boost::pfr::for_each_field(structToAdd, [&]<typename MemberType>(const MemberType& value) mutable {
 			int baseAlignment{ getBaseAlignment<MemberType>() };
 
 			// Move to start of object (aligned offset)
@@ -218,37 +218,37 @@ private:
 	}
 
 	template <>
-	static int getNumOfFloatsInObject<int>() {
+	int getNumOfFloatsInObject<int>() {
 		return 1;
 	}
 
 	template <>
-	static int getNumOfFloatsInObject<bool>() {
+	int getNumOfFloatsInObject<bool>() {
 		return 1;
 	}
 
 	template <>
-	static int getNumOfFloatsInObject<float>() {
+	int getNumOfFloatsInObject<float>() {
 		return 1;
 	}
 
 	template <>
-	static int getNumOfFloatsInObject<glm::vec2>() {
+	int getNumOfFloatsInObject<glm::vec2>() {
 		return 2;
 	}
 
 	template <>
-	static int getNumOfFloatsInObject<glm::vec3>() {
+	int getNumOfFloatsInObject<glm::vec3>() {
 		return 3;
 	}
 
 	template <>
-	static int getNumOfFloatsInObject<glm::vec4>() {
+	int getNumOfFloatsInObject<glm::vec4>() {
 		return 4;
 	}
 
 	template <>
-	static int getNumOfFloatsInObject<glm::mat4>() {
+	int getNumOfFloatsInObject<glm::mat4>() {
 		return 16;
 	}
 };

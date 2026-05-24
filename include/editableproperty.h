@@ -31,7 +31,7 @@ public:
 	struct TypeTag {};
 
 	template <typename T, Type TypeEnum>
-	EditableProperty(const T& value, TypeTag<TypeEnum> type) {
+	EditableProperty(const T& value, TypeTag<TypeEnum>) {
 		constexpr int index = static_cast<size_t>(TypeEnum);
 		using UnderlyingType = std::variant_alternative_t<index, EditableVariant_t>;
 		static_assert(std::is_same_v<T, UnderlyingType>, "EDITABLEPROPERTY::EDITABLEPROPERTY ERROR: Invalid type of value given to constructor");
@@ -53,7 +53,7 @@ public:
 
 
 private:
-	Metadata mMetadata;
+	Metadata mMetadata{}; // TODO actually use, make getOrCreate() in 'parent class' take in a value to set? Keep out of JSON then, or save?
 	EditableVariant_t mValue;
 	Type mType;
 

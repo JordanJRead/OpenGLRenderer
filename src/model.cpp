@@ -11,8 +11,18 @@ Model::Model(const JSON& json) : Component{ Model::getComponentType() } {
 	setJSONAndCreate(json);
 }
 
-void Model::create(const EditableProperties& properties) {
-	std::string_view objPath{ properties.get("objPath")->get<EditableProperty::Type::string_type>()};
+Model::Model() : Component{ Model::getComponentType() } {
+	setJSONAndCreate(JSON::object());
+}
+
+void Model::create(EditableProperties& properties) {
+	std::string_view objPath{ properties.getOrCreate<EditableProperty::Type::string_type>("objPath")};
+
+	if (objPath == "") {
+		mIsValid = false;
+		return;
+	}
+	mIsValid = true;
 	mDirectory = objPath;
 	mDirectory.resize(mDirectory.rfind("/"));
 
@@ -84,7 +94,7 @@ void Model::processMesh(aiMesh* mesh, const aiScene* scene) {
 
 	// Material data
 	Material material{};
-	material.mTextureIndices.fill(-1);
+	material.mTextureIndices.fill((size_t)-1);
 
 	const aiMaterial* aiMaterial{ scene->mMaterials[mesh->mMaterialIndex] };
 	for (int i{ 0 }; i < (int)TextureTypes::Type::max; ++i) {

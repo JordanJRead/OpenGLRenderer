@@ -865,6 +865,7 @@ class lexer : public lexer_base<BasicJsonType>
                 }
 
                 JSON_HEDLEY_UNREACHABLE();
+                [[fallthrough]];
             }
 
             // multi-line comments skip input until */ is read
@@ -902,6 +903,7 @@ class lexer : public lexer_base<BasicJsonType>
                 }
 
                 JSON_HEDLEY_UNREACHABLE();
+                [[fallthrough]];
             }
 
             // unexpected character after reading '/'

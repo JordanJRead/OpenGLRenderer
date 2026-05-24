@@ -7,6 +7,10 @@ PointLight::PointLight(const JSON& json) : Component{ PointLight::getComponentTy
 	setJSONAndCreate(json);
 }
 
-void PointLight::create(const EditableProperties& properties) {
-	mColour = properties.get("colour")->get<EditableProperty::Type::colour_type>();
+PointLight::PointLight() : Component{ PointLight::getComponentType() } {
+	setJSONAndCreate(JSON::object());
+}
+
+void PointLight::create(EditableProperties& properties) {
+	mColour = properties.getOrCreate<EditableProperty::Type::colour_type>("colour");
 }

@@ -10,10 +10,11 @@ public:
 	static ComponentTypes::Type getComponentType() { return ComponentTypes::pointLight; }
 
 	PointLight(const JSON& json);
+	PointLight();
 	glm::vec3 mColour;
 
 private:
-	void create(const EditableProperties& properties) override;
+	void create(EditableProperties& properties) override;
 };
 
 #endif
