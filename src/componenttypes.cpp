@@ -8,9 +8,14 @@ namespace ComponentTypes {
 		"Point Light"
 	};
 
-	std::array<std::function<std::unique_ptr<Component>(const JSON& json)>, (int)Type::max> fromJSON{
-		[](const JSON& json) { return Model::fromJSON(json); },
-		[](const JSON& json) { return PointLight::fromJSON(json); }
+	std::array<std::function<std::unique_ptr<Component>(const JSON& json)>, (int)Type::max> createFromJSON{
+		[](const JSON& json) { return std::make_unique<Model>(json); },
+		[](const JSON& json) { return std::make_unique<PointLight>(json); }
+	};
+
+	std::array<std::function<std::unique_ptr<Component>()>, (int)Type::max> createEmpty{
+		[]() { return std::make_unique<Model>(); },
+		[]() { return std::make_unique<PointLight>(); }
 	};
 
 	std::unordered_map<std::string, ComponentTypes::Type> nameToType{

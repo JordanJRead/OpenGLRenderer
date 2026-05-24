@@ -27,7 +27,7 @@ SceneObject::SceneObject(const JSON& json, SceneObject* parent) : mTransform{ js
 		std::string componentName{ item.key() };
 		JSON componentJSON{ item.value() };
 		ComponentTypes::Type type{ ComponentTypes::nameToType[componentName] };
-		mComponents.push_back(ComponentTypes::fromJSON[(int)type](componentJSON));
+		mComponents.push_back(ComponentTypes::createFromJSON[(int)type](componentJSON));
 	}
 
 	for (const auto& item : json.at("children")) {
@@ -63,4 +63,22 @@ JSON SceneObject::toJSON() const {
 		json["children"].push_back(child->toJSON());
 	}
 	return json;
+}
+
+bool SceneObject::addComponent(const std::string& componentName) {
+	if (!ComponentTypes::nameToType.contains(componentName)) {
+		return false;
+	}
+	ComponentTypes::Type type = ComponentTypes::nameToType[componentName];
+	return addComponent(type);
+}
+
+bool SceneObject::addComponent(ComponentTypes::Type type) {
+	for (const auto& component : mComponents) {
+		if (component->getComponentType() == type) {
+			return false;
+		}
+	}
+	mComponents.push_back(ComponentTypes::createEmpty[(int)type]());
+	return true;
 }

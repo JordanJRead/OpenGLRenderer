@@ -7,9 +7,9 @@
  "camera": {
   "horizontalFOVDeg": 100.0,
   "position": {
-   "x": -3.6501240730285645,
-   "y": 1.8447895050048828,
-   "z": -1.030352234840393
+   "x": -2.0894930362701416,
+   "y": 1.7357043027877808,
+   "z": -0.45193028450012207
   },
   "sensitivity": 0.1
  },
@@ -32,9 +32,12 @@
     "components": {
      "Point Light": {
       "colour": {
-       "x": 1.0,
-       "y": 1.0,
-       "z": 1.0
+       "type": 1,
+       "value": {
+        "x": 0.970588207244873,
+        "y": 1.0,
+        "z": 0.0
+       }
       }
      }
     },
@@ -61,7 +64,20 @@
     "children": [],
     "components": {
      "Model": {
-      "objPath": "assets/objects/sponza/sponza.obj"
+      "objPath": {
+       "type": 5,
+       "value": "assets/objects/sponza/sponza.obj"
+      }
+     },
+     "Point Light": {
+      "colour": {
+       "type": 1,
+       "value": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 0.0
+       }
+      }
      }
     },
     "name": "Sponza",

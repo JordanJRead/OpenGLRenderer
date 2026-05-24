@@ -7,21 +7,29 @@
 #include <stdexcept>
 #include <string>
 
-Model::Model(std::string_view objPath)
-	: mDirectory{ objPath }
-	, mObjPath{ objPath }
-	, Component{ ComponentTypes::model }
-	{
+Model::Model(const JSON& json) : Component{ Model::getComponentType() } {
+	setJSONAndCreate(json);
+}
+
+Model::Model() : Component{ Model::getComponentType() } {
+	setJSONAndCreate(JSON::object());
+}
+
+void Model::create(EditableProperties& properties) {
+	std::string_view objPath{ properties.getOrCreate<EditableProperty::Type::string_type>("objPath")};
+
+	if (objPath == "") {
+		mIsValid = false;
+		return;
+	}
+	mIsValid = true;
+	mDirectory = objPath;
 	mDirectory.resize(mDirectory.rfind("/"));
 
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile(objPath.data(), aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace | aiProcess_GenSmoothNormals);
 
 	processNode(scene->mRootNode, scene);
-}
-
-std::unique_ptr<Component> Model::fromJSON(const JSON& json) {
-	return std::make_unique<Model>(json.at("objPath"));
 }
 
 void Model::processNode(aiNode* node, const aiScene* scene) {
@@ -86,7 +94,7 @@ void Model::processMesh(aiMesh* mesh, const aiScene* scene) {
 
 	// Material data
 	Material material{};
-	material.mTextureIndices.fill(-1);
+	material.mTextureIndices.fill((size_t)-1);
 
 	const aiMaterial* aiMaterial{ scene->mMaterials[mesh->mMaterialIndex] };
 	for (int i{ 0 }; i < (int)TextureTypes::Type::max; ++i) {
@@ -139,10 +147,4 @@ const Texture2D& Model::getTexture(size_t index, TextureTypes::Type textureType)
 
 const std::span<const Mesh> Model::getMeshes() {
 	return mMeshes;
-}
-
-JSON Model::toJSON() {
-	JSON json;
-	json["objPath"] = mObjPath;
-	return json;
 }

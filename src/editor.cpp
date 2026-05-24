@@ -14,7 +14,7 @@
 #include "sceneobject.h"
 
 Editor::Editor() {
-    ImGuiStyle& style{ ImGui::GetStyle() };
+    //ImGuiStyle& style{ ImGui::GetStyle() };
     //style.Colors[ImGuiCol_Text] = ImVec4{ 0, 0, 1, 1 };
     //style.Colors[ImGuiCol_TextDisabled] = ImVec4{ 0, 0, 1, 1 };
     //style.Colors[ImGuiCol_WindowBg] = ImVec4{0, 0, 1, 1};
@@ -40,20 +40,7 @@ glm::ivec2 Editor::updateRender(const Framebuffer* const outputFramebuffer, App&
 
     // Inspector
     ImGui::Begin("Object Editor");
-    if (mSelectedObjectViewer.get()) {
-        ImGui::PushID(mSelectedObjectViewer.get());
-        ImGui::InputText("", &mSelectedObjectViewer.get()->getName());
-        ImGui::PopID();
-        mSelectedObjectViewer.get()->getTransform().renderUI();
-
-        for (auto& component : mSelectedObjectViewer.get()->getComponents()) {
-            component->renderUIProperties();
-        }
-    }
-
-    else {
-        ImGui::Text("No object selected");
-    }
+    mSceneObjectInspector.updateRender();
     ImGui::End();
 
     ImGui::Begin("Game");
@@ -75,7 +62,7 @@ glm::ivec2 Editor::updateRender(const Framebuffer* const outputFramebuffer, App&
         *((float*)(&selectedObjectPtr)) = sample[0];
         *(((float*)(&selectedObjectPtr)) + 1) = sample[1];
         Framebuffer::bind(outputFramebuffer);
-        toggleSelect(selectedObjectPtr);
+        mSceneObjectInspector.toggleSelect(selectedObjectPtr);
     }
 
     ImGui::End();
@@ -96,7 +83,7 @@ void Editor::renderSceneObject(SceneObject* object, Scene& scene) {
 
     ImGui::PushID(object);
     if (ImGui::Button(object->getName().data())) {
-        toggleSelect(object);
+        mSceneObjectInspector.toggleSelect(object);
     }
     ImGui::SameLine();
     if (ImGui::Button("+")) {
@@ -126,13 +113,4 @@ void Editor::destroyUI() {
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
-}
-
-void Editor::toggleSelect(SceneObject * object) {
-    if (object != mSelectedObjectViewer.get()) {
-        mSelectedObjectViewer.lookAt(&object->mViewable);
-    }
-    else {
-        mSelectedObjectViewer.lookAt(nullptr);
-    }
 }

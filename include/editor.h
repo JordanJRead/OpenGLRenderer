@@ -5,6 +5,8 @@
 #include "GLFW/glfw3.h"
 #include "glm/glm.hpp"
 #include "viewing.h"
+#include <string>
+#include "sceneobjectinspector.h"
 
 class Scene;
 class Inputs;
@@ -18,12 +20,12 @@ public:
 	Editor();
 	glm::ivec2 updateRender(const Framebuffer* const outputFramebuffer, App& app);
 	void destroyUI();
-	SceneObject* getSelectedObject() { return mSelectedObjectViewer.get(); }
+	SceneObject* getSelectedObject() { return mSceneObjectInspector.getSceneObject(); }
 
 private:
-	Viewer<SceneObject> mSelectedObjectViewer;
+	SceneObjectInspector mSceneObjectInspector;
+
 	void renderSceneObject(SceneObject* object, Scene& scene);
-	void toggleSelect(SceneObject* object);
 };
 
 #endif

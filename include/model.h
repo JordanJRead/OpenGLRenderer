@@ -23,23 +23,25 @@ class Model : public Component {
 public:
 	static ComponentTypes::Type getComponentType() { return ComponentTypes::model; }
 
-	Model(std::string_view objPath);
-	static std::unique_ptr<Component> fromJSON(const JSON& json);
+	Model(const JSON& json);
+	Model();
 	const std::vector<Mesh>& getMeshes() const { return mMeshes; }
-	void renderUIProperties() override {}
 	const std::span<const Mesh> getMeshes();
-	JSON toJSON() override;
+	bool isValid() const { return mIsValid; }
 
 private:
 	std::vector<Mesh> mMeshes;
 	std::vector<Texture2D> mTextures;
 	std::string mDirectory;
 	std::string mObjPath;
+	bool mIsValid;
 
 	void processNode(aiNode* mesh, const aiScene* scene);
 	void processMesh(aiMesh* mesh, const aiScene* scene);
 	size_t addTexture(std::string_view imagePath);
 	const Texture2D& getTexture(size_t index, TextureTypes::Type textureType) const;
+
+	void create(EditableProperties& properties) override;
 };
 
 #endif

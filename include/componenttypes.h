@@ -18,7 +18,8 @@ namespace ComponentTypes {
 	};
 
 	extern std::array<std::string, (int)Type::max> names;
-	extern std::array<std::function<std::unique_ptr<Component>(const JSON& json)>, (int)Type::max> fromJSON;
+	extern std::array<std::function<std::unique_ptr<Component>(const JSON& json)>, (int)Type::max> createFromJSON;
+	extern std::array<std::function<std::unique_ptr<Component>()>,                 (int)Type::max> createEmpty;
 	extern std::unordered_map<std::string, ComponentTypes::Type> nameToType;
 }
 

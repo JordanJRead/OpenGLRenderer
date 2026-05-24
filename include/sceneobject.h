@@ -29,6 +29,8 @@ public:
 	SceneObject* getParent() const { return mParent; }
 	const std::vector<std::unique_ptr<SceneObject>>& getChildren() const { return mChildren; }
 	const std::vector<std::unique_ptr<Component>>& getComponents() const { return mComponents; }
+	bool addComponent(const std::string& componentName);
+	bool addComponent(ComponentTypes::Type type);
 	
 	template <typename T>
 		requires std::is_base_of_v<Component, T>
