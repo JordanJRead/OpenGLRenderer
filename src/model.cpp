@@ -7,21 +7,19 @@
 #include <stdexcept>
 #include <string>
 
-Model::Model(std::string_view objPath)
-	: mDirectory{ objPath }
-	, mObjPath{ objPath }
-	, Component{ ComponentTypes::model }
-	{
+Model::Model(const JSON& json) : Component{ Model::getComponentType() } {
+	setJSONAndCreate(json);
+}
+
+void Model::create(const EditableProperties& properties) {
+	std::string_view objPath{ properties.get("objPath")->get<EditableProperty::Type::string_type>()};
+	mDirectory = objPath;
 	mDirectory.resize(mDirectory.rfind("/"));
 
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile(objPath.data(), aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace | aiProcess_GenSmoothNormals);
 
 	processNode(scene->mRootNode, scene);
-}
-
-std::unique_ptr<Component> Model::fromJSON(const JSON& json) {
-	return std::make_unique<Model>(json.at("objPath"));
 }
 
 void Model::processNode(aiNode* node, const aiScene* scene) {
@@ -139,10 +137,4 @@ const Texture2D& Model::getTexture(size_t index, TextureTypes::Type textureType)
 
 const std::span<const Mesh> Model::getMeshes() {
 	return mMeshes;
-}
-
-JSON Model::toJSON() {
-	JSON json;
-	json["objPath"] = mObjPath;
-	return json;
 }

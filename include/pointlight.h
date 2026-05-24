@@ -7,12 +7,13 @@
 
 class PointLight : public Component {
 public:
-	PointLight(const glm::vec3& colour);
-	static std::unique_ptr<Component> fromJSON(const JSON& json);
 	static ComponentTypes::Type getComponentType() { return ComponentTypes::pointLight; }
-	void renderUIProperties() override {}
-	JSON toJSON() override;
+
+	PointLight(const JSON& json);
 	glm::vec3 mColour;
+
+private:
+	void create(const EditableProperties& properties) override;
 };
 
 #endif

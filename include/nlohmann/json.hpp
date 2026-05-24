@@ -4308,6 +4308,7 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
         }
     };
 
+    public:
     data m_data = {};
 
 #if JSON_DIAGNOSTICS

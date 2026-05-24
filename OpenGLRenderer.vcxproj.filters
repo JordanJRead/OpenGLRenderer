@@ -227,6 +227,12 @@
     <ClInclude Include="include\viewing.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\editableproperties.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\editableproperty.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Library Include="libraries\glfw3dll.lib" />
