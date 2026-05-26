@@ -165,6 +165,7 @@
     <ClCompile Include="src\pointlight.cpp" />
     <ClCompile Include="src\scene.cpp" />
     <ClCompile Include="src\sceneobject.cpp" />
+    <ClCompile Include="src\sceneobjectinspector.cpp" />
     <ClCompile Include="src\shaders\shaderdeferred.cpp" />
     <ClCompile Include="src\shaders\shadermesh.cpp" />
     <ClCompile Include="src\shaders\shaderpointlight.cpp" />

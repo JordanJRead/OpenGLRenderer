@@ -1,5 +1,4 @@
 #include "inputs.h"
-#include "app.h"
 
 void Inputs::registerKeyPress(int key) {
 	mKeyboardPresses.insert({ key, true });

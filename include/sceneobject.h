@@ -29,6 +29,7 @@ public:
 	SceneObject* getParent() const { return mParent; }
 	const std::vector<std::unique_ptr<SceneObject>>& getChildren() const { return mChildren; }
 	const std::vector<std::unique_ptr<Component>>& getComponents() const { return mComponents; }
+	std::vector<std::unique_ptr<Component>>& getComponents() { return mComponents; }
 	bool addComponent(const std::string& componentName);
 	bool addComponent(ComponentTypes::Type type);
 	

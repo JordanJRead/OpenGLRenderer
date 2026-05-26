@@ -114,6 +114,9 @@
     <ClCompile Include="src\editableproperties.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\sceneobjectinspector.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\shaders\shaderi.h">
