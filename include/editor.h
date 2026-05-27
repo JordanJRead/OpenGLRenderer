@@ -25,7 +25,7 @@ public:
 private:
 	SceneObjectInspector mSceneObjectInspector;
 
-	void renderSceneObject(SceneObject* object, Scene& scene);
+	void renderSceneObjectHierarchyItem(SceneObject* object, Scene& scene);
 };
 
 #endif

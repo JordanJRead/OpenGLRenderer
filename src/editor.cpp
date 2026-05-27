@@ -69,7 +69,7 @@ glm::ivec2 Editor::updateRender(const Framebuffer* const outputFramebuffer, App&
 
     // Hierarchy
     ImGui::Begin("Hierarchy");
-    renderSceneObject(app.mScene.getRootObject().get(), app.mScene);
+    renderSceneObjectHierarchyItem(app.mScene.getRootObject().get(), app.mScene);
     ImGui::End();
 
     ImGui::Render();
@@ -77,7 +77,7 @@ glm::ivec2 Editor::updateRender(const Framebuffer* const outputFramebuffer, App&
     return { (int)dim.x, (int)dim.y };
 }
 
-void Editor::renderSceneObject(SceneObject* object, Scene& scene) {
+void Editor::renderSceneObjectHierarchyItem(SceneObject* object, Scene& scene) {
     if (!object)
         return;
 
@@ -103,7 +103,7 @@ void Editor::renderSceneObject(SceneObject* object, Scene& scene) {
     if (doChildren) {
         ImGui::Indent();
         for (const auto& child : object->getChildren()) {
-            renderSceneObject(child.get(), scene);
+            renderSceneObjectHierarchyItem(child.get(), scene);
         }
         ImGui::Unindent();
     }

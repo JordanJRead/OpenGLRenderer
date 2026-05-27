@@ -148,6 +148,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\app.cpp" />
+    <ClCompile Include="src\componentdropdown.cpp" />
     <ClCompile Include="src\componenttypes.cpp" />
     <ClCompile Include="src\directionallight.cpp" />
     <ClCompile Include="src\editableproperties.cpp" />
@@ -187,6 +188,7 @@
     <ClInclude Include="include\camera.h" />
     <ClInclude Include="include\camerarenderdata.h" />
     <ClInclude Include="include\changeable.h" />
+    <ClInclude Include="include\componentdropdown.h" />
     <ClInclude Include="include\componenttypes.h" />
     <ClInclude Include="include\directionallight.h" />
     <ClInclude Include="include\editor.h" />

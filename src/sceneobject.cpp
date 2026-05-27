@@ -74,6 +74,8 @@ bool SceneObject::addComponent(const std::string& componentName) {
 }
 
 bool SceneObject::addComponent(ComponentTypes::Type type) {
+	if (type == ComponentTypes::max)
+		return false;
 	for (const auto& component : mComponents) {
 		if (component->getComponentType() == type) {
 			return false;

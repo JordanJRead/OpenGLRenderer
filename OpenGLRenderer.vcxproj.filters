@@ -117,6 +117,9 @@
     <ClCompile Include="src\sceneobjectinspector.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\componentdropdown.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\shaders\shaderi.h">
@@ -240,6 +243,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\sceneobjectinspector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\componentdropdown.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

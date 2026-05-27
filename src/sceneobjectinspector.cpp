@@ -5,6 +5,7 @@
 
 void SceneObjectInspector::toggleSelect(SceneObject* sceneObject) {
 	mNewComponentName = "";
+	mComponentDropdown.reset();
 	if (!sceneObject) {
 		mSelectedObjectViewer.lookAt(nullptr);
 		return;
@@ -22,6 +23,8 @@ void SceneObjectInspector::updateRender() {
 		ImGui::PushID(mSelectedObjectViewer.get());
 		ImGui::InputText("", &mSelectedObjectViewer.get()->getName());
 		ImGui::PopID();
+
+		ImGui::SeparatorText("Transform");
 		mSelectedObjectViewer.get()->getTransform().renderUI();
 
 		auto& components{ mSelectedObjectViewer.get()->getComponents() };
@@ -38,10 +41,10 @@ void SceneObjectInspector::updateRender() {
 		}
 
 		ImGui::SeparatorText("Add Commponent");
-		ImGui::InputText("##NewComponentInputText", &mNewComponentName);
+		mComponentDropdown.renderUI();
 		ImGui::SameLine();
 		if (ImGui::Button("Add")) {
-			mSelectedObjectViewer.get()->addComponent(mNewComponentName); // TODO add error message on fail?
+			mSelectedObjectViewer.get()->addComponent(mComponentDropdown.getCurrentType());
 		}
 	}
 

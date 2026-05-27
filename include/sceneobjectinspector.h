@@ -3,6 +3,7 @@
 
 #include "viewing.h"
 #include <string>
+#include "componentdropdown.h"
 
 class SceneObject;
 
@@ -15,6 +16,7 @@ public:
 private:
 	Viewer<SceneObject> mSelectedObjectViewer;
 	std::string mNewComponentName;
+	ComponentDropdown mComponentDropdown;
 };
 
 #endif
