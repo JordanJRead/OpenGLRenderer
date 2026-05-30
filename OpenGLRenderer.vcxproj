@@ -147,12 +147,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\app.cpp" />
+    <ClCompile Include="src\editor.cpp" />
     <ClCompile Include="src\componentdropdown.cpp" />
     <ClCompile Include="src\componenttypes.cpp" />
     <ClCompile Include="src\directionallight.cpp" />
     <ClCompile Include="src\editableproperties.cpp" />
-    <ClCompile Include="src\editor.cpp" />
+    <ClCompile Include="src\editorui.cpp" />
     <ClCompile Include="src\imgui\imgui.cpp" />
     <ClCompile Include="src\imgui\imgui_demo.cpp" />
     <ClCompile Include="src\imgui\imgui_draw.cpp" />
@@ -184,14 +184,14 @@
     <ClCompile Include="src\vertexarray.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\app.h" />
+    <ClInclude Include="include\editor.h" />
     <ClInclude Include="include\camera.h" />
     <ClInclude Include="include\camerarenderdata.h" />
     <ClInclude Include="include\changeable.h" />
     <ClInclude Include="include\componentdropdown.h" />
     <ClInclude Include="include\componenttypes.h" />
     <ClInclude Include="include\directionallight.h" />
-    <ClInclude Include="include\editor.h" />
+    <ClInclude Include="include\editorui.h" />
     <ClInclude Include="include\framebuffer.h" />
     <ClInclude Include="include\inputs.h" />
     <ClInclude Include="include\jsonhelpers.h" />

@@ -1,31 +1,49 @@
 #ifndef EDITOR_H
 #define EDITOR_H
 
-#define GLFW_INCLUDE_NONE
+#include "camera.h"
+#include "shaders/shadermesh.h"
+#include "shaders/shaderpointlight.h"
+#include "shaders/shaderpostprocess.h"
+#include "shaders/shaderdeferred.h"
+#include "transform.h"
+#include "framebuffer.h"
+#include "scene.h"
+#include "vertexarrayscreen.h"
 #include "GLFW/glfw3.h"
-#include "glm/glm.hpp"
-#include "viewing.h"
-#include <string>
-#include "sceneobjectinspector.h"
-
-class Scene;
-class Inputs;
-class Framebuffer;
-class RenderSettings;
-class App;
-class SceneObject;
+#include "editorui.h"
+#include "rendersettings.h"
+#include "inputs.h"
+#include "openglbuffer.h"
+#include <string_view>
+#include "uistyle.h"
 
 class Editor {
+    friend class EditorUI;
 public:
-	Editor();
-	glm::ivec2 updateRender(const Framebuffer* const outputFramebuffer, App& app);
-	void destroyUI();
-	SceneObject* getSelectedObject() { return mSceneObjectInspector.getSceneObject(); }
+    Editor(int screenWidth, int screenHeight, GLFWwindow* window);
+    void run();
 
 private:
-	SceneObjectInspector mSceneObjectInspector;
+    static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+    static void mouseCallback(GLFWwindow* window, int button, int action, int mods);
+    void saveToJSON(std::string_view fileName) const;
+    void loadFromJSON(std::string_view fileName);
 
-	void renderSceneObjectHierarchyItem(SceneObject* object, Scene& scene);
+    Scene mScene;
+    EditorUI mUI;
+    ShaderPostProcess mPostProcessShader{ "assets/shaders/postprocess.vert", "assets/shaders/postprocess.frag" };
+    ShaderDeferred mShaderDeferred{ "assets/shaders/deferred.vert", "assets/shaders/deferred.frag" };
+    ShaderMesh mGeometryPassShader{ "assets/shaders/meshgeometry.vert", "assets/shaders/meshgeometry.frag" };
+    ShaderPointLight mPointLightGeometryShader{ "assets/shaders/pointlightgeometry.vert", "assets/shaders/pointlightgeometry.frag" };
+	float mPrevTime{ 0 };
+    GLFWwindow* mWindow;
+    Framebuffer mGeometryBuffers; // worldPos/sceneIndex, normal, diffuse, specular/exponent
+    Framebuffer mOutputFramebuffer;
+    VertexArrayScreen mScreenVertexArray;
+    OpenGLBuffer<RenderSettings> mRenderSettings{ 2, BufferTypes::uniform };
+    Inputs mInputs;
+    UIStyle mUIStyle;
 };
 
 #endif

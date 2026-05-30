@@ -4,7 +4,7 @@
 
 #include "vertexarray.h"
 #include "texturetypes.h"
-#include "app.h"
+#include "editor.h"
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
@@ -40,8 +40,8 @@ int main() {
         return 1;
     }
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-    App app{ screenWidth, screenHeight, window };
-    app.run();
+    Editor editor{ screenWidth, screenHeight, window };
+    editor.run();
 
     return 0;
 }
