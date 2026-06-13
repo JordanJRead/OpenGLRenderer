@@ -17,6 +17,6 @@ target_link_libraries(Common PRIVATE OpenGL::GL)
 add_custom_command(
     TARGET Editor POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
-    "${CMAKE_CURRENT_SOURCE_DIR}/WORKINGDIR/"
+    "${CMAKE_CURRENT_SOURCE_DIR}/ExecutableDirContents/"
     "$<TARGET_FILE_DIR:Editor>"
 )
