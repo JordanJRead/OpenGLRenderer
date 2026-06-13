@@ -1,0 +1,113 @@
+{
+ "ambientLightColour": {
+  "x": 0.10196078568696976,
+  "y": 0.10196078568696976,
+  "z": 0.10196078568696976
+ },
+ "camera": {
+  "horizontalFOVDeg": 100.0,
+  "position": {
+   "x": 0.3236445486545563,
+   "y": 1.8966586589813232,
+   "z": -0.40659549832344055
+  },
+  "sensitivity": 0.1
+ },
+ "directionalLight": {
+  "colour": {
+   "x": 1.0,
+   "y": 1.0,
+   "z": 1.0
+  },
+  "dirTo": {
+   "x": 0.0,
+   "y": 1.0,
+   "z": 0.0
+  }
+ },
+ "rootObject": {
+  "children": [
+   {
+    "children": [],
+    "components": {
+     "Point Light": {
+      "colour": {
+       "type": 1,
+       "value": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+       }
+      }
+     }
+    },
+    "name": "Light",
+    "transform": {
+     "position": {
+      "x": 0.0,
+      "y": 1.7599999904632568,
+      "z": 0.0
+     },
+     "rotation": {
+      "x": 0.0,
+      "y": 0.0,
+      "z": 0.0
+     },
+     "scale": {
+      "x": 2.0,
+      "y": 1.0,
+      "z": 1.0
+     }
+    }
+   },
+   {
+    "children": [],
+    "components": {
+     "Model": {
+      "objPath": {
+       "type": 5,
+       "value": "assets/objects/sponza/sponza.obj"
+      }
+     }
+    },
+    "name": "Sponza",
+    "transform": {
+     "position": {
+      "x": 0.0,
+      "y": 0.0,
+      "z": 0.0
+     },
+     "rotation": {
+      "x": 0.0,
+      "y": 0.0,
+      "z": 0.0
+     },
+     "scale": {
+      "x": 0.009999999776482582,
+      "y": 0.009999999776482582,
+      "z": 0.009999999776482582
+     }
+    }
+   }
+  ],
+  "components": {},
+  "name": "root",
+  "transform": {
+   "position": {
+    "x": 0.0,
+    "y": 0.0,
+    "z": 0.0
+   },
+   "rotation": {
+    "x": 0.0,
+    "y": 0.0,
+    "z": 0.0
+   },
+   "scale": {
+    "x": 1.0,
+    "y": 1.0,
+    "z": 1.0
+   }
+  }
+ }
+}

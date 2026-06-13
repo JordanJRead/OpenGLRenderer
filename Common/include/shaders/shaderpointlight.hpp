@@ -1,0 +1,19 @@
+#ifndef SHADER_POINT_LIGHT
+#define SHADER_POINT_LIGHT
+
+#include "shaders/shaderi.hpp"
+
+class Camera;
+class VertexArray;
+class PointLight;
+class Transform;
+class Framebuffer;
+class SceneObject;
+
+class ShaderPointLight : public ShaderI {
+public:
+	ShaderPointLight(std::string_view vertPath, std::string_view fragPath);
+	void render(const SceneObject* const object, bool highlight, const VertexArray& vertexArray, const Framebuffer* framebuffer, const glm::vec3& position, const glm::vec3& lightColour) const;
+};
+
+#endif
