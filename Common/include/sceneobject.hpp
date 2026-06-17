@@ -37,7 +37,7 @@ public:
 		requires std::is_base_of_v<Component, T>
 	T* getComponent() {
 		for (auto& component : mComponents) {
-			if (component.get()->getComponentType() == T::getComponentType()) {
+			if (component.get()->getComponentType() == T::staticGetComponentType()) {
 				return static_cast<T*>(component.get());
 			}
 		}
@@ -48,7 +48,7 @@ public:
 		requires std::is_base_of_v<Component, T>
 	const T* getComponent() const {
 		for (const auto& component : mComponents) {
-			if (component.get()->getComponentType() == T::getComponentType()) {
+			if (component.get()->getComponentType() == T::staticGetComponentType()) {
 				return static_cast<const T*>(component.get());
 			}
 		}

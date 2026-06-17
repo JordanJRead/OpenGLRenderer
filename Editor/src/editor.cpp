@@ -126,7 +126,7 @@ void Editor::saveToJSON(std::string_view fileName) const {
 void Editor::loadFromJSON(std::string_view fileName) {
     std::ifstream file{ fileName.data() };
     if (file.is_open()) {
-        JSON json{ JSON::parse(file) };
+        JSON json = JSON::parse(file);
         file.close();
         mRenderSettings.mValue.fromJSON(json.at("renderSettings"));
         mUIStyle.fromJSON(json.at("uiStyle"));

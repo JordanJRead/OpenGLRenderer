@@ -21,7 +21,7 @@ namespace TextureTypes {
 class Model : public Component {
 	friend class Mesh;
 public:
-	static ComponentTypes::Type getComponentType() { return ComponentTypes::model; }
+	static ComponentTypes::Type staticGetComponentType() { return ComponentTypes::model; }
 
 	Model(const JSON& json);
 	Model();

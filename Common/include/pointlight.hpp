@@ -7,7 +7,7 @@
 
 class PointLight : public Component {
 public:
-	static ComponentTypes::Type getComponentType() { return ComponentTypes::pointLight; }
+	static ComponentTypes::Type staticGetComponentType() { return ComponentTypes::pointLight; }
 
 	PointLight(const JSON& json);
 	PointLight();

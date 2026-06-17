@@ -8,11 +8,11 @@
 #include <string>
 #include "gamedirectory.hpp"
 
-Model::Model(const JSON& json) : Component{ Model::getComponentType() } {
+Model::Model(const JSON& json) : Component{ Model::staticGetComponentType() } {
 	setJSONAndCreate(json);
 }
 
-Model::Model() : Component{ Model::getComponentType() } {
+Model::Model() : Component{ Model::staticGetComponentType() } {
 	setJSONAndCreate(JSON::object());
 }
 

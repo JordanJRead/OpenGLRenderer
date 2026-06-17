@@ -11,13 +11,12 @@
 int main(int argc, char* argv[]) {
     if (argc != 2) {
         std::cerr << "Usage: " << argv[0] << " <game_directory_path>\n";
-        return 1;
+        //return 1;
     }
-    gGameDirectoryPath = argv[1];
+    gGameDirectoryPath = "C:\\Users\\jorda\\source\\repos\\JordanJRead\\OpenGLRendererCMake\\example-game";// argv[1];
 
     int screenWidth{ 1920 };
     int screenHeight{ 1080 };
-
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);

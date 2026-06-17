@@ -4,6 +4,8 @@
 #include "imgui_stdlib.h"
 #include <cassert>
 #include "jsonhelpers.hpp"
+#include <stdexcept>
+#include <iostream>
 
 using Type = EditableProperty::Type;
 
@@ -14,7 +16,7 @@ void EditableProperties::create(const JSON& json) {
 	mProperties.clear();
 	mAccessedProperties.clear();
 	if (json.type() != JSON::value_t::object) {
-		throw std::exception("EDITABLEPROPERTIES::EDITABLEPROPERTIES ERROR: json must be object type");
+		throw std::runtime_error("EDITABLEPROPERTIES::EDITABLEPROPERTIES ERROR: json must be object type");
 	}
 
 	// data has 'type' and 'value'

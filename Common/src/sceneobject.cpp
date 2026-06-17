@@ -25,11 +25,9 @@ SceneObject::SceneObject(const JSON& json, SceneObject* parent) : mTransform{ js
 	JSON components = json.at("components");
 	for (const auto& item : components.items()) {
 		std::string componentName{ item.key() };
-		JSON componentJSON{ item.value() };
-		std::cerr << componentName << "\n";
+		JSON componentJSON = item.value();
 		ComponentTypes::Type type{ ComponentTypes::nameToType[componentName] };
 		mComponents.push_back(ComponentTypes::createFromJSON[(int)type](componentJSON));
-		std::cerr << "Done\n";
 	}
 
 	for (const auto& item : json.at("children")) {

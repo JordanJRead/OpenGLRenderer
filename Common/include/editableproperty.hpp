@@ -7,6 +7,7 @@
 #include "nlohmann/json.hpp"
 #include <type_traits>
 #include <variant>
+#include <stdexcept>
 
 using EditableVariant_t = std::variant<bool, glm::vec3, glm::vec3, double, int, std::string, glm::vec3, glm::vec4>;
 
@@ -59,7 +60,7 @@ private:
 
 	void checkType(Type type) const {
 		if (mType != type)
-			throw std::exception("Invalid property type access!");
+			throw std::runtime_error("Invalid property type access!");
 	}
 };
 

@@ -18,15 +18,25 @@
 Scene::Scene(const std::string_view& jsonFileName)
 	: mCamera{ glm::vec3{ 0, 0, 0 }, 100, 0.1 }
 {
+    std::cerr << "HERE1\n";
 	std::ifstream file{ gGameDirectoryPath / jsonFileName };
 	if (file.is_open()) {
-		JSON json{ JSON::parse(file) };
+		JSON json = JSON::parse(file);
+		if (json.type() == JSON::value_t::array) {
+			json = json[0]; // Don't know why this happens sometimes
+		}
+    	std::cerr << "HERE2\n";
 		file.close();
+		std::cerr << json;
 		mAmbientLightColour = JSONHelpers::toVec3(json.at("ambientLightColour"));
+    	std::cerr << "HERE3\n";
 
 		mCamera.loadJSONData(json.at("camera"));
+    	std::cerr << "HERE4\n";
 		mDirectionalLight = DirectionalLight{ json.at("directionalLight") };
+    	std::cerr << "HERE5\n";
 		mRootObject = std::make_unique<SceneObject>(json.at("rootObject"), nullptr);
+    	std::cerr << "HERE6\n";
 		std::cerr << "Done loading objects\n";
 	}
 
