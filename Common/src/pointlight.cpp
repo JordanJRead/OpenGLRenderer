@@ -3,11 +3,11 @@
 #include <array>
 #include "jsonhelpers.hpp"
 
-PointLight::PointLight(const JSON& json) : Component{ PointLight::staticGetComponentType() } {
+PointLight::PointLight(const JSON& json) : Component{ "Point Light" } {
 	setJSONAndCreate(json);
 }
 
-PointLight::PointLight() : Component{ PointLight::staticGetComponentType() } {
+PointLight::PointLight() : Component{ "Point Light" } {
 	setJSONAndCreate(JSON::object());
 }
 

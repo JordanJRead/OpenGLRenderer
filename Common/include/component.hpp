@@ -1,17 +1,19 @@
 #ifndef SCENE_OBJECT_COMPONENT_H
 #define SCENE_OBJECT_COMPONENT_H
 
-#include "componenttypes.hpp"
 #include <nlohmann/json.hpp>
 #include "editableproperties.hpp"
 #include "imgui/imgui.h"
+#include <string>
+#include <string_view>
 
 class Component {
 public:
-	Component(ComponentTypes::Type componentType) : mComponentType{ componentType } {}
+	Component(std::string_view componentName) : mComponentName{ componentName }
+	{}
 
 	virtual void renderUIProperties() {
-		ImGui::SeparatorText(ComponentTypes::names[(int)mComponentType].data());
+		ImGui::SeparatorText(mComponentName.c_str());
 		mEditableProperties.renderUI();
 		ImGui::PushID(this);
 		if (ImGui::Button("Update")) {
@@ -27,7 +29,8 @@ public:
 		return mInitialProperties.toJSON();
 	}
 
-	virtual ComponentTypes::Type getComponentType() const { return mComponentType; };
+	std::string_view getName() const { return mComponentName; }
+
 	virtual ~Component() {}
 
 protected:
@@ -39,9 +42,9 @@ protected:
 	}
 
 private:
-	ComponentTypes::Type mComponentType;
 	EditableProperties mInitialProperties;
 	EditableProperties mEditableProperties;
+	std::string mComponentName;
 
 	virtual void create(EditableProperties& properties) = 0;
 };

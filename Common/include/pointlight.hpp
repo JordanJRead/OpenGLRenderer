@@ -7,8 +7,6 @@
 
 class PointLight : public Component {
 public:
-	static ComponentTypes::Type staticGetComponentType() { return ComponentTypes::pointLight; }
-
 	PointLight(const JSON& json);
 	PointLight();
 	glm::vec3 mColour;

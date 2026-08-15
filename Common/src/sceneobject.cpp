@@ -1,5 +1,6 @@
 #include "sceneobject.hpp"
 #include <iostream>
+#include "componentmanager.hpp"
 
 SceneObject::SceneObject(const Transform& transform, std::string_view name, SceneObject* parent) : mTransform{ transform }, mName{ name }, mParent{ parent } {}
 
@@ -26,8 +27,7 @@ SceneObject::SceneObject(const JSON& json, SceneObject* parent) : mTransform{ js
 	for (const auto& item : components.items()) {
 		std::string componentName{ item.key() };
 		JSON componentJSON = item.value();
-		ComponentTypes::Type type{ ComponentTypes::nameToType[componentName] };
-		mComponents.push_back(ComponentTypes::createFromJSON[(int)type](componentJSON));
+		mComponents.push_back(ComponentManager::instance().createComponentFromName(componentName, &componentJSON));
 	}
 
 	for (const auto& item : json.at("children")) {
@@ -54,8 +54,7 @@ JSON SceneObject::toJSON() const {
 
 	json["components"] = JSON::object();
 	for (const auto& component : mComponents) {
-		const std::string& componentName{ ComponentTypes::names[component.get()->getComponentType()] };
-		json["components"][componentName] = component.get()->toJSON();
+		json["components"][component->getName()] = component.get()->toJSON();
 	}
 
 	json["children"] = JSON::array();
@@ -65,22 +64,12 @@ JSON SceneObject::toJSON() const {
 	return json;
 }
 
-bool SceneObject::addComponent(const std::string& componentName) {
-	if (!ComponentTypes::nameToType.contains(componentName)) {
-		return false;
-	}
-	ComponentTypes::Type type = ComponentTypes::nameToType[componentName];
-	return addComponent(type);
-}
-
-bool SceneObject::addComponent(ComponentTypes::Type type) {
-	if (type == ComponentTypes::max)
-		return false;
+bool SceneObject::addComponentFromName(std::string_view componentTypeName) {
 	for (const auto& component : mComponents) {
-		if (component->getComponentType() == type) {
+		if (componentTypeName == component->getName()) {
 			return false;
 		}
 	}
-	mComponents.push_back(ComponentTypes::createEmpty[(int)type]());
+	mComponents.push_back(ComponentManager::instance().createComponentFromName(componentTypeName));
 	return true;
 }

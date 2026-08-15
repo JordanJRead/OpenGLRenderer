@@ -9,6 +9,7 @@
 #include <string>
 #include <string_view>
 #include "viewing.hpp"
+#include "componentmanager.hpp"
 
 class SceneObject {
 public:
@@ -30,26 +31,37 @@ public:
 	const std::vector<std::unique_ptr<SceneObject>>& getChildren() const { return mChildren; }
 	const std::vector<std::unique_ptr<Component>>& getComponents() const { return mComponents; }
 	std::vector<std::unique_ptr<Component>>& getComponents() { return mComponents; }
-	bool addComponent(const std::string& componentName);
-	bool addComponent(ComponentTypes::Type type);
-	
-	template <typename T>
-		requires std::is_base_of_v<Component, T>
-	T* getComponent() {
-		for (auto& component : mComponents) {
-			if (component.get()->getComponentType() == T::staticGetComponentType()) {
-				return static_cast<T*>(component.get());
+	bool addComponentFromName(std::string_view componentTypeName);
+
+	template <typename ComponentType>
+		requires std::is_base_of_v<Component, ComponentType>
+	bool addComponent() {
+		if (getComponent<ComponentType>()) {
+			return false;
+		}
+		mComponents.push_back(ComponentManager::instance().createComponent<ComponentType>());
+		return true;
+	}
+
+	template <typename ComponentType>
+		requires std::is_base_of_v<Component, ComponentType>
+	ComponentType* getComponent() {
+		for (const auto& component : mComponents) {
+			ComponentType* derivedPointer{ dynamic_cast<ComponentType*>(component.get()) };
+			if (derivedPointer) {
+				return static_cast<const ComponentType*>(component.get());
 			}
 		}
 		return nullptr;
 	}
 
-	template <typename T>
-		requires std::is_base_of_v<Component, T>
-	const T* getComponent() const {
+	template <typename ComponentType>
+		requires std::is_base_of_v<Component, ComponentType>
+	const ComponentType* getComponent() const {
 		for (const auto& component : mComponents) {
-			if (component.get()->getComponentType() == T::staticGetComponentType()) {
-				return static_cast<const T*>(component.get());
+			ComponentType* derivedPointer{ dynamic_cast<ComponentType*>(component.get()) };
+			if (derivedPointer) {
+				return static_cast<const ComponentType*>(component.get());
 			}
 		}
 		return nullptr;

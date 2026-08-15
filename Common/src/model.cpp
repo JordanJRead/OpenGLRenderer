@@ -8,11 +8,11 @@
 #include <string>
 #include "directories.hpp"
 
-Model::Model(const JSON& json) : Component{ Model::staticGetComponentType() } {
+Model::Model(const JSON& json) : Component{ "Model" } {
 	setJSONAndCreate(json);
 }
 
-Model::Model() : Component{ Model::staticGetComponentType() } {
+Model::Model() : Component{ "Model" } {
 	setJSONAndCreate(JSON::object());
 }
 

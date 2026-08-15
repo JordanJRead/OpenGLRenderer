@@ -1,19 +1,17 @@
 #ifndef COMPONENT_DROPDOWN_H
 #define COMPONENT_DROPDOWN_H
 
-#include "componenttypes.hpp"
 #include <string_view>
+#include <string>
 
 class ComponentDropdown {
 public:
-	ComponentTypes::Type getCurrentType() { return mSelectedType; }
-	void reset() { mSelectedType = ComponentTypes::max; }
+	std::string_view getCurrentType() { return mSelectedTypeName; }
+	void reset() { mSelectedTypeName = ""; }
 	void renderUI();
 
 private:
-	ComponentTypes::Type mSelectedType{ ComponentTypes::max };
-
-	std::string_view getDisplayText(ComponentTypes::Type type) const;
+	std::string mSelectedTypeName;
 };
 
 #endif

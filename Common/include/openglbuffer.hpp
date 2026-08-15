@@ -14,7 +14,7 @@
 #include <vector>
 #include <span>
 #include <cassert>
-
+// TODO update with new version from terrain renderer
 // Check if array
 template <typename T>
 struct is_array_like : std::false_type {};
