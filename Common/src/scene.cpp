@@ -12,14 +12,14 @@
 #include <fstream>
 #include "nlohmann/json.hpp"
 #include "jsonhelpers.hpp"
-#include "gamedirectory.hpp"
+#include "directories.hpp"
 #include <iostream>
 
-Scene::Scene(const std::string_view& jsonFileName)
+Scene::Scene()
 	: mCamera{ glm::vec3{ 0, 0, 0 }, 100, 0.1 }
 {
     std::cerr << "HERE1\n";
-	std::ifstream file{ gGameDirectoryPath / jsonFileName };
+	std::ifstream file{ gGameDirectoryPath / gSceneFileName };
 	if (file.is_open()) {
 		JSON json = JSON::parse(file);
 		if (json.type() == JSON::value_t::array) {
@@ -98,14 +98,14 @@ void Scene::getPointLightData(const SceneObject* const sceneObject, std::vector<
 	}
 }
 
-void Scene::saveToJSON(std::string_view saveFileName) {
+void Scene::saveToJSON() {
 	JSON json;
 	json["camera"] = mCamera.toJSON();
 	json["directionalLight"] = mDirectionalLight.toJSON();
 	json["ambientLightColour"] = JSONHelpers::fromVec3(mAmbientLightColour);
 
 	json["rootObject"] = mRootObject->toJSON();
-	std::ofstream file{ gGameDirectoryPath / saveFileName };
+	std::ofstream file{ gGameDirectoryPath / gSceneFileName };
 	file << std::setw(1) << json;
 	file.close();
 }

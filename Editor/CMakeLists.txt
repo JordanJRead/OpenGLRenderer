@@ -8,6 +8,8 @@ file(
 
 add_executable(Editor ${ALL_SOURCES})
 
+set_property(TARGET Editor PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "$<TARGET_FILE_DIR:Editor>")
+
 # Include
 target_include_directories(Editor PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_include_directories(Editor PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../Common/include)

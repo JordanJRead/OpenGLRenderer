@@ -27,8 +27,8 @@ public:
 private:
     static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
     static void mouseCallback(GLFWwindow* window, int button, int action, int mods);
-    void saveToJSON(std::string_view fileName) const;
-    void loadFromJSON(std::string_view fileName);
+    void saveToJSON() const;
+    void loadFromJSON();
 
     Scene mScene;
     EditorUI mUI;

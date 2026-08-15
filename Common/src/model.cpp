@@ -6,7 +6,7 @@
 #include "texturetypes.hpp"
 #include <stdexcept>
 #include <string>
-#include "gamedirectory.hpp"
+#include "directories.hpp"
 
 Model::Model(const JSON& json) : Component{ Model::staticGetComponentType() } {
 	setJSONAndCreate(json);

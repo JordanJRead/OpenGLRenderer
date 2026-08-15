@@ -24,7 +24,7 @@ class Inputs;
 
 class Scene {
 public:
-	Scene(const std::string_view& jsonFileName);
+	Scene();
 
 	void render(const ShaderMesh& meshShader, const ShaderPointLight& pointLightShader, const Framebuffer* const framebuffer, const RenderSettings& renderSettings, SceneObject* selectedObject) const;
 
@@ -36,7 +36,7 @@ public:
 	DirectionalLight& getDirectionalLight() { return mDirectionalLight; }
 	glm::vec3& getAmbientLightColour() { return mAmbientLightColour; }
 	
-	void saveToJSON(std::string_view saveFileName);
+	void saveToJSON();
 
 private:
 	std::unique_ptr<SceneObject> mRootObject;

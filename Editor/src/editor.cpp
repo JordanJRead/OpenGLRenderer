@@ -8,6 +8,7 @@
 #include "imgui/imgui_impl_opengl3.h"
 #include "nlohmann/json.hpp"
 #include <fstream>
+#include "directories.hpp"
 
 void Editor::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
     ImGui_ImplGlfw_KeyCallback(window, key, scancode, action, mods);
@@ -31,11 +32,10 @@ void Editor::mouseCallback(GLFWwindow* window, int button, int action, int mods)
 
 Editor::Editor(int screenWidth, int screenHeight, GLFWwindow* window)
     : mWindow{ window }
-    , mScene{ "scene.json"}
     , mGeometryBuffers{ screenWidth, screenHeight, {GL_RGBA32F, GL_RGB16F, GL_RGB16F, GL_RGBA16F, GL_RG32F }, {0, 0, 0, 0} } // worldPos, normal, diffuse, specular/exponent, objectPtr
     , mOutputFramebuffer{ screenWidth, screenHeight, {GL_RGBA8}, {0, 0, 0, 1} }
 {
-    loadFromJSON("editor.json");
+    loadFromJSON();
     glfwSetInputMode(mWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
@@ -97,23 +97,23 @@ void Editor::run() {
 
         glfwSwapBuffers(mWindow);
     }
-    mScene.saveToJSON("scene.json");
-    saveToJSON("editor.json");
+    mScene.saveToJSON();
+    saveToJSON();
     mUI.destroyUI();
     glfwTerminate();
 }
 
-void Editor::saveToJSON(std::string_view fileName) const {
+void Editor::saveToJSON() const {
     JSON json;
     json["renderSettings"] = mRenderSettings.mValue.toJSON();
     json["uiStyle"] = mUIStyle.toJSON();
-    std::ofstream file{ fileName.data() };
+    std::ofstream file{ gGameDirectoryPath / gEditorSettingsFileName };
     file << std::setw(1) << json;
     file.close();
 }
 
-void Editor::loadFromJSON(std::string_view fileName) {
-    std::ifstream file{ fileName.data() };
+void Editor::loadFromJSON() {
+    std::ifstream file{ gGameDirectoryPath / gEditorSettingsFileName };
     if (file.is_open()) {
         JSON json = JSON::parse(file);
         file.close();

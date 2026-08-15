@@ -6,14 +6,23 @@
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
-#include "gamedirectory.hpp"
+#include "directories.hpp"
+#include <fstream>
 
 int main(int argc, char* argv[]) {
     if (argc != 2) {
         std::cerr << "Usage: " << argv[0] << " <game_directory_path>\n";
         //return 1;
     }
-    gGameDirectoryPath = "C:\\Users\\jorda\\source\\repos\\JordanJRead\\OpenGLRendererCMake\\example-game";// argv[1];
+    gGameDirectoryPath = "C:\\Users\\jorda\\source\\repos\\JordanJRead\\OpenGLRenderer\\example-game";// argv[1];
+
+    // Create default settings
+    if (!std::filesystem::exists(gGameDirectoryPath / gEditorSettingsFileName)) {
+        std::filesystem::copy_file("./defaulteditorsettings.json", gGameDirectoryPath / gEditorSettingsFileName);
+    }
+    if (!std::filesystem::exists(gGameDirectoryPath / gImGuiIniFileName)) {
+        std::filesystem::copy_file("./defaultimgui.ini", gGameDirectoryPath / gImGuiIniFileName);
+    }
 
     int screenWidth{ 1920 };
     int screenHeight{ 1080 };
@@ -43,6 +52,10 @@ int main(int argc, char* argv[]) {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io{ ImGui::GetIO() }; (void)io;
+
+    std::string imGuiFilePathString = (gGameDirectoryPath / gImGuiIniFileName).string();
+    io.IniFilename = imGuiFilePathString.c_str();
+    
     ImGui::StyleColorsDark();
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init("#version 430");
