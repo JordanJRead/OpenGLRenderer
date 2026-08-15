@@ -1,0 +1,39 @@
+#include "shaders/shadermesh.hpp"
+#include "vertexarray.hpp"
+#include "transform.hpp"
+#include "texturetypes.hpp"
+#include "mesh.hpp"
+#include "model.hpp"
+#include "framebuffer.hpp"
+#include <array>
+#include "texture2d.hpp"
+#include "glad/glad.h"
+#include "sceneobject.hpp"
+
+ShaderMesh::ShaderMesh(std::string_view vertPath, std::string_view fragPath) : ShaderI{ vertPath, fragPath } {
+	bind();
+	for (int i{ 0 }; i < (int)TextureTypes::max; ++i) {
+		setInt(TextureTypes::names[i] + "Texture", i);
+	}
+}
+
+void ShaderMesh::render(const Mesh& mesh, const Model& parentModel, const SceneObject* const object, bool highlight, const Framebuffer* framebuffer, const Transform& transform) const {
+	bind();
+	Framebuffer::bind(framebuffer);
+
+	setMatrix4("model", transform.getModelMatrix());
+	setVector3("diffuseColour", mesh.getMaterial().mDiffuseColour);
+	setVector3("specularColour", mesh.getMaterial().mSpecularColour);
+	setFloat("specularExponent", mesh.getMaterial().mSpecularExponent);
+	setFloat("objectPtrFirst", *((float*)(&object)));
+	setFloat("objectPtrSecond", *(((float*)(&object)) + 1));
+	setBool("highlight", highlight);
+
+	std::array<const Texture2D*, TextureTypes::max> textures{ mesh.getTextures(parentModel) };
+	for (int i = 0; i < textures.size(); ++i) {
+		textures[i]->bind(i);
+	}
+
+	mesh.getVertexArray().bind();
+	glDrawElements(GL_TRIANGLES, (GLsizei)mesh.getVertexArray().getIndexCount(), GL_UNSIGNED_INT, nullptr);
+}
