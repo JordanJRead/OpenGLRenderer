@@ -13,9 +13,6 @@ using EditableVariant_t = std::variant<bool, glm::vec3, glm::vec3, double, int, 
 
 class EditableProperty {
 public:
-	struct Metadata {
-		float sensitivity;
-	};
 
 	enum class Type {
 		bool_type,
@@ -40,7 +37,6 @@ public:
 		mType = TypeEnum; // just call variant.getindex or something?
 	}
 
-	const Metadata& getMetadata() const { return mMetadata; }
 	Type getType() const { return mType; }
 
 	template <Type TypeEnum>
@@ -54,7 +50,6 @@ public:
 
 
 private:
-	Metadata mMetadata{}; // TODO actually use, make getOrCreate() in 'parent class' take in a value to set? Keep out of JSON then, or save?
 	EditableVariant_t mValue;
 	Type mType;
 
