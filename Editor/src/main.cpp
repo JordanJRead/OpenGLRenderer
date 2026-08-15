@@ -17,6 +17,8 @@ int main(int argc, char* argv[]) {
 
     int screenWidth{ 1920 };
     int screenHeight{ 1080 };
+
+    // GLFW
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
@@ -24,26 +26,28 @@ int main(int argc, char* argv[]) {
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_REFRESH_RATE, GLFW_DONT_CARE);
     glfwWindowHint(GLFW_SAMPLES, 4);
-
     GLFWwindow* window = glfwCreateWindow(screenWidth, screenHeight, "LearnOpenGL", nullptr, nullptr);
     glfwMakeContextCurrent(window);
+    if (window == nullptr) {
+        std::cerr << "Failed to create GLFW window\n";
+        return 1;
+    }
+
+    // GLAD
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         std::cerr << "Failed to initialize GLAD\n";
         return 1;
     }
 
+    // IMGUI
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io{ ImGui::GetIO() }; (void)io;
     ImGui::StyleColorsDark();
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init("#version 430");
-
-    if (window == nullptr) {
-        std::cerr << "Failed to create GLFW window\n";
-        return 1;
-    }
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+
     Editor editor{ screenWidth, screenHeight, window };
     editor.run();
 

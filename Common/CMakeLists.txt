@@ -44,3 +44,6 @@ target_link_libraries(Common PRIVATE assimp)
 
 target_include_directories(Common PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_include_directories(Common PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/imgui)
+
+find_package(OpenGL REQUIRED)
+target_link_libraries(Common PUBLIC OpenGL::GL)
