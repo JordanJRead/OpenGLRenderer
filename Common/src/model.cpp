@@ -8,12 +8,9 @@
 #include <string>
 #include "directories.hpp"
 
-Model::Model(const JSON& json) : Component{ "Model" } {
+Model::Model(const JSON& json) : Component{ "Model" }
+{
 	setJSONAndCreate(json);
-}
-
-Model::Model() : Component{ "Model" } {
-	setJSONAndCreate(JSON::object());
 }
 
 void Model::create(EditableProperties& properties) {

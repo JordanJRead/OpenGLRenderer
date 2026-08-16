@@ -21,8 +21,7 @@ namespace TextureTypes {
 class Model : public Component {
 	friend class Mesh;
 public:
-	Model(const JSON& json);
-	Model();
+	Model(const JSON& json = JSON::object());
 	const std::vector<Mesh>& getMeshes() const { return mMeshes; }
 	const std::span<const Mesh> getMeshes();
 	bool isValid() const { return mIsValid; }

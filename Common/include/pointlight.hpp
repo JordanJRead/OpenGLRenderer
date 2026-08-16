@@ -7,8 +7,7 @@
 
 class PointLight : public Component {
 public:
-	PointLight(const JSON& json);
-	PointLight();
+	PointLight(const JSON& json = JSON::object());
 	glm::vec3 mColour;
 
 private:

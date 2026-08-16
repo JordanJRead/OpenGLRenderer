@@ -38,7 +38,7 @@ consteval std::string_view type_name() {
     size_t suffix = name.rfind(">");
     return name.substr(prefix, suffix - prefix);
 #else
-    return name; // Fallback for unsupported compilers
+#error Unsupported compiler!
 #endif
 }
 
@@ -66,11 +66,9 @@ public:
 private:
 	ComponentManager();
 
-	std::map<std::string, std::function<std::unique_ptr<Component>(const JSON& json)>> mStaticComponentJSONFactories;
-	std::map<std::string, std::function<std::unique_ptr<Component>(                )>> mStaticComponentEmptyFactories;
+	std::map<std::string, std::function<std::unique_ptr<Component>(const JSON& json)>> mStaticComponentFactories;
 
-	std::map<std::string, std::function<std::unique_ptr<Component>(const JSON& json)>> mDynamicComponentJSONFactories;
-	std::map<std::string, std::function<std::unique_ptr<Component>(                )>> mDynamicComponentEmptyFactories;
+	std::map<std::string, std::function<std::unique_ptr<Component>(const JSON& json)>> mDynamicComponentFactories;
 
 public:
     struct Iterator {
@@ -89,11 +87,11 @@ public:
         bool operator!=(const Iterator& other) const;
 
     private:
-        Iterator(ComponentManager* owner, std::map<std::string, std::function<std::unique_ptr<Component>()>>::iterator iterator, bool inStatic);
+        Iterator(ComponentManager* owner, std::map<std::string, std::function<std::unique_ptr<Component>(const JSON&)>>::iterator iterator, bool inStatic);
 
         ComponentManager* mOwner;
         bool mInStaticNames{ true };
-        std::map<std::string, std::function<std::unique_ptr<Component>()>>::iterator mMapIterator;
+        std::map<std::string, std::function<std::unique_ptr<Component>(const JSON&)>>::iterator mMapIterator;
     };
 };
 

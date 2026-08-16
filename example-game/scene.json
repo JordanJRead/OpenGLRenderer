@@ -7,9 +7,9 @@
  "camera": {
   "horizontalFOVDeg": 100.0,
   "position": {
-   "x": 2.000683307647705,
-   "y": 2.6838111877441406,
-   "z": -0.012717211619019508
+   "x": 2.4250550270080566,
+   "y": 2.353466033935547,
+   "z": -0.6707971692085266
   },
   "sensitivity": 0.1
  },
@@ -30,7 +30,7 @@
    {
     "children": [],
     "components": {
-     "Point Light": {
+     "PointLight": {
       "colour": {
        "type": 1,
        "value": {
