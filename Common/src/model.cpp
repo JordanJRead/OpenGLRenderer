@@ -23,7 +23,7 @@ void Model::create(EditableProperties& properties) {
 		return;
 	}
 	mIsValid = true;
-	objPath = (gGameDirectoryPath / objPath).string();
+	objPath = (Directories::gameDirectoryPath / objPath).string();
 	mDirectory = objPath;
 	mDirectory.resize(mDirectory.rfind("/"));
 

@@ -107,13 +107,13 @@ void Editor::saveToJSON() const {
     JSON json;
     json["renderSettings"] = mRenderSettings.mValue.toJSON();
     json["uiStyle"] = mUIStyle.toJSON();
-    std::ofstream file{ gGameDirectoryPath / gEditorSettingsFileName };
+    std::ofstream file{ Directories::gameDirectoryPath / Directories::editorSettingsFileName };
     file << std::setw(1) << json;
     file.close();
 }
 
 void Editor::loadFromJSON() {
-    std::ifstream file{ gGameDirectoryPath / gEditorSettingsFileName };
+    std::ifstream file{ Directories::gameDirectoryPath / Directories::editorSettingsFileName };
     if (file.is_open()) {
         JSON json = JSON::parse(file);
         file.close();

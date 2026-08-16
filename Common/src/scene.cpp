@@ -19,7 +19,7 @@ Scene::Scene()
 	: mCamera{ glm::vec3{ 0, 0, 0 }, 100, 0.1 }
 {
     std::cerr << "HERE1\n";
-	std::ifstream file{ gGameDirectoryPath / gSceneFileName };
+	std::ifstream file{ Directories::gameDirectoryPath / Directories::sceneFileName };
 	if (file.is_open()) {
 		JSON json = JSON::parse(file);
 		if (json.type() == JSON::value_t::array) {
@@ -105,7 +105,7 @@ void Scene::saveToJSON() {
 	json["ambientLightColour"] = JSONHelpers::fromVec3(mAmbientLightColour);
 
 	json["rootObject"] = mRootObject->toJSON();
-	std::ofstream file{ gGameDirectoryPath / gSceneFileName };
+	std::ofstream file{ Directories::gameDirectoryPath / Directories::sceneFileName };
 	file << std::setw(1) << json;
 	file.close();
 }
