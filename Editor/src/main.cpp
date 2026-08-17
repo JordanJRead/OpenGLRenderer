@@ -8,6 +8,7 @@
 #include "imgui/imgui_impl_opengl3.h"
 #include "directories.hpp"
 #include <fstream>
+#include "componentmanager.hpp"
 
 int main(int argc, char* argv[]) {
     if (argc != 2) {
@@ -61,6 +62,7 @@ int main(int argc, char* argv[]) {
     ImGui_ImplOpenGL3_Init("#version 430");
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
+    ComponentManager::instance().loadScripts();
     Editor editor{ screenWidth, screenHeight, window };
     editor.run();
 

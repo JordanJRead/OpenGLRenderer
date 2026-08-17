@@ -1,6 +1,12 @@
 #include "componentmanager.hpp"
+
 #include "model.hpp"
 #include "pointlight.hpp"
+#include "directories.hpp"
+#include <fstream>
+#include <cstdlib>
+#include <iostream>
+#include "script.hpp"
 
 template <typename T>
 std::unique_ptr<Component> createFromJSON(const JSON& json) {
@@ -17,16 +23,89 @@ ComponentManager::ComponentManager() {
 	mStaticComponentFactories["PointLight"] = createFromJSON<PointLight>;
 }
 
+void ComponentManager::loadScripts() {
+	if (mLibraryHandle) {
+		FreeLibrary(mLibraryHandle);
+	}
+
+	std::vector<std::string> classNames;
+	for (const auto& item : std::filesystem::directory_iterator(Directories::gameDirectoryPath / "scripts" / "src")) {
+		if (item.is_regular_file() && item.path().extension().string() == ".cpp") {
+			classNames.push_back(item.path().stem().string());
+		}
+	}
+
+	std::ofstream factoriesFile{ Directories::gameDirectoryPath / "scripts" / "factories.cpp" };
+
+	for (const std::string& className : classNames) {
+		factoriesFile << 1 + R"(
+#include "src/)" << className << R"(.hpp"
+
+extern "C" __declspec(dllexport) Script* create)" << className << R"(() {
+	return new )" << className << R"(;
+}
+		)";
+
+		factoriesFile << "\n";
+	}
+	factoriesFile.close();
+
+	std::filesystem::path batPath{ Directories::gameDirectoryPath / "scripts" / "build.bat" };
+	std::string command = "cmd /c \"" + batPath.string() + "\"";
+
+	std::filesystem::path programDir = std::filesystem::current_path();
+	std::filesystem::current_path(batPath.parent_path());
+	int result{ std::system(command.c_str()) };
+	std::filesystem::current_path(programDir);
+
+	if (result != 0) {
+		std::cerr << "Error compiling scripts!\n";
+		return;
+	}
+	// TODO debug?
+	// TODO re-create all scripts after a reload
+	mLibraryHandle = LoadLibraryW((Directories::gameDirectoryPath / "scripts" / "build" / "Debug" / "Scripts.dll").c_str());
+	if (!mLibraryHandle) {
+		std::cerr << "Error loading DLL!\n";
+		return;
+	}
+
+	// ImGUI
+	typedef void (*ImGuiContextFunc)(ImGuiContext* context);
+	ImGuiContextFunc imGuiContextFunc = (ImGuiContextFunc)GetProcAddress(mLibraryHandle, "initializeImGuiContext");
+	if (!imGuiContextFunc) {
+		std::cerr << "Error loading ImGui context func!\n";
+		return;
+	}
+	imGuiContextFunc(ImGui::GetCurrentContext());
+
+	// Load scripts
+	typedef Script* (*ScriptFactoryFunc)(const JSON& json);
+
+	for (const std::string& className : classNames) {
+		std::string funcName{ "create" };
+		funcName += className;
+		ScriptFactoryFunc factory = (ScriptFactoryFunc)GetProcAddress(mLibraryHandle, funcName.c_str());
+		if (!factory) {
+			std::cerr << "Error loading factory function for class " << className << "!\n";
+			return;
+		}
+		mDynamicComponentFactories[className] = [factory](const JSON& json){
+			return std::unique_ptr<Component>(factory(json));
+		};
+	}
+}
+
 std::unique_ptr<Component> ComponentManager::createComponentFromName(std::string_view componentTypeNameView, const JSON* const json) {
 	std::string componentTypeName{ componentTypeNameView };
 	// Static
-	if (json && mStaticComponentFactories.contains(componentTypeName)) {
+	if (mStaticComponentFactories.contains(componentTypeName)) {
 		auto& func = mStaticComponentFactories.at(componentTypeName);
 		return func(*json);
 	}
 
 	// Dynamic
-	if (json && mDynamicComponentFactories.contains(componentTypeName)) {
+	if (mDynamicComponentFactories.contains("Move")) {
 		return mDynamicComponentFactories.at(componentTypeName)(*json);
 	}
 	return nullptr;

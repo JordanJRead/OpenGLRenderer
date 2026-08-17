@@ -16,10 +16,14 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(glfw)
 
 # Assimp
-set(BUILD_SHARED_LIBS OFF CACHE INTERNAL "")
-set(ASSIMP_BUILD_TESTS OFF CACHE INTERNAL "")
-set(ASSIMP_INJECT_DEBUG_POSTFIX OFF CACHE INTERNAL "")
-set(ASSIMP_WARNINGS_AS_ERRORS OFF CACHE BOOL "" FORCE)
+set(ASSIMP_BUILD_IFC_IMPORTER OFF CACHE BOOL "Disable IFC" FORCE)
+set(ASSIMP_BUILD_STEP_IMPORTER OFF CACHE BOOL "Disable STEP" FORCE)
+set(ASSIMP_BUILD_GLTF_IMPORTER OFF CACHE BOOL "Disable GLTF" FORCE)
+set(ASSIMP_BUILD_COLLADA_IMPORTER OFF CACHE BOOL "Disable Collada" FORCE)
+set(ASSIMP_BUILD_TESTS OFF CACHE BOOL "Disable tests" FORCE)
+set(ASSIMP_BUILD_ASSIMP_TOOLS OFF CACHE BOOL "Disable tools" FORCE)
+set(ASSIMP_INSTALL OFF CACHE BOOL "Disable install targets" FORCE)
+set(HUNTER_ENABLED OFF CACHE BOOL "Disable Hunter package manager" FORCE)
 
 FetchContent_Declare(
     assimp
@@ -40,7 +44,7 @@ file(
 add_library(Common STATIC ${ALL_SOURCES})
 
 target_link_libraries(Common PUBLIC glfw)
-target_link_libraries(Common PRIVATE assimp)
+target_link_libraries(Common PUBLIC assimp)
 
 target_include_directories(Common PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_include_directories(Common PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/imgui)

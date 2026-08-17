@@ -46,10 +46,10 @@ public:
 	template <typename ComponentType>
 		requires std::is_base_of_v<Component, ComponentType>
 	ComponentType* getComponent() {
-		for (const auto& component : mComponents) {
+		for (auto& component : mComponents) {
 			ComponentType* derivedPointer{ dynamic_cast<ComponentType*>(component.get()) };
 			if (derivedPointer) {
-				return static_cast<const ComponentType*>(component.get());
+				return derivedPointer;
 			}
 		}
 		return nullptr;
@@ -61,7 +61,7 @@ public:
 		for (const auto& component : mComponents) {
 			ComponentType* derivedPointer{ dynamic_cast<ComponentType*>(component.get()) };
 			if (derivedPointer) {
-				return static_cast<const ComponentType*>(component.get());
+				return derivedPointer;
 			}
 		}
 		return nullptr;

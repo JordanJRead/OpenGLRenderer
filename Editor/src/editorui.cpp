@@ -12,6 +12,7 @@
 #include "rendersettings.hpp"
 #include "editor.hpp"
 #include "sceneobject.hpp"
+#include "componentmanager.hpp"
 
 EditorUI::EditorUI() {
     //ImGuiStyle& style{ ImGui::GetStyle() };
@@ -36,6 +37,9 @@ glm::ivec2 EditorUI::updateRender(const Framebuffer* const outputFramebuffer, Ed
     ImGui::ColorEdit3("Highlight Colour", (float*)&editor.mRenderSettings.mValue.mHighlightColour);
     ImGui::DragFloat("Point Light Size", &editor.mRenderSettings.mValue.mPointLightRenderScale, 0.01f);
     ImGui::Checkbox("Render Point Lights", &editor.mRenderSettings.mValue.mShouldRenderPointLights);
+    if (ImGui::Button("Reload scripts")) {
+        ComponentManager::instance().loadScripts();
+    }
     ImGui::End();
 
     // Inspector

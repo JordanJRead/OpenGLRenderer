@@ -9,6 +9,7 @@
 #include "nlohmann/json.hpp"
 #include <fstream>
 #include "directories.hpp"
+#include "script.hpp"
 
 void Editor::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
     ImGui_ImplGlfw_KeyCallback(window, key, scancode, action, mods);
@@ -71,6 +72,15 @@ void Editor::run() {
 
         // Update
         mScene.updateCameraData(mWindow, mInputs, deltaTime, mOutputFramebuffer.getAspectRatio());
+        const std::unique_ptr<SceneObject>& root = mScene.getRootObject();
+        for (const auto& child : root->getChildren()) {
+            for (const auto& component : child->getComponents()) {
+                Script* script{ dynamic_cast<Script*>(component.get()) };
+                if (script) {
+                    script->update(deltaTime, *child);
+                }
+            }
+        }
 
         // Render
         mGeometryBuffers.clear();

@@ -44,7 +44,7 @@ void SceneObjectInspector::updateRender() {
 		mComponentDropdown.renderUI();
 		ImGui::SameLine();
 		if (ImGui::Button("Add")) {
-			mSelectedObjectViewer.get()->addComponentFromName(mComponentDropdown.getCurrentType());
+			mSelectedObjectViewer.get()->addComponentFromName(mComponentDropdown.getCurrentType()); // TODO rename
 		}
 	}
 

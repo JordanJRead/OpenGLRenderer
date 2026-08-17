@@ -1,6 +1,7 @@
 #ifndef COMPONENT_MANAGER_H
 #define COMPONENT_MANAGER_H
 
+#include <Windows.h>
 #include <string>
 #include <functional>
 #include <memory>
@@ -63,12 +64,14 @@ public:
     Iterator begin();
     Iterator end();
 
+    void loadScripts();
+
 private:
 	ComponentManager();
 
 	std::map<std::string, std::function<std::unique_ptr<Component>(const JSON& json)>> mStaticComponentFactories;
-
 	std::map<std::string, std::function<std::unique_ptr<Component>(const JSON& json)>> mDynamicComponentFactories;
+    HMODULE mLibraryHandle{ nullptr };
 
 public:
     struct Iterator {
