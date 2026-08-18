@@ -33,8 +33,13 @@ file(
 add_library(Scripts MODULE ${ALL_SOURCES})
 
 if (MSVC)
-    target_compile_options(Scripts PRIVATE "/Z7")
-    set_target_properties(Scripts PROPERTIES LINK_FLAGS "/DEBUG:NONE")
+    file(GENERATE OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/rename_pdb_$<CONFIG>.cmake" INPUT "${CMAKE_CURRENT_SOURCE_DIR}/rename_pdb.cmake.in")
+
+    add_custom_command(
+        TARGET Scripts
+        PRE_BUILD
+        COMMAND ${CMAKE_COMMAND} -P "${CMAKE_CURRENT_SOURCE_DIR}/rename_pdb_$<CONFIG>.cmake"
+    )
 endif()
 
 target_include_directories(Scripts PRIVATE 

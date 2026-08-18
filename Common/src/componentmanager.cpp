@@ -41,8 +41,8 @@ void ComponentManager::loadScripts() {
 		factoriesFile << 1 + R"(
 #include "src/)" << className << R"(.hpp"
 
-extern "C" __declspec(dllexport) Script* create)" << className << R"(() {
-	return new )" << className << R"(;
+extern "C" __declspec(dllexport) Script* create)" << className << R"((const void* json) {
+	return new )" << className << R"((json);
 }
 		)";
 
@@ -80,7 +80,7 @@ extern "C" __declspec(dllexport) Script* create)" << className << R"(() {
 	imGuiContextFunc(ImGui::GetCurrentContext());
 
 	// Load scripts
-	typedef Script* (*ScriptFactoryFunc)(const JSON& json);
+	typedef Script* (*ScriptFactoryFunc)(const void* json);
 
 	for (const std::string& className : classNames) {
 		std::string funcName{ "create" };
@@ -91,7 +91,7 @@ extern "C" __declspec(dllexport) Script* create)" << className << R"(() {
 			return;
 		}
 		mDynamicComponentFactories[className] = [factory](const JSON& json){
-			return std::unique_ptr<Component>(factory(json));
+			return std::unique_ptr<Component>(factory(&json));
 		};
 	}
 }
@@ -105,7 +105,7 @@ std::unique_ptr<Component> ComponentManager::createComponentFromName(std::string
 	}
 
 	// Dynamic
-	if (mDynamicComponentFactories.contains("Move")) {
+	if (mDynamicComponentFactories.contains(componentTypeName)) {
 		return mDynamicComponentFactories.at(componentTypeName)(*json);
 	}
 	return nullptr;

@@ -2,8 +2,8 @@
 
 #include "sceneobject.hpp"
 
-Move::Move(const JSON& json) : Script{ "Move" } {
-    setJSONAndCreate(json);
+Move::Move(const void* json) : Script{ "Move" } {
+    setJSONAndCreate(json ? *((const JSON*)json) : JSON::object());
 }
 
 void Move::create(EditableProperties& properties) {
