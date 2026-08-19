@@ -39,6 +39,7 @@ glm::ivec2 EditorUI::updateRender(const Framebuffer* const outputFramebuffer, Ed
     ImGui::Checkbox("Render Point Lights", &editor.mRenderSettings.mValue.mShouldRenderPointLights);
     if (ImGui::Button("Reload scripts")) {
         ComponentManager::instance().loadScripts();
+        editor.mScene.updateAllObjectComponents();
     }
     ImGui::End();
 

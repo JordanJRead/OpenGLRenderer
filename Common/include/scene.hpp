@@ -35,6 +35,8 @@ public:
 	Camera& getCamera() { return mCamera; }
 	DirectionalLight& getDirectionalLight() { return mDirectionalLight; }
 	glm::vec3& getAmbientLightColour() { return mAmbientLightColour; }
+
+	void updateAllObjectComponents();
 	
 	void saveToJSON();
 
@@ -48,8 +50,9 @@ private:
 	DirectionalLight mDirectionalLight{ {0, 1, 0}, {1, 1, 1} };
 	glm::vec3 mAmbientLightColour{ 0.1, 0.1, 0.1 };
 
-	void renderSceneObject(const SceneObject* const sceneObject, const ShaderMesh& meshShader, const ShaderPointLight& pointLightShader, const Framebuffer* const framebuffer, const RenderSettings& renderSettings, SceneObject* selectedObject) const;
-	void getPointLightData(const SceneObject* const sceneObject, std::vector<float>& data);
+	void renderSceneObject(const SceneObject& sceneObject, const ShaderMesh& meshShader, const ShaderPointLight& pointLightShader, const Framebuffer* const framebuffer, const RenderSettings& renderSettings, const SceneObject* selectedObject) const;
+	void getPointLightData(const SceneObject& sceneObject, std::vector<float>& data);
+	void updateObjectComponents(SceneObject& sceneObject);
 };
 
 #endif

@@ -9,6 +9,7 @@ Move::Move(const void* json) : Script{ "Move" } {
 void Move::create(EditableProperties& properties) {
     mSpeed = properties.getOrCreate<EditableProperty::Type::double_type>("Speed");
     mIsUp = properties.getOrCreate<EditableProperty::Type::bool_type>("Up");
+    // properties.getOrCreate<EditableProperty::Type::bool_type>("Test?");
 }
 
 void Move::update(float deltaTime, SceneObject& sceneObject) {

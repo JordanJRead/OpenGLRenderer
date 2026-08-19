@@ -40,6 +40,7 @@ if (MSVC)
         PRE_BUILD
         COMMAND ${CMAKE_COMMAND} -P "${CMAKE_CURRENT_SOURCE_DIR}/rename_pdb_$<CONFIG>.cmake"
     )
+    add_link_options("/DEBUG:FULL")
 endif()
 
 target_include_directories(Scripts PRIVATE 
