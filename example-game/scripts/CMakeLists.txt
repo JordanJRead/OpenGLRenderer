@@ -19,7 +19,7 @@ include(FetchContent)
 FetchContent_Declare(
     Engine SOURCE_DIR "C:/Users/jorda/source/repos/JordanJRead/OpenGLRenderer" SOURCE_SUBDIR "Common"
 )
-
+add_compile_options($<$<CXX_COMPILER_ID:MSVC>:/FS>)
 FetchContent_MakeAvailable(Engine)
 
 file(
@@ -33,14 +33,8 @@ file(
 add_library(Scripts MODULE ${ALL_SOURCES})
 
 if (MSVC)
-    file(GENERATE OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/rename_pdb_$<CONFIG>.cmake" INPUT "${CMAKE_CURRENT_SOURCE_DIR}/rename_pdb.cmake.in")
-
-    add_custom_command(
-        TARGET Scripts
-        PRE_BUILD
-        COMMAND ${CMAKE_COMMAND} -P "${CMAKE_CURRENT_SOURCE_DIR}/rename_pdb_$<CONFIG>.cmake"
-    )
-    add_link_options("/DEBUG:FULL")
+    string(TIMESTAMP MY_TIMESTAMP "%Y%m%d_%H%M%S")
+    set_target_properties(Scripts PROPERTIES PDB_NAME_DEBUG "Scripts_${MY_TIMESTAMP}")
 endif()
 
 target_include_directories(Scripts PRIVATE 

@@ -10,9 +10,10 @@
 #include "script.hpp"
 #include "transform.hpp"
 #include <fstream>
+#include <stdexcept>
 
-void Editor::keyCallback(
-  GLFWwindow* window, int key, int scancode, int action, int mods) {
+void Editor::keyCallback(GLFWwindow* window, int key, int scancode, int action,
+                         int mods) {
     ImGui_ImplGlfw_KeyCallback(window, key, scancode, action, mods);
     Editor* editor = ((Editor*)glfwGetWindowUserPointer(window));
 
@@ -23,8 +24,8 @@ void Editor::keyCallback(
     }
 }
 
-void Editor::mouseCallback(
-  GLFWwindow* window, int button, int action, int mods) {
+void Editor::mouseCallback(GLFWwindow* window, int button, int action,
+                           int mods) {
     ImGui_ImplGlfw_MouseButtonCallback(window, button, action, mods);
     Editor* editor = ((Editor*)glfwGetWindowUserPointer(window));
 
@@ -33,10 +34,25 @@ void Editor::mouseCallback(
     }
 }
 
+JSON getSceneJSON() {
+    std::ifstream file{ Directories::gameDirectoryPath
+                        / Directories::sceneFileName };
+    if (file.is_open()) {
+        JSON json = JSON::parse(file);
+        if (json.type() == JSON::value_t::array) {
+            json = json[0]; // Don't know why this happens sometimes
+        }
+        file.close();
+        return json;
+    }
+    throw std::runtime_error("Error loading scene json!");
+}
+
 Editor::Editor(int screenWidth, int screenHeight, GLFWwindow* window)
     : mWindow{ window }
     , mGeometryBuffers{ screenWidth, screenHeight, {GL_RGBA32F, GL_RGB16F, GL_RGB16F, GL_RGBA16F, GL_RG32F }, {0, 0, 0, 0} } // worldPos, normal, diffuse, specular/exponent, objectPtr
     , mOutputFramebuffer{ screenWidth, screenHeight, {GL_RGBA8}, {0, 0, 0, 1} }
+    , mScene{ getSceneJSON() }
 {
     loadFromJSON();
     glfwSetInputMode(mWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -74,12 +90,12 @@ void Editor::run() {
         mScene.updatePointLights();
 
         // Update
-        mScene.updateCameraData(
-          mWindow, mInputs, deltaTime, mOutputFramebuffer.getAspectRatio());
-        const std::unique_ptr<SceneObject>& root = mScene.getRootObject();
-        for (const auto& child : root->getChildren()) {
-            for (const auto& component : child->getComponents()) {
-                Script* script{ dynamic_cast<Script*>(component.get()) };
+        mScene.updateCameraData(mWindow, mInputs, deltaTime,
+                                mOutputFramebuffer.getAspectRatio());
+        SceneObject& root = mScene.getRootObject();
+        for (auto& child : root.getChildren()) {
+            for (auto& component : child->getComponents()) {
+                Script* script{ dynamic_cast<Script*>(component.ptr()) };
                 if (script) {
                     script->update(deltaTime, *child);
                 }
@@ -92,16 +108,17 @@ void Editor::run() {
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glClearColor(0, 0, 0, 0);
-        glClear(
-          GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT
+                | GL_STENCIL_BUFFER_BIT);
 
         glDisable(GL_BLEND);
         mScene.render(mGeometryPassShader, mPointLightGeometryShader,
-          &mGeometryBuffers, mRenderSettings.mValue, mUI.getSelectedObject());
+                      &mGeometryBuffers, mRenderSettings.mValue,
+                      mUI.getSelectedObject());
 
         mShaderDeferred.render(mScreenVertexArray, &mOutputFramebuffer,
-          mGeometryBuffers, mScene.getDirectionalLight(),
-          mScene.getAmbientLightColour());
+                               mGeometryBuffers, mScene.getDirectionalLight(),
+                               mScene.getAmbientLightColour());
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glm::ivec2 newDim = mUI.updateRender(nullptr, *this);

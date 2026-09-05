@@ -1,7 +1,7 @@
 ---
 BasedOnStyle: LLVM
-AccessModifierOffset: -2
-AlignAfterOpenBracket: DontAlign
+AccessModifierOffset: -4
+AlignAfterOpenBracket: Align
 AlignArrayOfStructures: Right
 AlignConsecutiveAssignments: Consecutive
 AlignConsecutiveBitFields: None
@@ -60,7 +60,7 @@ ColumnLimit: 80
 CommentPragmas: "^ IWYU pragma:"
 CompactNamespaces: false
 ConstructorInitializerAllOnOneLineOrOnePerLine: false
-ConstructorInitializerIndentWidth: 4
+ConstructorInitializerIndentWidth: 0
 ContinuationIndentWidth: 2
 Cpp11BracedListStyle: false
 DeriveLineEnding: true

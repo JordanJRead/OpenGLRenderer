@@ -1,6 +1,0 @@
-set(CURRENT_PDB "$<TARGET_FILE_DIR:Scripts>/Scripts.pdb")
-set(RENAMED_PDB "$<TARGET_FILE_DIR:Scripts>/Scripts_old.pdb")
-
-if(EXISTS "${CURRENT_PDB}")
-    file(RENAME "${CURRENT_PDB}" "${RENAMED_PDB}")
-endif()

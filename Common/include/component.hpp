@@ -8,8 +8,10 @@
 #include <string_view>
 
 class Component {
-  public:
-    Component(std::string_view componentName) : mComponentName{componentName} {}
+public:
+    Component(std::string_view componentName)
+    : mComponentName{ componentName } {
+    }
 
     virtual void renderUIProperties() {
         ImGui::SeparatorText(mComponentName.c_str());
@@ -23,15 +25,22 @@ class Component {
         }
     }
 
-    JSON toJSON() { return mInitialProperties.toJSON(); }
+    JSON toJSON() const {
+        return mInitialProperties.toJSON();
+    }
 
-    std::string_view getName() const { return mComponentName; }
+    std::string_view getName() const {
+        return mComponentName;
+    }
 
-    void updateProperties() { setJSONAndCreate(mEditableProperties.toJSON()); }
+    void updateProperties() {
+        setJSONAndCreate(mEditableProperties.toJSON());
+    }
 
-    virtual ~Component() {}
+    virtual ~Component() {
+    }
 
-  protected:
+protected:
     virtual void setJSONAndCreate(const JSON& json) final {
         mInitialProperties.create(json);
         create(mInitialProperties);
@@ -39,10 +48,10 @@ class Component {
         mEditableProperties = mInitialProperties;
     }
 
-  private:
+private:
     EditableProperties mInitialProperties;
     EditableProperties mEditableProperties;
-    std::string mComponentName;
+    std::string        mComponentName;
 
     virtual void create(EditableProperties& properties) = 0;
 };

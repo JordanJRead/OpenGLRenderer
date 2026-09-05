@@ -108,6 +108,8 @@ std::unique_ptr<Component> ComponentManager::createComponentFromName(std::string
 	if (mDynamicComponentFactories.contains(componentTypeName)) {
 		return mDynamicComponentFactories.at(componentTypeName)(*json);
 	}
+    std::cerr << "ERROR: Could not load component " << componentTypeName
+                << "\n";
 	return nullptr;
 }
 
