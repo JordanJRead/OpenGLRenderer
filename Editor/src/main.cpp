@@ -1,28 +1,37 @@
-#include <iostream>
 #include "glad/glad.h"
+
 #include "GLFW/glfw3.h"
-#include <filesystem>
+#include "componentmanager.hpp"
+#include "directories.hpp"
 #include "editor.hpp"
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
-#include "directories.hpp"
+#include <filesystem>
 #include <fstream>
-#include "componentmanager.hpp"
+#include <iostream>
 
 int main(int argc, char* argv[]) {
     if (argc != 2) {
         std::cerr << "Usage: " << argv[0] << " <game_directory_path>\n";
-        //return 1;
+        // return 1;
     }
-    Directories::gameDirectoryPath = "C:\\Users\\jorda\\source\\repos\\JordanJRead\\OpenGLRenderer\\example-game";// argv[1];
+    Directories::gameDirectoryPath
+      = "C:\\Users\\jorda\\source\\repos\\JordanJRead\\OpenGLRenderer\\example-"
+        "game"; // argv[1];
 
     // Create default settings
-    if (!std::filesystem::exists(Directories::gameDirectoryPath / Directories::editorSettingsFileName)) {
-        std::filesystem::copy_file("./defaulteditorsettings.json", Directories::gameDirectoryPath / Directories::editorSettingsFileName);
+    if (!std::filesystem::exists(Directories::gameDirectoryPath
+                                 / Directories::editorSettingsFileName)) {
+        std::filesystem::copy_file("./defaulteditorsettings.json",
+                                   Directories::gameDirectoryPath
+                                     / Directories::editorSettingsFileName);
     }
-    if (!std::filesystem::exists(Directories::gameDirectoryPath / Directories::imGuiIniFileName)) {
-        std::filesystem::copy_file("./defaultimgui.ini", Directories::gameDirectoryPath / Directories::imGuiIniFileName);
+    if (!std::filesystem::exists(Directories::gameDirectoryPath
+                                 / Directories::imGuiIniFileName)) {
+        std::filesystem::copy_file("./defaultimgui.ini",
+                                   Directories::gameDirectoryPath
+                                     / Directories::imGuiIniFileName);
     }
 
     int screenWidth{ 1920 };
@@ -36,7 +45,8 @@ int main(int argc, char* argv[]) {
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_REFRESH_RATE, GLFW_DONT_CARE);
     glfwWindowHint(GLFW_SAMPLES, 4);
-    GLFWwindow* window = glfwCreateWindow(screenWidth, screenHeight, "LearnOpenGL", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(screenWidth, screenHeight,
+                                          "LearnOpenGL", nullptr, nullptr);
     glfwMakeContextCurrent(window);
     if (window == nullptr) {
         std::cerr << "Failed to create GLFW window\n";
@@ -52,11 +62,14 @@ int main(int argc, char* argv[]) {
     // IMGUI
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    ImGuiIO& io{ ImGui::GetIO() }; (void)io;
+    ImGuiIO& io{ ImGui::GetIO() };
+    (void)io;
 
-    std::string imGuiFilePathString = (Directories::gameDirectoryPath / Directories::imGuiIniFileName).string();
+    std::string imGuiFilePathString
+      = (Directories::gameDirectoryPath / Directories::imGuiIniFileName)
+          .string();
     io.IniFilename = imGuiFilePathString.c_str();
-    
+
     ImGui::StyleColorsDark();
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init("#version 430");
