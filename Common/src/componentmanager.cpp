@@ -1,11 +1,17 @@
 #include "componentmanager.hpp"
+#define GLFW_INCLUDE_NONE
+#include "GLFW/glfw3.h"
 #include "directories.hpp"
 #include "model.hpp"
 #include "pointlight.hpp"
 #include "script.hpp"
+#include <cassert>
 #include <cstdlib>
+#include <filesystem>
 #include <fstream>
+#include <functional>
 #include <iostream>
+#include <optional>
 
 template <typename T>
 std::unique_ptr<Component> createFromJSON(const JSON& json) {
@@ -17,7 +23,81 @@ ComponentManager& ComponentManager::instance() {
     return manager;
 }
 
-ComponentManager::ComponentManager() {
+struct SourceDirectoryInfo {
+    size_t                                         fileCount;
+    std::optional<std::filesystem::file_time_type> lastModifiedTime;
+    bool operator==(const SourceDirectoryInfo&) const = default;
+};
+
+std::filesystem::file_time_type mostRecent(std::filesystem::file_time_type a,
+                                           std::filesystem::file_time_type b) {
+    return a.time_since_epoch() > b.time_since_epoch() ? a : b;
+}
+
+SourceDirectoryInfo getDirectoryInfo(const std::filesystem::path& directory) {
+    assert(std::filesystem::is_directory(directory));
+
+    SourceDirectoryInfo info{ 0, std::nullopt };
+
+    for (const std::filesystem::directory_entry& entry :
+         std::filesystem::directory_iterator(directory)) {
+
+        if (entry.is_directory()) {
+            SourceDirectoryInfo subInfo{ getDirectoryInfo(entry.path()) };
+            info.fileCount += subInfo.fileCount;
+            if (subInfo.lastModifiedTime) {
+                if (!info.lastModifiedTime)
+                    info.lastModifiedTime = *subInfo.lastModifiedTime;
+                else
+                    info.lastModifiedTime = mostRecent(
+                      *info.lastModifiedTime, *subInfo.lastModifiedTime);
+            }
+        } else if (entry.is_regular_file()) {
+            info.fileCount++;
+            auto fileRecent{ std::filesystem::last_write_time(entry.path()) };
+            if (!info.lastModifiedTime)
+                info.lastModifiedTime = fileRecent;
+            else
+                info.lastModifiedTime
+                  = mostRecent(*info.lastModifiedTime, fileRecent);
+        }
+    }
+    return info;
+}
+
+void ComponentManager::listenForScriptsUpdate(std::stop_token stop_token) {
+    SourceDirectoryInfo currentInfo{ getDirectoryInfo(
+      Directories::gameDirectoryPath / "scripts" / "src") };
+
+    while (!stop_token.stop_requested()) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+        SourceDirectoryInfo newInfo{ getDirectoryInfo(
+          Directories::gameDirectoryPath / "scripts" / "src") };
+        if (newInfo != currentInfo) {
+            std::unique_lock<std::mutex> lock{ mFlagMutex };
+            mNeedToUpdateScripts = true;
+        }
+        currentInfo = newInfo;
+    }
+}
+
+bool ComponentManager::shouldLoadScripts(GLFWwindow* window) {
+    int isFocused{ glfwGetWindowAttrib(window, GLFW_FOCUSED) };
+    if (!isFocused)
+        return false;
+
+    // Check flag
+    std::unique_lock<std::mutex> lock{ mFlagMutex };
+    if (mNeedToUpdateScripts) {
+        mNeedToUpdateScripts = false;
+        return true;
+    }
+    return false;
+}
+
+ComponentManager::ComponentManager()
+: mListenerThread{ std::bind_front(&ComponentManager::listenForScriptsUpdate,
+                                   this) } {
     mStaticComponentFactories["Model"]      = createFromJSON<Model>;
     mStaticComponentFactories["PointLight"] = createFromJSON<PointLight>;
 }
@@ -43,6 +123,8 @@ void ComponentManager::loadScripts() {
                                  / "factories.cpp" };
 
     for (const std::string& className : classNames) {
+        // '1 + ' is to skip the first newline of this string literal
+        // (increment const char*)
         factoriesFile << 1 + R"(
 #include "src/)" << className
                       << R"(.hpp"

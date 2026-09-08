@@ -2,15 +2,18 @@
 #define COMPONENT_MANAGER_H
 #include "boost/pfr/pfr.hpp"
 #include <Windows.h>
+#include <atomic>
 #include <cstddef>
 #include <functional>
 #include <iterator>
 #include <map>
 #include <memory>
+#include <mutex>
 #include <nlohmann/json.hpp>
 #include <optional>
 #include <source_location>
 #include <string>
+#include <thread>
 
 template <typename T>
 consteval std::string_view type_name() {
@@ -40,6 +43,7 @@ consteval std::string_view type_name() {
 }
 
 class Component;
+struct GLFWwindow;
 
 class ComponentManager {
 public:
@@ -61,19 +65,29 @@ public:
 
     void loadScripts();
 
+    bool shouldLoadScripts(GLFWwindow* window);
+
 private:
     ComponentManager();
+    void listenForScriptsUpdate(std::stop_token stop_token);
 
     std::map<std::string,
              std::function<std::unique_ptr<Component>(const JSON& json)>>
       mStaticComponentFactories;
     std::map<std::string,
              std::function<std::unique_ptr<Component>(const JSON& json)>>
-            mDynamicComponentFactories;
-    HMODULE mLibraryHandle{ nullptr };
+               mDynamicComponentFactories;
+    HMODULE    mLibraryHandle{ nullptr };
+    bool       mNeedToUpdateScripts{ false };
+    std::mutex mFlagMutex;
 
+    // Must be listed last
+    std::jthread mListenerThread;
+
+    // Iterator
 public:
-    struct Iterator {
+    class Iterator {
+    public:
         friend class ComponentManager;
 
         using iterator_category = std::forward_iterator_tag;

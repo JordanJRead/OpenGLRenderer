@@ -8,6 +8,7 @@
 #include "nlohmann/json.hpp"
 #include "pointlight.hpp"
 #include "rendersettings.hpp"
+#include "script.hpp"
 #include "shaders/shadermesh.hpp"
 #include "shaders/shaderpointlight.hpp"
 #include "transform.hpp"
@@ -109,7 +110,10 @@ void Scene::updateAllObjectComponents() {
 
 void Scene::updateObjectComponents(SceneObject& sceneObject) {
     for (auto& component : sceneObject.getComponents()) {
-        component->updateProperties();
+        Script* script{ dynamic_cast<Script*>(component.ptr()) };
+        if (script) {
+            script->updateProperties();
+        }
     }
     for (auto& child : sceneObject.getChildren()) {
         updateObjectComponents(*child);

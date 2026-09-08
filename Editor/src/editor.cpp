@@ -70,6 +70,11 @@ void Editor::run() {
     float prevTime{ 0 };
     while (!glfwWindowShouldClose(mWindow)) {
 
+        if (ComponentManager::instance().shouldLoadScripts(mWindow)) {
+            ComponentManager::instance().loadScripts();
+            mScene.updateAllObjectComponents();
+        }
+
         mInputs.clear();
         if (!(ImGui::GetIO().WantCaptureKeyboard)) {
             mInputs.registerAllKeysDown(mWindow);
