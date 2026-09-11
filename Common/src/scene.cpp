@@ -110,9 +110,8 @@ void Scene::updateAllObjectComponents() {
 
 void Scene::updateObjectComponents(SceneObject& sceneObject) {
     for (auto& component : sceneObject.getComponents()) {
-        Script* script{ dynamic_cast<Script*>(component.ptr()) };
-        if (script) {
-            script->updateProperties();
+        if (component->isScript()) {
+            ((Script*)component.ptr())->updateProperties();
         }
     }
     for (auto& child : sceneObject.getChildren()) {

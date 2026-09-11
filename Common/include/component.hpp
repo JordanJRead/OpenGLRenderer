@@ -9,44 +9,23 @@
 
 class Component {
 public:
-    Component(std::string_view componentName)
-    : mComponentName{ componentName } {
-    }
+    Component(std::string_view componentName);
 
-    virtual void renderUIProperties() {
-        ImGui::SeparatorText(mComponentName.c_str());
-        mEditableProperties.renderUI();
-        ImGui::PushID(this);
-        if (ImGui::Button("Update")) {
-            ImGui::PopID();
-            setJSONAndCreate(mEditableProperties.toJSON());
-        } else {
-            ImGui::PopID();
-        }
-    }
+    virtual void renderUIProperties();
 
-    JSON toJSON() const {
-        return mInitialProperties.toJSON();
-    }
+    JSON toJSON() const;
 
-    std::string_view getName() const {
-        return mComponentName;
-    }
+    std::string_view getName() const;
 
-    void updateProperties() {
-        setJSONAndCreate(mEditableProperties.toJSON());
-    }
+    bool isScript() const;
 
-    virtual ~Component() {
-    }
+    void updateProperties();
+
+    virtual ~Component();
 
 protected:
-    virtual void setJSONAndCreate(const JSON& json) final {
-        mInitialProperties.create(json);
-        create(mInitialProperties);
-        mInitialProperties.removeUnused();
-        mEditableProperties = mInitialProperties;
-    }
+    virtual void setJSONAndCreate(const JSON& json) final;
+    bool         mIsScript{ false };
 
 private:
     EditableProperties mInitialProperties;

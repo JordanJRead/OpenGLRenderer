@@ -100,9 +100,8 @@ void Editor::run() {
         SceneObject& root = mScene.getRootObject();
         for (auto& child : root.getChildren()) {
             for (auto& component : child->getComponents()) {
-                Script* script{ dynamic_cast<Script*>(component.ptr()) };
-                if (script) {
-                    script->update(deltaTime, *child);
+                if (component->isScript()) {
+                    ((Script*)component.ptr())->updateProperties();
                 }
             }
         }
