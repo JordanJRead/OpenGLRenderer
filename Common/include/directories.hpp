@@ -5,10 +5,16 @@
 #include <string_view>
 
 namespace Directories {
-    inline std::filesystem::path gameDirectoryPath;
-    inline constexpr std::string_view editorSettingsFileName{ "editorsettings.json" };
+    inline std::filesystem::path       gameDirectoryPath;
+    inline const std::filesystem::path gameRelScriptSourcePath{ "scripts/" };
+    inline const std::filesystem::path gameRelScriptInternalPath{
+        "scripts/.internal/"
+    };
+    inline constexpr std::string_view editorSettingsFileName{
+        "editorsettings.json"
+    };
     inline constexpr std::string_view imGuiIniFileName{ "imgui.ini" };
     inline constexpr std::string_view sceneFileName{ "scene.json" };
-}
+} // namespace Directories
 
 #endif

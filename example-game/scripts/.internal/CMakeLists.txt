@@ -16,6 +16,7 @@ set(HUNTER_ENABLED OFF CACHE BOOL "Disable Hunter package manager" FORCE)
 
 include(FetchContent)
 
+# TODO move to ProgramFiles or something
 FetchContent_Declare(
     Engine SOURCE_DIR "C:/Users/jorda/source/repos/JordanJRead/OpenGLRenderer" SOURCE_SUBDIR "Common"
 )
@@ -24,11 +25,13 @@ FetchContent_MakeAvailable(Engine)
 
 file(
     GLOB_RECURSE ALL_SOURCES CONFIGURE_DEPENDS
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/*.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../*.hpp"
     "factories.cpp"
     "imguicontext.cpp"
 )
+
+list(FILTER ALL_SOURCES EXCLUDE REGEX "/build/")
 
 add_library(Scripts MODULE ${ALL_SOURCES})
 

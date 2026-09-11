@@ -42,7 +42,7 @@ SourceDirectoryInfo getDirectoryInfo(const std::filesystem::path& directory) {
     for (const std::filesystem::directory_entry& entry :
          std::filesystem::directory_iterator(directory)) {
 
-        if (entry.is_directory()) {
+        if (entry.is_directory() && entry.path().stem().string()[0] != '.') {
             SourceDirectoryInfo subInfo{ getDirectoryInfo(entry.path()) };
             info.fileCount += subInfo.fileCount;
             if (subInfo.lastModifiedTime) {
@@ -67,12 +67,13 @@ SourceDirectoryInfo getDirectoryInfo(const std::filesystem::path& directory) {
 
 void ComponentManager::listenForScriptsUpdate(std::stop_token stop_token) {
     SourceDirectoryInfo currentInfo{ getDirectoryInfo(
-      Directories::gameDirectoryPath / "scripts" / "src") };
+      Directories::gameDirectoryPath / Directories::gameRelScriptSourcePath) };
 
     while (!stop_token.stop_requested()) {
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
         SourceDirectoryInfo newInfo{ getDirectoryInfo(
-          Directories::gameDirectoryPath / "scripts" / "src") };
+          Directories::gameDirectoryPath
+          / Directories::gameRelScriptSourcePath) };
         if (newInfo != currentInfo) {
             std::unique_lock<std::mutex> lock{ mFlagMutex };
             mNeedToUpdateScripts = true;
@@ -102,6 +103,23 @@ ComponentManager::ComponentManager()
     mStaticComponentFactories["PointLight"] = createFromJSON<PointLight>;
 }
 
+std::vector<std::filesystem::path>
+getAllHeaderPaths(const std::filesystem::path directory) {
+    std::vector<std::filesystem::path> results;
+    for (const auto& item : std::filesystem::directory_iterator(directory)) {
+        if (item.is_regular_file()
+            && item.path().extension().string() == ".hpp") {
+            results.push_back(item.path());
+        } else if (item.is_directory()
+                   && item.path().stem().string()[0] != '.') {
+            std::vector<std::filesystem::path> subResults{ getAllHeaderPaths(
+              item.path()) };
+            results.insert(results.end(), subResults.begin(), subResults.end());
+        }
+    }
+    return results;
+}
+
 void ComponentManager::loadScripts() {
     HCURSOR loadingCursor{ LoadCursor(NULL, IDC_WAIT) };
     HCURSOR prevCursor{ SetCursor(loadingCursor) };
@@ -110,28 +128,23 @@ void ComponentManager::loadScripts() {
         FreeLibrary(mLibraryHandle);
     }
 
-    std::vector<std::string> classNames;
-    for (const auto& item : std::filesystem::directory_iterator(
-           Directories::gameDirectoryPath / "scripts" / "src")) {
-        if (item.is_regular_file()
-            && item.path().extension().string() == ".cpp") {
-            classNames.push_back(item.path().stem().string());
-        }
-    }
+    std::vector<std::filesystem::path> headerPaths{ getAllHeaderPaths(
+      Directories::gameDirectoryPath / Directories::gameRelScriptSourcePath) };
 
-    std::ofstream factoriesFile{ Directories::gameDirectoryPath / "scripts"
+    std::ofstream factoriesFile{ Directories::gameDirectoryPath
+                                 / Directories::gameRelScriptInternalPath
                                  / "factories.cpp" };
 
-    for (const std::string& className : classNames) {
+    for (const std::filesystem::path& headerPath : headerPaths) {
         // '1 + ' is to skip the first newline of this string literal
         // (increment const char*)
         factoriesFile << 1 + R"(
-#include "src/)" << className
-                      << R"(.hpp"
+#include )" << headerPath
+                      << R"(
 
 extern "C" __declspec(dllexport) Script* create)"
-                      << className << R"((const void* json) {
-	return new )" << className
+                      << headerPath.stem().string() << R"((const void* json) {
+	return new )" << headerPath.stem().string()
                       << R"((json);
 }
 		)";
@@ -140,7 +153,9 @@ extern "C" __declspec(dllexport) Script* create)"
     }
     factoriesFile.close();
 
-    std::filesystem::path batPath{ Directories::gameDirectoryPath / "scripts"
+    // CMake build
+    std::filesystem::path batPath{ Directories::gameDirectoryPath
+                                   / Directories::gameRelScriptInternalPath
                                    / "build.bat" };
     std::string           command = "cmd /c \"" + batPath.string() + "\"";
 
@@ -153,11 +168,12 @@ extern "C" __declspec(dllexport) Script* create)"
         std::cerr << "Error compiling scripts!\n";
         return;
     }
+
     // TODO debug?
-    // TODO re-create all scripts after a reload
-    mLibraryHandle = LoadLibraryW((Directories::gameDirectoryPath / "scripts"
-                                   / "build" / "Debug" / "Scripts.dll")
-                                    .c_str());
+    mLibraryHandle = LoadLibraryW(
+      (Directories::gameDirectoryPath / Directories::gameRelScriptInternalPath
+       / "build" / "Debug" / "Scripts.dll")
+        .c_str());
     if (!mLibraryHandle) {
         std::cerr << "Error loading DLL!\n";
         return;
@@ -176,19 +192,20 @@ extern "C" __declspec(dllexport) Script* create)"
     // Load scripts
     typedef Script* (*ScriptFactoryFunc)(const void* json);
 
-    for (const std::string& className : classNames) {
+    for (const std::filesystem::path& headerPath : headerPaths) {
         std::string funcName{ "create" };
-        funcName += className;
+        funcName += headerPath.stem().string();
         ScriptFactoryFunc factory
           = (ScriptFactoryFunc)GetProcAddress(mLibraryHandle, funcName.c_str());
         if (!factory) {
             std::cerr << "Error loading factory function for class "
-                      << className << "!\n";
+                      << headerPath.stem() << "!\n";
             continue;
         }
-        mDynamicComponentFactories[className] = [factory](const JSON& json) {
-            return std::unique_ptr<Component>(factory(&json));
-        };
+        mDynamicComponentFactories[headerPath.stem().string()]
+          = [factory](const JSON& json) {
+                return std::unique_ptr<Component>(factory(&json));
+            };
     }
     SetCursor(prevCursor);
 }
