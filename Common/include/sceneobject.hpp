@@ -23,6 +23,7 @@ public:
     JSON toJSON() const;
 
     void destroyChild(SceneObject& child);
+    void reloadScripts();
 
     const Transform& getTransform() const;
     Transform&       getTransform();

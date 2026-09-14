@@ -13,6 +13,7 @@ public:
 private:
     float mSpeed;
     bool mIsUp;
+    // bool mTest;
 };
 
 #endif

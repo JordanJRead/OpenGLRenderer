@@ -19,8 +19,6 @@ public:
 
     bool isScript() const;
 
-    void updateProperties();
-
     virtual ~Component();
 
 protected:

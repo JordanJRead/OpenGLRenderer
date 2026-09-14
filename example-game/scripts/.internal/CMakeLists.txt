@@ -35,11 +35,6 @@ list(FILTER ALL_SOURCES EXCLUDE REGEX "/build/")
 
 add_library(Scripts MODULE ${ALL_SOURCES})
 
-if (MSVC)
-    string(TIMESTAMP MY_TIMESTAMP "%Y%m%d_%H%M%S")
-    set_target_properties(Scripts PROPERTIES PDB_NAME_DEBUG "Scripts_${MY_TIMESTAMP}")
-endif()
-
 target_include_directories(Scripts PRIVATE 
     "C:/Users/jorda/source/repos/JordanJRead/OpenGLRenderer/Common/include"
 )

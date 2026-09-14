@@ -28,10 +28,6 @@ bool Component::isScript() const {
     return mIsScript;
 }
 
-void Component::updateProperties() {
-    setJSONAndCreate(mEditableProperties.toJSON());
-}
-
 Component::~Component() {
 }
 

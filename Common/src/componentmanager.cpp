@@ -6,6 +6,7 @@
 #include "pointlight.hpp"
 #include "script.hpp"
 #include <cassert>
+#include <chrono>
 #include <cstdlib>
 #include <filesystem>
 #include <fstream>
@@ -120,13 +121,10 @@ getAllHeaderPaths(const std::filesystem::path directory) {
     return results;
 }
 
-void ComponentManager::loadScripts() {
+void ComponentManager::loadScripts(
+  std::optional<std::function<void()>> reloadCallback) {
     HCURSOR loadingCursor{ LoadCursor(NULL, IDC_WAIT) };
     HCURSOR prevCursor{ SetCursor(loadingCursor) };
-
-    if (mLibraryHandle) {
-        FreeLibrary(mLibraryHandle);
-    }
 
     std::vector<std::filesystem::path> headerPaths{ getAllHeaderPaths(
       Directories::gameDirectoryPath / Directories::gameRelScriptSourcePath) };
@@ -169,11 +167,22 @@ extern "C" __declspec(dllexport) Script* create)"
         return;
     }
 
+    // Copy DLL
+    std::string           timestamp{ std::to_string(
+      std::chrono::duration_cast<std::chrono::milliseconds>(
+        std::chrono::system_clock::now().time_since_epoch())
+        .count()) };
+    auto                  curr = std::filesystem::current_path();
+    std::filesystem::path dllDirectoryPath{ timestamp };
+    std::filesystem::create_directory(dllDirectoryPath);
+    std::filesystem::copy(Directories::gameDirectoryPath
+                            / Directories::gameRelScriptInternalPath / "build"
+                            / "Debug",
+                          dllDirectoryPath);
+
     // TODO debug?
-    mLibraryHandle = LoadLibraryW(
-      (Directories::gameDirectoryPath / Directories::gameRelScriptInternalPath
-       / "build" / "Debug" / "Scripts.dll")
-        .c_str());
+    HMODULE prevLibraryHandle = mLibraryHandle;
+    mLibraryHandle = LoadLibraryW((dllDirectoryPath / "Scripts.dll").c_str());
     if (!mLibraryHandle) {
         std::cerr << "Error loading DLL!\n";
         return;
@@ -207,6 +216,14 @@ extern "C" __declspec(dllexport) Script* create)"
                 return std::unique_ptr<Component>(factory(&json));
             };
     }
+
+    if (reloadCallback)
+        (*reloadCallback)();
+
+    if (prevLibraryHandle) {
+        FreeLibrary(prevLibraryHandle);
+    }
+
     SetCursor(prevCursor);
 }
 

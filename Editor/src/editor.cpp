@@ -71,8 +71,8 @@ void Editor::run() {
     while (!glfwWindowShouldClose(mWindow)) {
 
         if (ComponentManager::instance().shouldLoadScripts(mWindow)) {
-            ComponentManager::instance().loadScripts();
-            mScene.updateAllObjectComponents();
+            ComponentManager::instance().loadScripts(
+              [this]() { mScene.updateAllObjectComponents(); });
         }
 
         mInputs.clear();
@@ -101,7 +101,7 @@ void Editor::run() {
         for (auto& child : root.getChildren()) {
             for (auto& component : child->getComponents()) {
                 if (component->isScript()) {
-                    ((Script*)component.ptr())->updateProperties();
+                    ((Script*)component.ptr())->update(deltaTime, child);
                 }
             }
         }

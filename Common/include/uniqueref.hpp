@@ -8,10 +8,12 @@ template <typename T>
 class UniqueRef {
 public:
     UniqueRef(std::unique_ptr<T>&& ptr) : mData{ std::move(ptr) } {
-        if (mData == nullptr) {
-            throw std::runtime_error(
-              "Cannot create a UniqueRef from a nullptr!");
-        }
+        checkInvariant();
+    }
+
+    void reassign(std::unique_ptr<T>&& ptr) {
+        mData = std::move(ptr);
+        checkInvariant();
     }
 
     T* ptr() {
@@ -44,6 +46,14 @@ public:
 
     operator T&() const noexcept {
         return *mData;
+    }
+
+private:
+    void checkInvariant() const {
+        if (!mData) {
+            throw std::runtime_error(
+              "Cannot create a UniqueRef from a nullptr!");
+        }
     }
 
 private:

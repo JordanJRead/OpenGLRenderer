@@ -63,7 +63,8 @@ public:
     Iterator begin();
     Iterator end();
 
-    void loadScripts();
+    void loadScripts(std::optional<std::function<void()>> reloadCallback
+                     = std::nullopt);
 
     bool shouldLoadScripts(GLFWwindow* window);
 

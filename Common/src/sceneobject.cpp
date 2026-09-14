@@ -52,6 +52,22 @@ SceneObject::SceneObject(const JSON& json, SceneObject* parent)
     }
 }
 
+void SceneObject::reloadScripts() {
+    for (auto& component : mComponents) {
+        if (component->isScript()) {
+            auto newComponent{
+                ComponentManager::instance().createComponentFromName(
+                  component->getName())
+            };
+            if (!newComponent) {
+                int x;
+                x++; // TODO
+            }
+            component.reassign(std::move(newComponent));
+        }
+    }
+}
+
 void SceneObject::addChild(const JSON& json) {
     mChildren.emplace_back(std::make_unique<SceneObject>(json, this));
 }

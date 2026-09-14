@@ -109,11 +109,7 @@ void Scene::updateAllObjectComponents() {
 }
 
 void Scene::updateObjectComponents(SceneObject& sceneObject) {
-    for (auto& component : sceneObject.getComponents()) {
-        if (component->isScript()) {
-            ((Script*)component.ptr())->updateProperties();
-        }
-    }
+    sceneObject.reloadScripts();
     for (auto& child : sceneObject.getChildren()) {
         updateObjectComponents(*child);
     }
