@@ -53,17 +53,20 @@ SceneObject::SceneObject(const JSON& json, SceneObject* parent)
 }
 
 void SceneObject::reloadScripts() {
-    for (auto& component : mComponents) {
-        if (component->isScript()) {
-            auto newComponent{
-                ComponentManager::instance().createComponentFromName(
-                  component->getName())
-            };
-            if (!newComponent) {
-                int x;
-                x++; // TODO
+    for (auto it{ mComponents.begin() }; it != mComponents.end();) {
+        bool doIncrement{ true };
+        if ((*it)->isScript()) {
+            auto newComponent{ ComponentManager::instance()
+                                 .createComponentFromName((*it)->getName()) };
+            if (newComponent) {
+                (*it).reassign(std::move(newComponent));
+            } else {
+                it          = mComponents.erase(it);
+                doIncrement = false;
             }
-            component.reassign(std::move(newComponent));
+        }
+        if (doIncrement) {
+            it++;
         }
     }
 }

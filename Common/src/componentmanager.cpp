@@ -200,7 +200,7 @@ extern "C" __declspec(dllexport) Script* create)"
 
     // Load scripts
     typedef Script* (*ScriptFactoryFunc)(const void* json);
-
+    mDynamicComponentFactories.clear();
     for (const std::filesystem::path& headerPath : headerPaths) {
         std::string funcName{ "create" };
         funcName += headerPath.stem().string();
