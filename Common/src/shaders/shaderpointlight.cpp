@@ -10,14 +10,15 @@ ShaderPointLight::ShaderPointLight(std::string_view vertPath, std::string_view f
 
 }
 
-void ShaderPointLight::render(const SceneObject* const object, bool highlight, const VertexArray& vertexArray, const Framebuffer* framebuffer, const glm::vec3& position, const glm::vec3& lightColour) const {
+void ShaderPointLight::render(const SceneObject& object, bool highlight, const VertexArray& vertexArray, const Framebuffer* framebuffer, const glm::vec3& position, const glm::vec3& lightColour) const {
 	bind();
 	Framebuffer::bind(framebuffer);
 
 	setVector3("position", position);;
 	setVector3("colour", lightColour);
-	setFloat("objectPtrFirst", *((float*)(&object)));
-	setFloat("objectPtrSecond", *(((float*)(&object)) + 1));
+	const SceneObject* ptr{ &object };
+	setFloat("objectPtrFirst", *((float*)(&ptr)));
+	setFloat("objectPtrSecond", *(((float*)(&ptr)) + 1));
 	setBool("highlight", highlight);
 
 	vertexArray.bind();

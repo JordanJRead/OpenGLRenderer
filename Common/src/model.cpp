@@ -8,12 +8,9 @@
 #include <string>
 #include "directories.hpp"
 
-Model::Model(const JSON& json) : Component{ Model::staticGetComponentType() } {
+Model::Model(const JSON& json) : Component{ "Model" }
+{
 	setJSONAndCreate(json);
-}
-
-Model::Model() : Component{ Model::staticGetComponentType() } {
-	setJSONAndCreate(JSON::object());
 }
 
 void Model::create(EditableProperties& properties) {
@@ -23,7 +20,7 @@ void Model::create(EditableProperties& properties) {
 		return;
 	}
 	mIsValid = true;
-	objPath = (gGameDirectoryPath / objPath).string();
+	objPath = (Directories::gameDirectoryPath / objPath).string();
 	mDirectory = objPath;
 	mDirectory.resize(mDirectory.rfind("/"));
 

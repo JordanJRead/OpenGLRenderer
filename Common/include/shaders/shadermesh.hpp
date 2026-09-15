@@ -12,7 +12,7 @@ class SceneObject;
 class ShaderMesh : public ShaderI {
 public:
 	ShaderMesh(std::string_view vertPath, std::string_view fragPath);
-	void render(const Mesh& mesh, const Model& parentModel, const SceneObject* const object, bool highlight, const Framebuffer* framebuffer, const Transform& transform) const;
+	void render(const Mesh& mesh, const Model& parentModel, const SceneObject& object, bool highlight, const Framebuffer* framebuffer, const Transform& transform) const;
 
 protected:
 };

@@ -3,12 +3,10 @@
 #include <array>
 #include "jsonhelpers.hpp"
 
-PointLight::PointLight(const JSON& json) : Component{ PointLight::staticGetComponentType() } {
+// TODO replace PointLight with type_name?
+PointLight::PointLight(const JSON& json) : Component{ "PointLight" }
+{
 	setJSONAndCreate(json);
-}
-
-PointLight::PointLight() : Component{ PointLight::staticGetComponentType() } {
-	setJSONAndCreate(JSON::object());
 }
 
 void PointLight::create(EditableProperties& properties) {

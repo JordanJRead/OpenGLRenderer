@@ -1,0 +1,4 @@
+TODO:
+- Clean up void* usage somehow?
+- Force update of scripts on dll load
+- Loading popups?

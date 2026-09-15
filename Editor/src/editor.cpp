@@ -1,16 +1,19 @@
 #include "editor.hpp"
-#include "glm/glm.hpp"
-#include "model.hpp"
-#include "transform.hpp"
-#include "pointlight.hpp"
 #include "GLFW/glfw3.h"
+#include "directories.hpp"
+#include "glm/glm.hpp"
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
+#include "model.hpp"
 #include "nlohmann/json.hpp"
+#include "pointlight.hpp"
+#include "script.hpp"
+#include "transform.hpp"
 #include <fstream>
-#include "directories.hpp"
+#include <stdexcept>
 
-void Editor::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+void Editor::keyCallback(GLFWwindow* window, int key, int scancode, int action,
+                         int mods) {
     ImGui_ImplGlfw_KeyCallback(window, key, scancode, action, mods);
     Editor* editor = ((Editor*)glfwGetWindowUserPointer(window));
 
@@ -21,7 +24,8 @@ void Editor::keyCallback(GLFWwindow* window, int key, int scancode, int action, 
     }
 }
 
-void Editor::mouseCallback(GLFWwindow* window, int button, int action, int mods) {
+void Editor::mouseCallback(GLFWwindow* window, int button, int action,
+                           int mods) {
     ImGui_ImplGlfw_MouseButtonCallback(window, button, action, mods);
     Editor* editor = ((Editor*)glfwGetWindowUserPointer(window));
 
@@ -30,10 +34,25 @@ void Editor::mouseCallback(GLFWwindow* window, int button, int action, int mods)
     }
 }
 
+JSON getSceneJSON() {
+    std::ifstream file{ Directories::gameDirectoryPath
+                        / Directories::sceneFileName };
+    if (file.is_open()) {
+        JSON json = JSON::parse(file);
+        if (json.type() == JSON::value_t::array) {
+            json = json[0]; // Don't know why this happens sometimes
+        }
+        file.close();
+        return json;
+    }
+    throw std::runtime_error("Error loading scene json!");
+}
+
 Editor::Editor(int screenWidth, int screenHeight, GLFWwindow* window)
     : mWindow{ window }
     , mGeometryBuffers{ screenWidth, screenHeight, {GL_RGBA32F, GL_RGB16F, GL_RGB16F, GL_RGBA16F, GL_RG32F }, {0, 0, 0, 0} } // worldPos, normal, diffuse, specular/exponent, objectPtr
     , mOutputFramebuffer{ screenWidth, screenHeight, {GL_RGBA8}, {0, 0, 0, 1} }
+    , mScene{ getSceneJSON() }
 {
     loadFromJSON();
     glfwSetInputMode(mWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -51,6 +70,11 @@ void Editor::run() {
     float prevTime{ 0 };
     while (!glfwWindowShouldClose(mWindow)) {
 
+        if (ComponentManager::instance().shouldLoadScripts(mWindow)) {
+            ComponentManager::instance().loadScripts(
+              [this]() { mScene.updateAllObjectComponents(); });
+        }
+
         mInputs.clear();
         if (!(ImGui::GetIO().WantCaptureKeyboard)) {
             mInputs.registerAllKeysDown(mWindow);
@@ -65,12 +89,22 @@ void Editor::run() {
         float deltaTime{ currentTime - prevTime };
         prevTime = currentTime;
 
-        //PointLight* pointLight = mScene.getPointLight(lightIndex);
-        //pointLight->position = { 2 + glm::cos(glfwGetTime()), 2 + glm::sin(glfwGetTime()), -2 + glm::sin(glfwGetTime()) };
+        // PointLight* pointLight = mScene.getPointLight(lightIndex);
+        // pointLight->position = { 2 + glm::cos(glfwGetTime()), 2 +
+        // glm::sin(glfwGetTime()), -2 + glm::sin(glfwGetTime()) };
         mScene.updatePointLights();
 
         // Update
-        mScene.updateCameraData(mWindow, mInputs, deltaTime, mOutputFramebuffer.getAspectRatio());
+        mScene.updateCameraData(mWindow, mInputs, deltaTime,
+                                mOutputFramebuffer.getAspectRatio());
+        SceneObject& root = mScene.getRootObject();
+        for (auto& child : root.getChildren()) {
+            for (auto& component : child->getComponents()) {
+                if (component->isScript()) {
+                    ((Script*)component.ptr())->update(deltaTime, child);
+                }
+            }
+        }
 
         // Render
         mGeometryBuffers.clear();
@@ -78,16 +112,22 @@ void Editor::run() {
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glClearColor(0, 0, 0, 0);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT
+                | GL_STENCIL_BUFFER_BIT);
 
         glDisable(GL_BLEND);
-        mScene.render(mGeometryPassShader, mPointLightGeometryShader, &mGeometryBuffers, mRenderSettings.mValue, mUI.getSelectedObject());
+        mScene.render(mGeometryPassShader, mPointLightGeometryShader,
+                      &mGeometryBuffers, mRenderSettings.mValue,
+                      mUI.getSelectedObject());
 
-        mShaderDeferred.render(mScreenVertexArray, &mOutputFramebuffer, mGeometryBuffers, mScene.getDirectionalLight(), mScene.getAmbientLightColour());
+        mShaderDeferred.render(mScreenVertexArray, &mOutputFramebuffer,
+                               mGeometryBuffers, mScene.getDirectionalLight(),
+                               mScene.getAmbientLightColour());
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glm::ivec2 newDim = mUI.updateRender(nullptr, *this);
-        if (newDim.x != mOutputFramebuffer.getWidth() || newDim.y != mOutputFramebuffer.getHeight()) {
+        if (newDim.x != mOutputFramebuffer.getWidth()
+            || newDim.y != mOutputFramebuffer.getHeight()) {
             mOutputFramebuffer.resize(newDim.x, newDim.y);
             mOutputFramebuffer.clear();
             mGeometryBuffers.resize(newDim.x, newDim.y);
@@ -106,14 +146,16 @@ void Editor::run() {
 void Editor::saveToJSON() const {
     JSON json;
     json["renderSettings"] = mRenderSettings.mValue.toJSON();
-    json["uiStyle"] = mUIStyle.toJSON();
-    std::ofstream file{ gGameDirectoryPath / gEditorSettingsFileName };
+    json["uiStyle"]        = mUIStyle.toJSON();
+    std::ofstream file{ Directories::gameDirectoryPath
+                        / Directories::editorSettingsFileName };
     file << std::setw(1) << json;
     file.close();
 }
 
 void Editor::loadFromJSON() {
-    std::ifstream file{ gGameDirectoryPath / gEditorSettingsFileName };
+    std::ifstream file{ Directories::gameDirectoryPath
+                        / Directories::editorSettingsFileName };
     if (file.is_open()) {
         JSON json = JSON::parse(file);
         file.close();

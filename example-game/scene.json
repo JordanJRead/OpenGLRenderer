@@ -7,9 +7,9 @@
  "camera": {
   "horizontalFOVDeg": 100.0,
   "position": {
-   "x": 4.228854179382324,
-   "y": 2.74619722366333,
-   "z": -1.128452181816101
+   "x": 1.3311210870742798,
+   "y": 4.362737655639648,
+   "z": -0.45377039909362793
   },
   "sensitivity": 0.1
  },
@@ -30,12 +30,32 @@
    {
     "children": [],
     "components": {
-     "Point Light": {
+     "Move": {
+      "Speed": {
+       "type": 3,
+       "value": 0.0
+      },
+      "Up": {
+       "type": 0,
+       "value": false
+      }
+     },
+     "Move3": {
+      "Speed": {
+       "type": 3,
+       "value": 0.0
+      },
+      "Up": {
+       "type": 0,
+       "value": false
+      }
+     },
+     "PointLight": {
       "colour": {
        "type": 1,
        "value": {
-        "x": 1.0,
-        "y": 1.0,
+        "x": 0.0,
+        "y": 0.8235292434692383,
         "z": 1.0
        }
       }
@@ -45,7 +65,7 @@
     "transform": {
      "position": {
       "x": 0.0,
-      "y": 1.7599999904632568,
+      "y": 0.7183515429496765,
       "z": 0.0
      },
      "rotation": {
