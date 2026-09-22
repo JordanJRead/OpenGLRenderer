@@ -1,44 +1,50 @@
 #ifndef MODEL_H
 #define MODEL_H
 
-#include <string_view>
-#include <vector>
-#include "mesh.hpp"
-#include "glad/glad.h"
 #include "component.hpp"
-#include <span>
+#include "glad/glad.h"
+#include "mesh.hpp"
 #include <memory>
 #include <nlohmann/json.hpp>
+#include <span>
+#include <string_view>
+#include <vector>
 
 struct aiMesh;
 struct aiNode;
 struct aiScene;
 class Mesh;
 namespace TextureTypes {
-	enum Type;
+    enum Type;
 }
 
 class Model : public Component {
-	friend class Mesh;
+    friend class Mesh;
+
 public:
-	Model(const JSON& json = JSON::object());
-	const std::vector<Mesh>& getMeshes() const { return mMeshes; }
-	const std::span<const Mesh> getMeshes();
-	bool isValid() const { return mIsValid; }
+    Model(const JSON& json = JSON::object());
+    const std::vector<Mesh>& getMeshes() const {
+        return mMeshes;
+    }
+    const std::span<const Mesh> getMeshes();
+    bool                        isValid() const {
+        return mIsValid;
+    }
 
 private:
-	std::vector<Mesh> mMeshes;
-	std::vector<Texture2D> mTextures;
-	std::string mDirectory;
-	std::string mObjPath;
-	bool mIsValid;
+    std::vector<Mesh>      mMeshes;
+    std::vector<Texture2D> mTextures;
+    std::string            mDirectory;
+    std::string            mObjPath;
+    bool                   mIsValid;
 
-	void processNode(aiNode* mesh, const aiScene* scene);
-	void processMesh(aiMesh* mesh, const aiScene* scene);
-	size_t addTexture(std::string_view imagePath);
-	const Texture2D& getTexture(size_t index, TextureTypes::Type textureType) const;
+    void             processNode(aiNode* mesh, const aiScene* scene);
+    void             processMesh(aiMesh* mesh, const aiScene* scene);
+    size_t           addTexture(std::string_view imagePath);
+    const Texture2D& getTexture(size_t             index,
+                                TextureTypes::Type textureType) const;
 
-	void create(EditableProperties& properties) override;
+    void create(UIProperties& properties) override;
 };
 
 #endif

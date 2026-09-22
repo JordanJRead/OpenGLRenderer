@@ -1,14 +1,13 @@
 #include "pointlight.hpp"
-#include <stdexcept>
-#include <array>
 #include "jsonhelpers.hpp"
+#include <array>
+#include <stdexcept>
 
 // TODO replace PointLight with type_name?
-PointLight::PointLight(const JSON& json) : Component{ "PointLight" }
-{
-	setJSONAndCreate(json);
+PointLight::PointLight(const JSON& json) : Component{ "PointLight" } {
+    setJSONAndCreate(json);
 }
 
-void PointLight::create(EditableProperties& properties) {
-	mColour = properties.getOrCreate<EditableProperty::Type::colour_type>("colour");
+void PointLight::create(UIProperties& properties) {
+    mColour = properties.getOrCreate<UIProperty::Type::colour_type>("colour");
 }

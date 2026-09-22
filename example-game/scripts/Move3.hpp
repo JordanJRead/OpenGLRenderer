@@ -7,7 +7,7 @@
 class Move3 : public Script {
 public:
     Move3(const void* json);
-    void create(EditableProperties& properties) override;
+    void create(UIProperties& properties) override;
     void update(float deltaTime, SceneObject& sceneObject) override;
 
 private:

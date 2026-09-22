@@ -1,4 +1,4 @@
-#include "editableproperties.hpp"
+#include "uiproperties.hpp"
 
 #include "imgui.h"
 #include "imgui_stdlib.h"
@@ -7,65 +7,65 @@
 #include <iostream>
 #include <stdexcept>
 
-using Type = EditableProperty::Type;
+using Type = UIProperty::Type;
 
 template <Type TypeEnum>
-using TypeTag = EditableProperty::TypeTag<TypeEnum>;
+using TypeTag = UIProperty::TypeTag<TypeEnum>;
 
-void EditableProperties::create(const JSON& json) {
+void UIProperties::create(const JSON& json) {
     mProperties.clear();
     mAccessedProperties.clear();
     if (json.type() != JSON::value_t::object) {
-        throw std::runtime_error("EDITABLEPROPERTIES::EDITABLEPROPERTIES "
+        throw std::runtime_error("UIPROPERTIES::UIPROPERTIES "
                                  "ERROR: json must be object type");
     }
 
     // data has 'type' and 'value'
     for (auto& [key, data] : json.items()) {
-        EditableProperty::Type type{ data.at("type") };
-        JSON                   valueJSON = data.at("value");
+        UIProperty::Type type{ data.at("type") };
+        JSON             valueJSON = data.at("value");
         switch (type) {
-        case EditableProperty::Type::bool_type:
+        case UIProperty::Type::bool_type:
             mProperties.insert({
-              key, EditableProperty{ valueJSON.m_data.m_value.boolean,
-                                    TypeTag<Type::bool_type>{} }
+              key, UIProperty{ valueJSON.m_data.m_value.boolean,
+                              TypeTag<Type::bool_type>{} }
             });
             break;
 
-        case EditableProperty::Type::colour_type:
+        case UIProperty::Type::colour_type:
             mProperties.insert({
-              key, EditableProperty{ JSONHelpers::toVec3(valueJSON),
-                                    TypeTag<Type::colour_type>{} }
+              key, UIProperty{ JSONHelpers::toVec3(valueJSON),
+                              TypeTag<Type::colour_type>{} }
             });
             break;
 
-        case EditableProperty::Type::direction_type:
+        case UIProperty::Type::direction_type:
             mProperties.try_emplace(key, JSONHelpers::toVec3(valueJSON),
                                     TypeTag<Type::direction_type>{});
             break;
 
-        case EditableProperty::Type::double_type:
+        case UIProperty::Type::double_type:
             mProperties.try_emplace(key, valueJSON.m_data.m_value.number_float,
                                     TypeTag<Type::double_type>{});
             break;
 
-        case EditableProperty::Type::int_type:
+        case UIProperty::Type::int_type:
             mProperties.try_emplace(
               key, (int)valueJSON.m_data.m_value.number_integer,
               TypeTag<Type::int_type>{});
             break;
 
-        case EditableProperty::Type::string_type:
+        case UIProperty::Type::string_type:
             mProperties.try_emplace(key, *valueJSON.m_data.m_value.string,
                                     TypeTag<Type::string_type>{});
             break;
 
-        case EditableProperty::Type::vec3_type:
+        case UIProperty::Type::vec3_type:
             mProperties.try_emplace(key, JSONHelpers::toVec3(json),
                                     TypeTag<Type::vec3_type>{});
             break;
 
-        case EditableProperty::Type::vec4_type:
+        case UIProperty::Type::vec4_type:
             mProperties.try_emplace(key, JSONHelpers::toVec4(json),
                                     TypeTag<Type::vec4_type>{});
             break;
@@ -73,51 +73,47 @@ void EditableProperties::create(const JSON& json) {
     }
 }
 
-JSON EditableProperties::toJSON() const {
+JSON UIProperties::toJSON() const {
     JSON json = JSON::object();
 
     for (const auto& [name, property] : mProperties) {
         json[name]         = JSON::object();
         json[name]["type"] = (int)property.getType();
         switch (property.getType()) {
-        case EditableProperty::Type::bool_type:
-            json[name]["value"]
-              = property.get<EditableProperty::Type::bool_type>();
+        case UIProperty::Type::bool_type:
+            json[name]["value"] = property.get<UIProperty::Type::bool_type>();
             break;
 
-        case EditableProperty::Type::colour_type:
+        case UIProperty::Type::colour_type:
             json[name]["value"] = JSONHelpers::fromVec3(
-              property.get<EditableProperty::Type::colour_type>());
+              property.get<UIProperty::Type::colour_type>());
             break;
 
-        case EditableProperty::Type::direction_type:
+        case UIProperty::Type::direction_type:
             json[name]["value"] = JSONHelpers::fromVec3(
-              property.get<EditableProperty::Type::direction_type>());
+              property.get<UIProperty::Type::direction_type>());
             break;
 
-        case EditableProperty::Type::double_type:
-            json[name]["value"]
-              = property.get<EditableProperty::Type::double_type>();
+        case UIProperty::Type::double_type:
+            json[name]["value"] = property.get<UIProperty::Type::double_type>();
             break;
 
-        case EditableProperty::Type::int_type:
-            json[name]["value"]
-              = property.get<EditableProperty::Type::int_type>();
+        case UIProperty::Type::int_type:
+            json[name]["value"] = property.get<UIProperty::Type::int_type>();
             break;
 
-        case EditableProperty::Type::string_type:
-            json[name]["value"]
-              = property.get<EditableProperty::Type::string_type>();
+        case UIProperty::Type::string_type:
+            json[name]["value"] = property.get<UIProperty::Type::string_type>();
             break;
 
-        case EditableProperty::Type::vec3_type:
+        case UIProperty::Type::vec3_type:
             json[name]["value"] = JSONHelpers::fromVec3(
-              property.get<EditableProperty::Type::vec3_type>());
+              property.get<UIProperty::Type::vec3_type>());
             break;
 
-        case EditableProperty::Type::vec4_type:
+        case UIProperty::Type::vec4_type:
             json[name]["value"] = JSONHelpers::fromVec4(
-              property.get<EditableProperty::Type::vec4_type>());
+              property.get<UIProperty::Type::vec4_type>());
             break;
         }
     }
@@ -125,9 +121,9 @@ JSON EditableProperties::toJSON() const {
     return json;
 }
 
-void EditableProperties::renderUI() {
+void UIProperties::renderUI() {
     ImGui::PushID(this);
-    typedef EditableProperty::Type Type;
+    typedef UIProperty::Type Type;
     for (auto& pair : mProperties) {
 
         switch (pair.second.getType()) {

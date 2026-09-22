@@ -1,26 +1,25 @@
 #ifndef CONSTRUCTABLE_PROPERTIES
 #define CONSTRUCTABLE_PROPERTIES
 
-#include "editableproperty.hpp"
 #include "nlohmann/json.hpp"
+#include "uiproperty.hpp"
 #include <map>
 #include <string>
 #include <string_view>
 #include <vector>
 
-class EditableProperties {
+class UIProperties {
 public:
     void create(const JSON& json);
     JSON toJSON() const;
 
-    template <EditableProperty::Type TypeEnum>
+    template <UIProperty::Type TypeEnum>
 #define RETURN_TYPE \
-    std::variant_alternative_t<static_cast<size_t>(TypeEnum), EditableVariant_t>
+    std::variant_alternative_t<static_cast<size_t>(TypeEnum), UIPropertyVariant>
     RETURN_TYPE& getOrCreate(const std::string& propertyName) {
         mAccessedProperties.push_back(propertyName);
         if (!mProperties.contains(propertyName)) {
-            add(propertyName, RETURN_TYPE{},
-                EditableProperty::TypeTag<TypeEnum>{});
+            add(propertyName, RETURN_TYPE{}, UIProperty::TypeTag<TypeEnum>{});
         }
         return mProperties.at(propertyName).get<TypeEnum>();
     }
@@ -40,16 +39,16 @@ public:
     }
 
 private:
-    template <typename T, EditableProperty::Type TypeEnum>
+    template <typename T, UIProperty::Type TypeEnum>
     void add(const std::string& propertyName, const T& value,
-             EditableProperty::TypeTag<TypeEnum> typeTag) {
+             UIProperty::TypeTag<TypeEnum> typeTag) {
         mProperties.insert({
-          propertyName, EditableProperty{ value, typeTag }
+          propertyName, UIProperty{ value, typeTag }
         });
     }
 
-    std::map<std::string, EditableProperty> mProperties;
-    std::vector<std::string>                mAccessedProperties;
+    std::map<std::string, UIProperty> mProperties;
+    std::vector<std::string>          mAccessedProperties;
 };
 
 #endif

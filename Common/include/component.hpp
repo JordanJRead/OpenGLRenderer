@@ -1,8 +1,8 @@
 #ifndef SCENE_OBJECT_COMPONENT_H
 #define SCENE_OBJECT_COMPONENT_H
 
-#include "editableproperties.hpp"
 #include "imgui/imgui.h"
+#include "uiproperties.hpp"
 #include <nlohmann/json.hpp>
 #include <string>
 #include <string_view>
@@ -26,11 +26,11 @@ protected:
     bool         mIsScript{ false };
 
 private:
-    EditableProperties mInitialProperties;
-    EditableProperties mEditableProperties;
-    std::string        mComponentName;
+    UIProperties mInitialProperties;
+    UIProperties mEditableProperties;
+    std::string  mComponentName;
 
-    virtual void create(EditableProperties& properties) = 0;
+    virtual void create(UIProperties& properties) = 0;
 };
 
 #endif
