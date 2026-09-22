@@ -12,7 +12,7 @@ using Type = UIProperty::Type;
 template <Type TypeEnum>
 using TypeTag = UIProperty::TypeTag<TypeEnum>;
 
-void UIProperties::create(const JSON& json) {
+UIProperties::UIProperties(const JSON& json) {
     mProperties.clear();
     mAccessedProperties.clear();
     if (json.type() != JSON::value_t::object) {

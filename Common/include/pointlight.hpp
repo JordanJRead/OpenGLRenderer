@@ -11,7 +11,7 @@ public:
 	glm::vec3 mColour;
 
 private:
-	void create(UIProperties& properties) override;
+	void readProperties(UIProperties& properties) override;
 };
 
 #endif

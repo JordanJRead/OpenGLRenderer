@@ -1,23 +1,26 @@
 #include "component.hpp"
 
-Component::Component(std::string_view componentName)
-: mComponentName{ componentName } {
+Component::Component(std::string_view componentName, const JSON& json,
+                     bool isScript)
+: mComponentName{ componentName }
+, mIsScript{ isScript }
+, mUIProperties{ json } {
 }
 
 void Component::renderUIProperties() {
     ImGui::SeparatorText(mComponentName.c_str());
-    mEditableProperties.renderUI();
+    mUIProperties.renderUI();
     ImGui::PushID(this);
     if (ImGui::Button("Update")) {
         ImGui::PopID();
-        setJSONAndCreate(mEditableProperties.toJSON());
+        readProperties(mUIProperties);
     } else {
         ImGui::PopID();
     }
 }
 
 JSON Component::toJSON() const {
-    return mInitialProperties.toJSON();
+    return mUIProperties.toJSON();
 }
 
 std::string_view Component::getName() const {
@@ -28,12 +31,9 @@ bool Component::isScript() const {
     return mIsScript;
 }
 
-Component::~Component() {
+void Component::readOwnProperties() {
+    readProperties(mUIProperties);
 }
 
-void Component::setJSONAndCreate(const JSON& json) {
-    mInitialProperties.create(json);
-    create(mInitialProperties);
-    mInitialProperties.removeUnused();
-    mEditableProperties = mInitialProperties;
+Component::~Component() {
 }

@@ -10,7 +10,7 @@
 
 class UIProperties {
 public:
-    void create(const JSON& json);
+    UIProperties(const JSON& json);
     JSON toJSON() const;
 
     template <UIProperty::Type TypeEnum>

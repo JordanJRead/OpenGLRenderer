@@ -44,7 +44,7 @@ private:
     const Texture2D& getTexture(size_t             index,
                                 TextureTypes::Type textureType) const;
 
-    void create(UIProperties& properties) override;
+    void readProperties(UIProperties& properties) override;
 };
 
 #endif

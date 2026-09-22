@@ -9,7 +9,7 @@
 
 class Component {
 public:
-    Component(std::string_view componentName);
+    Component(std::string_view componentName, const JSON& json, bool isScript);
 
     virtual void renderUIProperties();
 
@@ -21,16 +21,14 @@ public:
 
     virtual ~Component();
 
-protected:
-    virtual void setJSONAndCreate(const JSON& json) final;
-    bool         mIsScript{ false };
+    void readOwnProperties();
 
 private:
-    UIProperties mInitialProperties;
-    UIProperties mEditableProperties;
+    UIProperties mUIProperties;
     std::string  mComponentName;
+    bool         mIsScript{ false };
 
-    virtual void create(UIProperties& properties) = 0;
+    virtual void readProperties(UIProperties& properties) = 0;
 };
 
 #endif

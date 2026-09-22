@@ -8,11 +8,11 @@
 #include <stdexcept>
 #include <string>
 
-Model::Model(const JSON& json) : Component{ "Model" } {
-    setJSONAndCreate(json);
+Model::Model(const JSON& json) : Component{ "Model", json, false } {
+    readOwnProperties();
 }
 
-void Model::create(UIProperties& properties) {
+void Model::readProperties(UIProperties& properties) {
     std::string objPath{ properties.getOrCreate<UIProperty::Type::string_type>(
       "objPath") };
     if (objPath == "") {

@@ -3,11 +3,11 @@
 #include <array>
 #include <stdexcept>
 
-// TODO replace PointLight with type_name?
-PointLight::PointLight(const JSON& json) : Component{ "PointLight" } {
-    setJSONAndCreate(json);
+PointLight::PointLight(const JSON& json)
+: Component{ "PointLight", json, false } {
+    readOwnProperties();
 }
 
-void PointLight::create(UIProperties& properties) {
+void PointLight::readProperties(UIProperties& properties) {
     mColour = properties.getOrCreate<UIProperty::Type::colour_type>("colour");
 }

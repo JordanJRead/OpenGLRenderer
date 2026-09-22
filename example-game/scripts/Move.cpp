@@ -2,11 +2,11 @@
 
 #include "sceneobject.hpp"
 
-Move::Move(const void* json) : Script{ "Move" } {
-    setJSONAndCreate(json ? *((const JSON*)json) : JSON::object());
+Move::Move(const void* json) : Script{ "Move", json ? *((const JSON*)json) : JSON::object() } {
+    readOwnProperties();
 }
 
-void Move::create(UIProperties& properties) {
+void Move::readProperties(UIProperties& properties) {
     mSpeed = properties.getOrCreate<UIProperty::Type::double_type>("Speed");
     mIsUp = properties.getOrCreate<UIProperty::Type::bool_type>("Up");
     // properties.getOrCreate<UIProperty::Type::bool_type>("Test?");
