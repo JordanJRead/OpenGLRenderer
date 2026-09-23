@@ -1,38 +1,24 @@
 #include "component.hpp"
+#include "imgui/imgui.h"
 
 Component::Component(std::string_view componentName, const JSON& json,
                      bool isScript)
 : mComponentName{ componentName }
 , mIsScript{ isScript }
-, mUIProperties{ json } {
-}
-
-void Component::renderUIProperties() {
-    ImGui::SeparatorText(mComponentName.c_str());
-    mUIProperties.renderUI();
-    ImGui::PushID(this);
-    if (ImGui::Button("Update")) {
-        ImGui::PopID();
-        readProperties(mUIProperties);
-    } else {
-        ImGui::PopID();
-    }
-}
-
-JSON Component::toJSON() const {
-    return mUIProperties.toJSON();
+, UIPropertyBased{ json } {
 }
 
 std::string_view Component::getName() const {
     return mComponentName;
 }
 
-bool Component::isScript() const {
-    return mIsScript;
+void Component::renderUIProperties() {
+    ImGui::SeparatorText(mComponentName.c_str());
+    UIPropertyBased::renderUIProperties();
 }
 
-void Component::readOwnProperties() {
-    readProperties(mUIProperties);
+bool Component::isScript() const {
+    return mIsScript;
 }
 
 Component::~Component() {

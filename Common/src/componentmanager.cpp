@@ -2,6 +2,7 @@
 #define GLFW_INCLUDE_NONE
 #include "GLFW/glfw3.h"
 #include "directories.hpp"
+#include "imgui/imgui.h"
 #include "model.hpp"
 #include "pointlight.hpp"
 #include "script.hpp"
